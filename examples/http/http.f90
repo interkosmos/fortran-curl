@@ -35,7 +35,7 @@ contains
         call c_f_string_ptr(ptr, response)
 
         ! Print HTTP response to stdout.
-        print '(a)', response
+        write (*, '(a)', advance='no') response
         deallocate (response)
 
         response_callback = nmemb
