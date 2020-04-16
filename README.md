@@ -33,7 +33,7 @@ On Linux, you may want to change to prefix to `/usr`:
 $ make PREFIX=/usr
 ```
 
-## Example
+## Examples
 Examples are provided in directory `examples/`:
 
 * **http** makes an HTTP GET request.
