@@ -16,8 +16,7 @@ contains
         !! the returned HTTP response.
         !!
         !! This callback function might be called several times by libcurl,
-        !! passing in chunks of the response. The chunks are concatenated with
-        !! the parts of the response already in the database.
+        !! passing in chunks of the response.
         use, intrinsic :: iso_c_binding, only: c_associated, c_ptr, c_size_t
         type(c_ptr),            intent(in), value :: ptr               !! C pointer to a chunk of the response.
         integer(kind=c_size_t), intent(in), value :: size              !! Always 1.
