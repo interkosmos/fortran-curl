@@ -45,13 +45,13 @@ $ make <name>
 ```
 
 ## Coverage
-| C Function Name     | Fortran Interface Name                                                                                                    | Bound |
-|---------------------|---------------------------------------------------------------------------------------------------------------------------|-------|
-| `curl_easy_init`    | `curl_easy_init`                                                                                                          | ✓     |
-| `curl_easy_perform` | `curl_easy_perform`                                                                                                       | ✓     |
-| `curl_easy_cleanup` | `curl_easy_cleanup`                                                                                                       | ✓     |
-| `curl_easy_setopt`  | `curl_easy_setopt_char`, `curl_easy_setopt_fptr`, `curl_easy_setopt_int`, `curl_easy_setopt_long`, `curl_easy_setopt_ptr` | ✓     |
-| `curl_version_info` | `curl_version_info`                                                                                                       | ✓     |
+| C Function Name     | Fortran Interface Name                  | Bound |
+|---------------------|-----------------------------------------|-------|
+| `curl_easy_init`    | `curl_easy_init`                        | ✓     |
+| `curl_easy_perform` | `curl_easy_perform`                     | ✓     |
+| `curl_easy_cleanup` | `curl_easy_cleanup`                     | ✓     |
+| `curl_easy_setopt`  | `curl_easy_setopt`, `curl_easy_setopt_` | ✓     |
+| `curl_version_info` | `curl_version_info`                     | ✓     |
 
 | C Constant Name     | Fortran Interface Name | Bound |
 |---------------------|------------------------|-------|

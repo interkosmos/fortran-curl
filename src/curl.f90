@@ -6,19 +6,22 @@
 ! Licence: ISC
 module curl
     use, intrinsic :: iso_c_binding, only: c_associated, c_char, c_f_pointer, c_funptr, &
-                                           c_int, c_int64_t, c_long, c_ptr, c_size_t
+                                           c_int, c_int64_t, c_loc, c_long, c_ptr, c_size_t
     implicit none
 
     public :: curl_easy_init
     public :: curl_easy_perform
     public :: curl_easy_cleanup
-    public :: curl_easy_setopt_char
-    public :: curl_easy_setopt_fptr
-    public :: curl_easy_setopt_int
-    public :: curl_easy_setopt_long
-    public :: curl_easy_setopt_ptr
+    public :: curl_easy_setopt
+    public :: curl_easy_setopt_
     public :: curl_version_info
     public :: curl_version_now
+
+    private :: curl_easy_setopt_char
+    private :: curl_easy_setopt_fptr
+    private :: curl_easy_setopt_int
+    private :: curl_easy_setopt_long
+    private :: curl_easy_setopt_ptr
 
     integer(kind=c_int), parameter :: CURLOPTTYPE_LONG          = 0
     integer(kind=c_int), parameter :: CURLOPTTYPE_OBJECTPOINT   = 10000
@@ -397,49 +400,13 @@ module curl
         end function curl_easy_perform
 
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_char(curl, option, parameter) bind(c, name='curl_easy_setopt')
-            import :: c_char, c_int, c_ptr
-            type(c_ptr),            intent(in), value :: curl
-            integer(kind=c_int),    intent(in), value :: option
-            character(kind=c_char), intent(in)        :: parameter
-            integer(kind=c_int)                       :: curl_easy_setopt_char
-        end function curl_easy_setopt_char
-
-        ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_fptr(curl, option, parameter) bind(c, name='curl_easy_setopt')
-            import :: c_char, c_funptr, c_int, c_ptr
-            type(c_ptr),            intent(in), value :: curl
-            integer(kind=c_int),    intent(in), value :: option
-            type(c_funptr),         intent(in), value :: parameter
-            integer(kind=c_int)                       :: curl_easy_setopt_fptr
-        end function curl_easy_setopt_fptr
-
-        ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_int(curl, option, parameter) bind(c, name='curl_easy_setopt')
-            import :: c_int, c_int64_t, c_ptr
-            type(c_ptr),             intent(in), value :: curl
-            integer(kind=c_int),     intent(in), value :: option
-            integer(kind=c_int64_t), intent(in)        :: parameter
-            integer(kind=c_int)                        :: curl_easy_setopt_int
-        end function curl_easy_setopt_int
-
-        ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_long(curl, option, parameter) bind(c, name='curl_easy_setopt')
-            import :: c_int, c_long, c_ptr
-            type(c_ptr),          intent(in), value :: curl
-            integer(kind=c_int),  intent(in), value :: option
-            integer(kind=c_long), intent(in)        :: parameter
-            integer(kind=c_int)                     :: curl_easy_setopt_long
-        end function curl_easy_setopt_long
-
-        ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_ptr(curl, option, parameter) bind(c, name='curl_easy_setopt')
+        function curl_easy_setopt_(curl, option, parameter) bind(c, name='curl_easy_setopt')
             import :: c_int, c_ptr
             type(c_ptr),            intent(in), value :: curl
             integer(kind=c_int),    intent(in), value :: option
             type(c_ptr),            intent(in), value :: parameter
-            integer(kind=c_int)                       :: curl_easy_setopt_ptr
-        end function curl_easy_setopt_ptr
+            integer(kind=c_int)                       :: curl_easy_setopt_
+        end function curl_easy_setopt_
 
         ! curl_version_info_data *curl_version_info(CURLversion age)
         function curl_version_info_(age) bind(c, name='curl_version_info')
@@ -464,7 +431,70 @@ module curl
             integer(kind=c_int) :: curl_version_now
         end function curl_version_now
     end interface
+
+    interface curl_easy_setopt
+        ! Fortran 2008 generic interface `curl_easy_setopt()`.
+        module procedure :: curl_easy_setopt_char
+        module procedure :: curl_easy_setopt_fptr
+        module procedure :: curl_easy_setopt_int
+        module procedure :: curl_easy_setopt_long
+        module procedure :: curl_easy_setopt_ptr
+    end interface
+
+    ! Fortran 2018 generic interface `curl_easy_setopt()`.
+    ! generic :: curl_easy_setopt => curl_easy_setopt_char, curl_easy_setopt_fptr, curl_easy_setopt_int, &
+    !                                curl_easy_setopt_long, curl_easy_setopt_ptr
 contains
+    ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
+    function curl_easy_setopt_char(curl, option, parameter)
+        type(c_ptr),              intent(in) :: curl
+        integer,                  intent(in) :: option
+        character(len=*), target, intent(in) :: parameter
+        integer                              :: curl_easy_setopt_char
+
+        curl_easy_setopt_char = curl_easy_setopt_(curl, option, c_loc(parameter))
+    end function curl_easy_setopt_char
+
+    ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
+    function curl_easy_setopt_fptr(curl, option, parameter)
+        type(c_ptr),    intent(in) :: curl
+        integer,        intent(in) :: option
+        type(c_funptr), intent(in) :: parameter
+        integer                    :: curl_easy_setopt_fptr
+
+        curl_easy_setopt_fptr = curl_easy_setopt_(curl, option, parameter)
+    end function curl_easy_setopt_fptr
+
+    ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
+    function curl_easy_setopt_int(curl, option, parameter)
+        type(c_ptr),             intent(in) :: curl
+        integer    ,             intent(in) :: option
+        integer(kind=4), target, intent(in) :: parameter
+        integer                             :: curl_easy_setopt_int
+
+        curl_easy_setopt_int = curl_easy_setopt_(curl, option, c_loc(parameter))
+    end function curl_easy_setopt_int
+
+    ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
+    function curl_easy_setopt_long(curl, option, parameter)
+        type(c_ptr),             intent(in) :: curl
+        integer,                 intent(in) :: option
+        integer(kind=8), target, intent(in) :: parameter
+        integer                             :: curl_easy_setopt_long
+
+        curl_easy_setopt_long = curl_easy_setopt_(curl, option, c_loc(parameter))
+    end function curl_easy_setopt_long
+
+    ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
+    function curl_easy_setopt_ptr(curl, option, parameter)
+        type(c_ptr), intent(in) :: curl
+        integer,     intent(in) :: option
+        type(c_ptr), intent(in) :: parameter
+        integer                 :: curl_easy_setopt_ptr
+
+        curl_easy_setopt_ptr = curl_easy_setopt_(curl, option, parameter)
+    end function curl_easy_setopt_ptr
+
     ! curl_version_info_data *curl_version_info(CURLversion age)
     function curl_version_info(age)
         !! Wrapper for `curl_version_info_()` that converts the returned C

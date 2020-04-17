@@ -85,14 +85,14 @@ program main
     end if
 
     ! Set curl options.
-    rc = curl_easy_setopt_char(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL // c_null_char)
-    rc = curl_easy_setopt_char(curl_ptr, CURLOPT_URL,              DEFAULT_URL // c_null_char)
-    rc = curl_easy_setopt_long(curl_ptr, CURLOPT_FOLLOWLOCATION,   int( 1, kind=8))
-    rc = curl_easy_setopt_long(curl_ptr, CURLOPT_TIMEOUT,          int(10, kind=8))
-    rc = curl_easy_setopt_long(curl_ptr, CURLOPT_NOSIGNAL,         int( 1, kind=8))
-    rc = curl_easy_setopt_long(curl_ptr, CURLOPT_CONNECTTIMEOUT,   int(10, kind=8))
-    rc = curl_easy_setopt_fptr(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
-    rc = curl_easy_setopt_ptr(curl_ptr,  CURLOPT_WRITEDATA,        c_null_ptr)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL // c_null_char)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL // c_null_char)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_FOLLOWLOCATION,   int( 1, kind=8))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_TIMEOUT,          int(10, kind=8))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         int( 1, kind=8))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT,   int(10, kind=8))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_null_ptr)
 
     ! Send request.
     if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
