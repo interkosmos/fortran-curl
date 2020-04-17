@@ -1,5 +1,5 @@
 ! curl.f90
-!       _   _ ____  _
+!
 ! Fortran 2008 ISO C binding interfaces to libcurl.
 !
 ! Author:  Philipp Engel
