@@ -14,6 +14,8 @@ module curl
     public :: curl_easy_cleanup
     public :: curl_easy_setopt
     public :: curl_easy_setopt_
+    public :: curl_slist_append
+    public :: curl_slist_free_all
     public :: curl_version_info
     public :: curl_version_now
 
@@ -408,6 +410,14 @@ module curl
             integer(kind=c_int)                       :: curl_easy_setopt_
         end function curl_easy_setopt_
 
+        ! struct curl_slist *curl_slist_append(struct curl_slist *list, const char *string)
+        function curl_slist_append(list, string) bind(c, name='curl_slist_append')
+            import :: c_char, c_ptr
+            type(c_ptr),            intent(in), value :: list
+            character(kind=c_char), intent(in)        :: string
+            type(c_ptr)                               :: curl_slist_append
+        end function curl_slist_append
+
         ! curl_version_info_data *curl_version_info(CURLversion age)
         function curl_version_info_(age) bind(c, name='curl_version_info')
             import :: c_int, c_ptr
@@ -420,6 +430,12 @@ module curl
             import :: c_ptr
             type(c_ptr), intent(in), value :: curl
         end subroutine curl_easy_cleanup
+
+        ! void curl_slist_free_all(struct curl_slist *list)
+        subroutine curl_slist_free_all(list) bind(c, name='curl_slist_free_all')
+            import :: c_ptr
+            type(c_ptr), intent(in), value :: list
+        end subroutine curl_slist_free_all
     end interface
 
     interface

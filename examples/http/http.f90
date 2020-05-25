@@ -7,36 +7,56 @@
 module callback
     implicit none
     private
-
     public :: response_callback
+
+    integer(kind=8), parameter, public :: MAX_SIZE = 4096
+
+    type, public :: response_type
+        character(len=MAX_SIZE) :: content
+        integer(kind=8)         :: size
+    end type response_type
 contains
     ! static size_t callback(char *ptr, size_t size, size_t nmemb, void *data)
     function response_callback(ptr, size, nmemb, data) bind(c)
-        !! Callback function for `CURLOPT_WRITEFUNCTION` that simply outputs
-        !! the returned HTTP response.
+        !! Callback function for `CURLOPT_WRITEFUNCTION` that appends the
+        !! response chunk `ptr` to the given `data` of type `response_type`.
         !!
         !! This callback function might be called several times by libcurl,
-        !! passing in chunks of the response.
-        use, intrinsic :: iso_c_binding, only: c_associated, c_ptr, c_size_t
+        !! passing in more chunks of the response.
+        use, intrinsic :: iso_c_binding, only: c_associated, c_f_pointer, c_ptr, c_size_t
         type(c_ptr),            intent(in), value :: ptr               !! C pointer to a chunk of the response.
         integer(kind=c_size_t), intent(in), value :: size              !! Always 1.
         integer(kind=c_size_t), intent(in), value :: nmemb             !! Size of the response chunk.
         type(c_ptr),            intent(in), value :: data              !! C pointer to argument passed by caller.
         integer(kind=c_size_t)                    :: response_callback !! Function return value.
-        character(len=:), allocatable             :: response          !! Response string.
+        type(response_type), pointer              :: response          !! Stores response.
+        character(len=:), allocatable             :: tmp
+        integer(kind=8)                           :: i, j
 
         response_callback = int(0, kind=c_size_t)
 
         if (.not. c_associated(ptr)) return
+        if (.not. c_associated(data)) return
 
-        ! Convert C char pointer to Fortran string.
-        allocate (character(len=nmemb) :: response)
-        call c_f_string_ptr(ptr, response)
+        allocate (character(len=nmemb) :: tmp)
+        call c_f_string_ptr(ptr, tmp)
+        call c_f_pointer(data, response)
 
-        ! Print HTTP response to stdout.
-        write (*, '(a)', advance='no') response
-        deallocate (response)
+        if (response%size == 0) then
+            response%content = tmp
+        else
+            i = response%size + 1
+            j = i + nmemb
 
+            if (i > MAX_SIZE) return
+            if (j > MAX_SIZE) j = MAX_SIZE
+
+            response%content(i:j) = tmp
+        end if
+
+        response%size = response%size + nmemb
+
+        deallocate (tmp)
         response_callback = nmemb
     end function response_callback
 
@@ -51,32 +71,34 @@ contains
 
         if (.not. c_associated(c_string)) then
             f_string = ' '
-        else
-            call c_f_pointer(c_string, char_ptrs, [ huge(0) ])
-
-            i = 1
-
-            do while (char_ptrs(i) /= c_null_char .and. i <= len(f_string))
-                f_string(i:i) = char_ptrs(i)
-                i = i + 1
-            end do
-
-            if (i < len(f_string)) &
-                f_string(i:) = ' '
+            return
         end if
+
+        call c_f_pointer(c_string, char_ptrs, [ huge(0) ])
+        i = 1
+
+        do while (char_ptrs(i) /= c_null_char .and. i <= len(f_string))
+            f_string(i:i) = char_ptrs(i)
+            i = i + 1
+        end do
+
+        if (i < len(f_string)) f_string(i:) = ' '
     end subroutine c_f_string_ptr
 end module callback
 
 program main
-    use, intrinsic :: iso_c_binding, only: c_associated, c_funloc, c_null_char, c_null_ptr, c_ptr
+    use, intrinsic :: iso_c_binding, only: c_associated, c_funloc, c_loc, c_null_char, &
+                                           c_null_ptr, c_ptr
     use :: curl
     use :: callback
     implicit none
 
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
-    character(len=*), parameter :: DEFAULT_URL      = 'http://info.cern.ch/hypertext/WWW/TheProject.html'
+    character(len=*), parameter :: DEFAULT_URL      = 'http://worldtimeapi.org/api/timezone/Europe/London.txt'
+!    character(len=*), parameter :: DEFAULT_URL      = 'https://de.wikipedia.org/'
     type(c_ptr)                 :: curl_ptr
     integer                     :: rc
+    type(response_type), target :: response
 
     curl_ptr = curl_easy_init()
 
@@ -92,7 +114,7 @@ program main
     rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         int( 1, kind=8))
     rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT,   int(10, kind=8))
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_null_ptr)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_loc(response))
 
     ! Send request.
     if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
@@ -100,4 +122,7 @@ program main
     end if
 
     call curl_easy_cleanup(curl_ptr)
+
+    ! Output response.
+    print '(a)', trim(response%content)
 end program main

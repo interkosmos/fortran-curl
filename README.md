@@ -2,7 +2,7 @@
 A collection of ISO C binding interfaces to
 [libcurl](https://curl.haxx.se/libcurl/) for Fortran 2008. At the moment, this
 project is just a proof of concept. Compilation has been tested with GNU
-Fortran 9 and cURL 7.69.
+Fortran 9 and cURL 7.70.0_1.
 
 ## Dependencies
 Install cURL with development headers. On FreeBSD, run:
@@ -37,6 +37,7 @@ $ make PREFIX=/usr
 Examples are provided in directory `examples/`:
 
 * **http** makes an HTTP GET request.
+* **smtp** sends an e-mail via SMTP (SSL).
 
 Build an example with:
 
@@ -45,13 +46,15 @@ $ make <name>
 ```
 
 ## Coverage
-| C Function Name     | Fortran Interface Name                  | Bound |
-|---------------------|-----------------------------------------|-------|
-| `curl_easy_init`    | `curl_easy_init`                        | ✓     |
-| `curl_easy_perform` | `curl_easy_perform`                     | ✓     |
-| `curl_easy_cleanup` | `curl_easy_cleanup`                     | ✓     |
-| `curl_easy_setopt`  | `curl_easy_setopt`, `curl_easy_setopt_` | ✓     |
-| `curl_version_info` | `curl_version_info`                     | ✓     |
+| C Function Name       | Fortran Interface Name                  | Bound |
+|-----------------------|-----------------------------------------|-------|
+| `curl_easy_init`      | `curl_easy_init`                        | ✓     |
+| `curl_easy_perform`   | `curl_easy_perform`                     | ✓     |
+| `curl_easy_cleanup`   | `curl_easy_cleanup`                     | ✓     |
+| `curl_easy_setopt`    | `curl_easy_setopt`, `curl_easy_setopt_` | ✓     |
+| `curl_slist_append`   | `curl_slist_append`                     | ✓     |
+| `curl_slist_free_all` | `curl_slist_free_all`                   | ✓     |
+| `curl_version_info`   | `curl_version_info`                     | ✓     |
 
 | C Constant Name     | Fortran Interface Name | Bound |
 |---------------------|------------------------|-------|
