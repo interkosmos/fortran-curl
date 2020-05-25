@@ -1,7 +1,9 @@
 ! smtp.f90
 !
 ! Example that shows how to send e-mails via SMTP with SSL encryption using
-! libcurl.
+! libcurl. Based on the following C implementation:
+!
+!     https://curl.haxx.se/libcurl/c/smtp-ssl.html
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
@@ -92,7 +94,7 @@ program main
     integer                   :: rc
 
     allocate (upload%payload(8))
-    upload%payload(1) = 'Date: Sun, 24 Mai 2020 17:15:29 +0200' // CRLF ! The date and time have to be updated!
+    upload%payload(1) = 'Date: ' // rfc2822() // CRLF
     upload%payload(2) = 'To: ' // TO // CRLF
     upload%payload(3) = 'From: ' // FROM // CRLF
     upload%payload(4) = 'Cc: ' // CC // CRLF
@@ -130,4 +132,26 @@ program main
         call curl_slist_free_all(list_ptr)
         call curl_easy_cleanup(curl_ptr)
     end if
+contains
+    function rfc2822()
+        ! Returns current time and date in RFC 2822 format:
+        !
+        !     https://www.ietf.org/rfc/rfc2822.txt
+        !
+        ! Example: `Thu, 01 Sep 2016 10:11:12 -0500`.
+        integer,          parameter :: t(12)      = [ 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 ]
+        character(len=3), parameter :: days(7)    = [ 'Sun', 'Mon', 'Thu', 'Wed', 'Thu', 'Fri', 'Sat' ]
+        character(len=3), parameter :: months(12) = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', &
+                                                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+        character(len=*), parameter :: dt_fmt     =  '(a, ", ", i0.2, " ", a, " ", i4, " ", ' // &
+                                                     'i0.2, ":", i0.2, ":", i0.2, " ", a)'
+        character(len=31) :: rfc2822
+        character(len=5)  :: z
+        integer(kind=8)   :: dt(8), w
+
+        call date_and_time(zone=z, values=dt)
+        w = 1 + modulo(dt(1) + int((dt(1) - 1) / 4) - int((dt(1) - 1) / 100) + int((dt(1) - 1) / 400), &
+                       int(7, kind=8))
+        write (rfc2822, dt_fmt) days(w), dt(3), months(dt(2)), dt(1), dt(5), dt(6), dt(7), z
+    end function rfc2822
 end program main
