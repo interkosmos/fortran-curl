@@ -87,15 +87,13 @@ contains
 end module callback
 
 program main
-    use, intrinsic :: iso_c_binding, only: c_associated, c_funloc, c_loc, c_null_char, &
-                                           c_null_ptr, c_ptr
+    use, intrinsic :: iso_c_binding
     use :: curl
     use :: callback
     implicit none
 
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
     character(len=*), parameter :: DEFAULT_URL      = 'http://worldtimeapi.org/api/timezone/Europe/London.txt'
-!    character(len=*), parameter :: DEFAULT_URL      = 'https://de.wikipedia.org/'
     type(c_ptr)                 :: curl_ptr
     integer                     :: rc
     type(response_type), target :: response

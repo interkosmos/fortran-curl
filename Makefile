@@ -12,9 +12,11 @@ LDFLAGS = -I$(PREFIX)/include/ -L$(PREFIX)/lib/
 LDLIBS  = -lcurl
 
 HTTP    = http
+IMAP    = imap
 SMTP    = smtp
+VERSION = version
 
-.PHONY: all clean http smtp
+.PHONY: all clean http imap smtp version
 
 all:
 	$(CC) $(CFLAGS) -c src/curlv.c
@@ -23,8 +25,19 @@ all:
 http: all
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(HTTP) examples/http/http.f90 curl.o curlv.o $(LDLIBS)
 
+imap: all
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $(IMAP) examples/imap/imap.f90 curl.o curlv.o $(LDLIBS)
+
 smtp: all
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(SMTP) examples/smtp/smtp.f90 curl.o curlv.o $(LDLIBS)
 
+version: all
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $(VERSION) examples/version/version.f90 curl.o curlv.o $(LDLIBS)
+
 clean:
-	rm *.mod *.o $(HTTP) $(SMTP)
+	if [ `ls -1 *.mod 2>/dev/null | wc -l` -gt 0 ]; then rm *.mod; fi
+	if [ `ls -1 *.o 2>/dev/null | wc -l` -gt 0 ]; then rm *.o; fi
+	if [ -e $(HTTP) ]; then rm $(HTTP); fi
+	if [ -e $(IMAP) ]; then rm $(IMAP); fi
+	if [ -e $(SMTP) ]; then rm $(SMTP); fi
+	if [ -e $(VERSION) ]; then rm $(VERSION); fi

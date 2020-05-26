@@ -37,7 +37,9 @@ $ make PREFIX=/usr
 Examples are provided in directory `examples/`:
 
 * **http** makes an HTTP GET request.
+* **imap** examines the `INBOX` of an IMAP mailbox (SSL).
 * **smtp** sends an e-mail via SMTP (SSL).
+* **version** outputs cURL version information.
 
 Build an example with:
 

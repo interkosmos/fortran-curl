@@ -1,6 +1,6 @@
 ! smtp.f90
 !
-! Example that shows how to send e-mails via SMTP with SSL encryption using
+! Example that shows how to send an e-mail via SMTP with SSL encryption using
 ! libcurl. Based on the following C implementation:
 !
 !     https://curl.haxx.se/libcurl/c/smtp-ssl.html
@@ -16,7 +16,7 @@ module callback
     ! Client data for `upload_callback()`.
     type, public :: upload_type
         character(len=512), allocatable :: payload(:)
-        integer            :: index
+        integer                         :: index
     end type upload_type
 
     interface
@@ -124,7 +124,7 @@ program main
         rc = curl_easy_setopt(curl_ptr, CURLOPT_UPLOAD,         int(1, kind=8))
         rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        int(1, kind=8))
 
-        ! Send request.
+        ! Send e-mail.
         if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
             print '(a)', 'Error: curl_easy_perform() failed'
         end if
@@ -139,7 +139,6 @@ contains
         !     https://www.ietf.org/rfc/rfc2822.txt
         !
         ! Example: `Thu, 01 Sep 2016 10:11:12 -0500`.
-        integer,          parameter :: t(12)      = [ 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 ]
         character(len=3), parameter :: days(7)    = [ 'Sun', 'Mon', 'Thu', 'Wed', 'Thu', 'Fri', 'Sat' ]
         character(len=3), parameter :: months(12) = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', &
                                                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
