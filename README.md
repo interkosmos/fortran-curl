@@ -36,6 +36,7 @@ $ make PREFIX=/usr
 ## Examples
 Examples are provided in directory `examples/`:
 
+* **gopher** prints the contents of a remote Gopher map file.
 * **http** makes an HTTP GET request.
 * **imap** examines the `INBOX` of an IMAP mailbox (SSL).
 * **smtp** sends an e-mail via SMTP (SSL).

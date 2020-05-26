@@ -15,6 +15,8 @@ module callback
 contains
     ! static size_t callback(void *ptr, size_t size, size_t nmemb, void *data)
     function write_callback(ptr, sze, nmemb, data) bind(c)
+        !! Callback function for `CURLOPT_WRITEFUNCTION` that simply outputs
+        !! the IMAP messages.
         type(c_ptr),            intent(in), value :: ptr
         integer(kind=c_size_t), intent(in), value :: sze
         integer(kind=c_size_t), intent(in), value :: nmemb
