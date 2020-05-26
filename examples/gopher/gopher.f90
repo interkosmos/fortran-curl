@@ -181,11 +181,10 @@ program main
 
     character(len=*), parameter         :: DEFAULT_PROTOCOL = 'gopher'
     character(len=*), parameter         :: DEFAULT_URL      = 'gopher://gopher.floodgap.com/'
-    integer                             :: rc
+    integer                             :: i, rc
     type(c_ptr)                         :: curl_ptr
     type(gopher_item_type), allocatable :: items(:)
     type(response_type), target         :: response
-    integer                             :: i
 
     curl_ptr = curl_easy_init()
 
