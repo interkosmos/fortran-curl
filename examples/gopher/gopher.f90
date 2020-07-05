@@ -167,7 +167,7 @@ contains
 
             n = n + 1
             array(n) = str(pos1:pos1 + pos2 - 2)
-            pos1 = pos2 + pos1
+            pos1 = pos1 + pos2
         end do
     end subroutine split
 end module gopher
@@ -198,18 +198,19 @@ program main
         ! Send request.
         if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
             print '(a)', 'Error: curl_easy_perform() failed'
+        else
+            call read_gopher_map(trim(response%content), items)
+
+            ! Print Gopher map to screen.
+            if (allocated(items)) then
+                do i = 1, size(items)
+                    print '(a)', items(i)%label
+                end do
+            end if
+
+            deallocate (items)
         end if
     end if
 
     call curl_easy_cleanup(curl_ptr)
-    call read_gopher_map(trim(response%content), items)
-
-    ! Print Gopher map to screen.
-    if (allocated(items)) then
-        do i = 1, size(items)
-            print '(a)', items(i)%label
-        end do
-    end if
-
-    deallocate (items)
 end program main

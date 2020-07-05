@@ -43,7 +43,6 @@ contains
     subroutine c_f_string_ptr(c_string, f_string)
         !! Utility routine that copies a C string, passed as a C pointer, to a
         !! Fortran string.
-        use, intrinsic :: iso_c_binding, only: c_associated, c_char, c_f_pointer, c_null_char, c_ptr
         type(c_ptr),      intent(in)           :: c_string
         character(len=*), intent(out)          :: f_string
         character(kind=c_char, len=1), pointer :: char_ptrs(:)

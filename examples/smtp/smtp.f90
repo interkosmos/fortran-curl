@@ -80,7 +80,7 @@ program main
     implicit none
 
     character(len=*), parameter :: CRLF     = achar(13) // achar(10) // c_null_char
-    character(len=*), parameter :: FROM     = '<mail@example.com>'      ! Recipient of mail.
+    character(len=*), parameter :: FROM     = '<mail@example.com>'      ! Sender of mail.
     character(len=*), parameter :: TO       = '<to@example.com>'        ! Mail receiver.
     character(len=*), parameter :: CC       = '<cc@example.com>'        ! CC mail receiver.
     character(len=*), parameter :: SUBJECT  = 'A message from Fortran'  ! Mail subject.
@@ -142,8 +142,8 @@ contains
         character(len=3), parameter :: days(7)    = [ 'Sun', 'Mon', 'Thu', 'Wed', 'Thu', 'Fri', 'Sat' ]
         character(len=3), parameter :: months(12) = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', &
                                                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
-        character(len=*), parameter :: dt_fmt     =  '(a, ", ", i0.2, " ", a, " ", i4, " ", ' // &
-                                                     'i0.2, ":", i0.2, ":", i0.2, " ", a)'
+        character(len=*), parameter :: dt_fmt     = '(a, ", ", i0.2, " ", a, " ", i4, " ", ' // &
+                                                    'i0.2, ":", i0.2, ":", i0.2, " ", a)'
         character(len=31) :: rfc2822
         character(len=5)  :: z
         integer(kind=8)   :: dt(8), w
