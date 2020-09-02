@@ -24,6 +24,7 @@ contains
         !! This callback function might be called several times by libcurl,
         !! passing in more chunks of the response.
         use, intrinsic :: iso_c_binding, only: c_associated, c_f_pointer, c_ptr, c_size_t
+        use :: curl, only: c_f_str_ptr
         type(c_ptr),            intent(in), value :: ptr               !! C pointer to a chunk of the response.
         integer(kind=c_size_t), intent(in), value :: size              !! Always 1.
         integer(kind=c_size_t), intent(in), value :: nmemb             !! Size of the response chunk.
@@ -39,7 +40,7 @@ contains
         if (.not. c_associated(data)) return
 
         allocate (character(len=nmemb) :: tmp)
-        call c_f_string_ptr(ptr, tmp)
+        call c_f_str_ptr(ptr, tmp)
         call c_f_pointer(data, response)
 
         if (response%size == 0) then
@@ -59,31 +60,6 @@ contains
         deallocate (tmp)
         response_callback = nmemb
     end function response_callback
-
-    subroutine c_f_string_ptr(c_string, f_string)
-        !! Utility routine that copies a C string, passed as a C pointer, to a
-        !! Fortran string.
-        use, intrinsic :: iso_c_binding, only: c_associated, c_char, c_f_pointer, c_null_char, c_ptr
-        type(c_ptr),      intent(in)           :: c_string
-        character(len=*), intent(out)          :: f_string
-        character(kind=c_char, len=1), pointer :: char_ptrs(:)
-        integer                                :: i
-
-        if (.not. c_associated(c_string)) then
-            f_string = ' '
-            return
-        end if
-
-        call c_f_pointer(c_string, char_ptrs, [ huge(0) ])
-        i = 1
-
-        do while (char_ptrs(i) /= c_null_char .and. i <= len(f_string))
-            f_string(i:i) = char_ptrs(i)
-            i = i + 1
-        end do
-
-        if (i < len(f_string)) f_string(i:) = ' '
-    end subroutine c_f_string_ptr
 end module callback
 
 program main

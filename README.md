@@ -2,7 +2,7 @@
 A collection of ISO C binding interfaces to
 [libcurl](https://curl.haxx.se/libcurl/) for Fortran 2008. At the moment, this
 project is just a proof of concept. Compilation has been tested with GNU
-Fortran 9 and cURL 7.70.0_1.
+Fortran 10 and cURL 7.72.0.
 
 ## Dependencies
 Install cURL with development headers. On FreeBSD, run:
@@ -20,18 +20,20 @@ $ cd fortran-curl/
 $ make
 ```
 
-You can override the default compiler by passing the `FC` argument, for
-example:
+You can override the default compiler by passing the `FC` argument, for example:
 
 ```
-$ make FC=gfortran9
+$ make FC=gfortran10
 ```
 
-On Linux, you may want to change to prefix to `/usr`:
+On Linux, you may want to change the prefix to `/usr`:
 
 ```
 $ make PREFIX=/usr
 ```
+
+Link the compiled static library `libfortran-curl.a` with your Fortran
+application.
 
 ## Examples
 Examples are provided in directory `examples/`:
