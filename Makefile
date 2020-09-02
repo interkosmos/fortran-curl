@@ -29,19 +29,19 @@ $(TARGET):
 	$(FC) $(FFLAGS) -c src/curl.f90
 	$(AR) $(ARFLAGS) $(TARGET) curl.o curlv.o
 
-gopher: all
+gopher: $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(GOPHER) examples/gopher/gopher.f90 $(TARGET) $(LDLIBS)
 
-http: all
+http: $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(HTTP) examples/http/http.f90 $(TARGET) $(LDLIBS)
 
-imap: all
+imap: $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(IMAP) examples/imap/imap.f90 $(TARGET) $(LDLIBS)
 
-smtp: all
+smtp: $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(SMTP) examples/smtp/smtp.f90 $(TARGET) $(LDLIBS)
 
-version: all
+version: $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(VERSION) examples/version/version.f90 $(TARGET) $(LDLIBS)
 
 clean:
