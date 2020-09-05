@@ -32,12 +32,12 @@ On Linux, you may want to change the prefix to `/usr`:
 $ make PREFIX=/usr
 ```
 
-Link the compiled static library `libfortran-curl.a` with your Fortran
-application.
+Link your Fortran application with `libfortran-curl.a -lcurl`.
 
 ## Examples
 Examples are provided in directory `examples/`:
 
+* **download** fetches a remote file.
 * **gopher** prints the contents of a remote Gopher map file.
 * **http** makes an HTTP GET request.
 * **imap** examines the `INBOX` of an IMAP mailbox (SSL).

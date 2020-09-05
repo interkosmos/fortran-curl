@@ -1,6 +1,6 @@
-! http.f90
+! download.f90
 !
-! Basic HTTP client in Fortran, using libcurl.
+! Downloads a remote file, using libcurl.
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
@@ -9,18 +9,12 @@ module callback
     implicit none
     private
     public :: response_callback
-
-    integer(kind=8), parameter, public :: MAX_SIZE = 4096
-
-    type, public :: response_type
-        character(len=MAX_SIZE) :: content
-        integer(kind=8)         :: size
-    end type response_type
 contains
     ! static size_t callback(char *ptr, size_t size, size_t nmemb, void *data)
     function response_callback(ptr, size, nmemb, data) bind(c)
         !! Callback function for `CURLOPT_WRITEFUNCTION` that appends the
-        !! response chunk `ptr` to the given `data` of type `response_type`.
+        !! response chunk in `ptr` to the given file with file name in pointer
+        !! `data`.
         !!
         !! This callback function might be called several times by libcurl,
         !! passing in more chunks of the response.
@@ -30,34 +24,34 @@ contains
         integer(kind=c_size_t), intent(in), value :: nmemb             !! Size of the response chunk.
         type(c_ptr),            intent(in), value :: data              !! C pointer to argument passed by caller.
         integer(kind=c_size_t)                    :: response_callback !! Function return value.
-        type(response_type), pointer              :: response          !! Stores response.
-        character(len=:), allocatable             :: tmp
-        integer(kind=8)                           :: i, j
+        character(len=32), pointer                :: file_name         !! File to store response to.
+        character(len=:), allocatable             :: chunk             !! Response chunk.
+        integer(kind=8)                           :: fu, rc
 
         response_callback = int(0, kind=c_size_t)
 
         if (.not. c_associated(ptr)) return
         if (.not. c_associated(data)) return
 
-        allocate (character(len=nmemb) :: tmp)
-        call c_f_str_ptr(ptr, tmp)
-        call c_f_pointer(data, response)
+        call c_f_pointer(data, file_name)
+        if (len_trim(file_name) == 0) return
 
-        if (response%size == 0) then
-            response%content = tmp
-        else
-            i = response%size + 1
-            j = i + nmemb
+        allocate (character(len=nmemb) :: chunk)
+        call c_f_str_ptr(ptr, chunk)
 
-            if (i > MAX_SIZE) return
-            if (j > MAX_SIZE) j = MAX_SIZE
+        open (access   = 'stream', &
+              action   = 'write', &
+              file     = trim(file_name), &
+              form     = 'unformatted', &
+              iostat   = rc, &
+              newunit  = fu, &
+              position = 'append', &
+              status   = 'unknown')
+        if (rc /= 0) return
+        write (fu) chunk
+        close (fu)
 
-            response%content(i:j) = tmp
-        end if
-
-        response%size = response%size + nmemb
-
-        deallocate (tmp)
+        deallocate (chunk)
         response_callback = nmemb
     end function response_callback
 end module callback
@@ -70,9 +64,9 @@ program main
 
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
     character(len=*), parameter :: DEFAULT_URL      = 'http://worldtimeapi.org/api/timezone/Europe/London.txt'
+    character(len=32), target   :: file_name        = 'data.txt'
     type(c_ptr)                 :: curl_ptr
     integer                     :: rc
-    type(response_type), target :: response
 
     curl_ptr = curl_easy_init()
 
@@ -88,15 +82,16 @@ program main
     rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         int( 1, kind=8))
     rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT,   int(10, kind=8))
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_loc(response))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_loc(file_name))
+
+    print '(5a)', 'Saving "', DEFAULT_URL, '" to file "', trim(file_name), '" ...'
 
     ! Send request.
     if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
         print '(a)', 'Error: curl_easy_perform() failed'
+    else
+        print '(a)', 'Done.'
     end if
 
     call curl_easy_cleanup(curl_ptr)
-
-    ! Output response.
-    print '(a)', trim(response%content)
 end program main
