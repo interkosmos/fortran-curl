@@ -65,8 +65,16 @@ program main
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
     character(len=*), parameter :: DEFAULT_URL      = 'http://worldtimeapi.org/api/timezone/Europe/London.txt'
     character(len=32), target   :: file_name        = 'data.txt'
-    type(c_ptr)                 :: curl_ptr
     integer                     :: rc
+    logical                     :: file_exists
+    type(c_ptr)                 :: curl_ptr
+
+    inquire (file=trim(file_name), exist=file_exists)
+
+    if (file_exists) then
+        print '(3a)', 'Local file "', trim(file_name), '" already exists'
+        stop
+    end if
 
     curl_ptr = curl_easy_init()
 
