@@ -1,0 +1,40 @@
+name = "fortran-curl"
+license = "ISC"
+author = "Philipp Engel"
+maintainer = "@interkosmos"
+copyright = "Copyright (c) 2020, Philipp Engel"
+description = "Fortran 2008 ISO C binding interfaces to libcurl"
+keywords = ["curl", "libcurl", "http", "gopher", "smtp", "imap"]
+
+[build]
+link = "curl"
+
+[[example]]
+name = "download"
+source-dir = "examples/download"
+main = "download.f90"
+
+[[example]]
+name = "gopher"
+source-dir = "examples/gopher"
+main = "gopher.f90"
+
+[[example]]
+name = "http"
+source-dir = "examples/http"
+main = "http.f90"
+
+[[example]]
+name = "imap"
+source-dir = "examples/imap"
+main = "imap.f90"
+
+[[example]]
+name = "smtp"
+source-dir = "examples/smtp"
+main = "smtp.f90"
+
+[[example]]
+name = "version"
+source-dir = "examples/version"
+main = "version.f90"

@@ -7,7 +7,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback
+module callback_smtp
     use, intrinsic :: iso_c_binding
     implicit none
     private
@@ -71,12 +71,12 @@ contains
         ! Return the copied bytes.
         upload_callback = n
     end function upload_callback
-end module callback
+end module callback_smtp
 
 program main
     use, intrinsic :: iso_c_binding
     use :: curl
-    use :: callback
+    use :: callback_smtp
     implicit none
 
     character(len=*), parameter :: CRLF     = achar(13) // achar(10) // c_null_char

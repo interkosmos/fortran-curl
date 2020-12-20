@@ -4,7 +4,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback
+module callback_download
     use :: curl, only: c_f_str_ptr
     implicit none
     private
@@ -54,12 +54,12 @@ contains
         deallocate (chunk)
         response_callback = nmemb
     end function response_callback
-end module callback
+end module callback_download
 
 program main
     use, intrinsic :: iso_c_binding
     use :: curl
-    use :: callback
+    use :: callback_download
     implicit none
 
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
