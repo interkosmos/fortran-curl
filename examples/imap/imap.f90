@@ -7,7 +7,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback
+module callback_imap
     use, intrinsic :: iso_c_binding
     use :: curl, only: c_f_str_ptr
     implicit none
@@ -40,12 +40,12 @@ contains
 
         write_callback = nmemb
     end function write_callback
-end module callback
+end module callback_imap
 
 program main
     use, intrinsic :: iso_c_binding
     use :: curl
-    use :: callback
+    use :: callback_imap
     implicit none
 
     character(len=*), parameter :: URL      = 'imaps://example.com' ! IMAP server (SSL).

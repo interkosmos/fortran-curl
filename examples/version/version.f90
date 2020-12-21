@@ -7,7 +7,6 @@
 program main
     use, intrinsic :: iso_c_binding
     use :: curl
-    use :: callback
     implicit none
     character(len=64)           :: host, vcurl, vssl
     type(curl_version), pointer :: data

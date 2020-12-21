@@ -65,5 +65,22 @@ $ make <name>
 |---------------------|------------------------|-------|
 | `CURLVERSION_NOW`   | `curl_version_now`     | ✓     |
 
+## Support for fpm
+This projects supports the Fortran package manager ([``fpm``](https://github.com/fortran-lang/fpm)).
+To build the project with ``fpm`` run
+
+```
+fpm build
+```
+
+The example applications are available with the ``fpm run --example`` command.
+
+You can use ``fortran-curl`` in your ``fpm`` projects with
+
+```toml
+[dependencies]
+fortran-curl.git = "https://interkosmos/fortran-curl.git"
+```
+
 ## Licence
 ISC
