@@ -4,7 +4,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback
+module callback_gopher
     use :: curl, only: c_f_str_ptr
     implicit none
     private
@@ -45,7 +45,7 @@ contains
         deallocate (tmp)
         response_callback = nmemb
     end function response_callback
-end module callback
+end module callback_gopher
 
 module gopher
     implicit none
@@ -149,8 +149,8 @@ end module gopher
 
 program main
     use, intrinsic :: iso_c_binding
+    use :: callback_gopher
     use :: curl
-    use :: callback
     use :: gopher
     implicit none
 
