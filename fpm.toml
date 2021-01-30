@@ -39,3 +39,11 @@ main = "smtp.f90"
 name = "version"
 source-dir = "examples/version"
 main = "version.f90"
+
+[[ executable ]]
+name = "dict"
+source-dir = "app/dict"
+main = "dict.f90"
+link = "curl"
+[executable.dependencies]
+M_CLI2   = { git = "https://github.com/urbanjost/M_CLI2.git" }
