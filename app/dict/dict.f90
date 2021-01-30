@@ -148,7 +148,7 @@ subroutine setup()
 help_text=[ CHARACTER(LEN=128) :: &
 'NAME                                                                            ',&
 '   dict(1sh) - Get definition of a word using DICT Protocol and libcurl(1)      ',&
-'   (LICENSE:PD)                                                                 ',&
+'   (LICENSE:ISC)                                                                ',&
 '                                                                                ',&
 'SYNOPSIS                                                                        ',&
 '   dict(1) - [word(s) [--like [strategy]] [--server SERVER]]|                   ',&
@@ -211,74 +211,6 @@ help_text=[ CHARACTER(LEN=128) :: &
 'SEE ALSO                                                                        ',&
 '   look(1), spell(1), aspell(1), ispell(1), wnb(1WordNet)                       ',&
 '']
-!>
-!!##NAME
-!!    dict(1sh) - Get definition of a word using DICT Protocol and libcurl(1)
-!!    (LICENSE:PD)
-!!
-!!##SYNOPSIS
-!!
-!!    dict(1) - [word(s) [--like [strategy]] [--server SERVER]]|
-!!              -url FULL_URL|
-!!              [--help|--version]
-!!
-!!##DESCRIPTION
-!!    dict(1) by default looks up the definitions of the given words in
-!!    the dictionaries at dict://dict.org/ on port 2628.
-!!
-!!    You can also search for similar words, words by substring or regular
-!!    expression, as substrings ...
-!!
-!!    Note there are many dictionaries hosted on servers around the WWW.
-!!
-!!    dict(1) uses the DICT Protocol as described in RFC2229 and the
-!!    libcurl(3c) library via a clone of the fortran-libcurl(3f) interface.
-!!
-!!    With no options a table of the available dictionaries is produced.
-!!
-!!##OPTIONS
-!!     word(s)       word to find and display the definition of. Can be of
-!!                   form word:dictionary. The default dictionary is "all".
-!!     --like strategy   look for words like the word specified instead of
-!!                       showing definitions, using an optional search
-!!                       strategy. defaults to trying to guess the spelling
-!!                       of the word(s) assuming it is misspelled. If no
-!!                       words are present defaults to showing available
-!!                       strategies.
-!!     --server      DICT server name. Default is "www.dict.org".
-!!     --url         directly specify url:
-!!
-!!                      dict://HOST:PORT/m:MATCH_STRING:DATABASE_NAME:STRATEGY
-!!                      dict://HOST:PORT/d:WORD:DATABASE_NAME
-!!     --help,-h     display this help and exit
-!!     --version,-v  output version information and exit
-!!
-!!##EXAMPLE
-!!
-!!   Sample usage:
-!!
-!!
-!!       > dict              # list dictionary names and descriptions
-!!       > dict bash         # search all the dictionaries for specified word
-!!       > dict bash:        # use just the default dictionary
-!!       > # Find the meaning of "bash" in the "computer terms"
-!!       > # dictionary (search in the foldoc dictionary) :
-!!       > dict bash:foldoc  # just use dictionary "folddoc"
-!!       > dict gold:elements     # just use the "elements" dictionary
-!!       > dict slovakia:world02
-!!       >
-!!       > dict bash --like  # look for words like the one specified
-!!       > dict 'q[aeiou]' --like RE # use RE (Regular Expression)
-!!       > dict urban --like substring
-!!       >
-!!       > # direct use of RFC 2229 syntax
-!!       > dict --url dict://www.dict.org/help  # directly specify URL
-!!       > dict --url 'dict://www.dict.org/show strat'
-!!       > dict --url dict://www.dict.org/m:'urban'::regexp
-!!
-!!##SEE ALSO
-!!    look(1), spell(1), aspell(1), ispell(1), wnb(1WordNet)
-
 version_text=[ CHARACTER(LEN=128) :: &
 '@(#)PRODUCT:         GPF (General Purpose Fortran) utilities and examples>      ',&
 '@(#)PROGRAM:         dict(1)>                                                   ',&
@@ -287,7 +219,7 @@ version_text=[ CHARACTER(LEN=128) :: &
 '@(#)AUTHOR:          John S. Urban>                                             ',&
 '@(#)REPORTING BUGS:  urbanjost@comcast.net>                                     ',&
 '@(#)HOME PAGE:       http://www.urbanjost.altervista.org/index.html>            ',&
-'@(#)LICENSE:         Public Domain. This is free software: you are free to change and redistribute it.>',&
+'@(#)LICENSE:         ISC. This is free software: you are free to change and redistribute it.>',&
 '@(#)                 There is NO WARRANTY, to the extent permitted by law.>     ',&
 '']
 end subroutine setup
