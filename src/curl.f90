@@ -15,7 +15,8 @@ module curl
     public :: curl_easy_perform
     public :: curl_easy_cleanup
     public :: curl_easy_setopt
-    public :: curl_easy_setopt_
+    public :: curl_easy_setopt_c_ptr
+    public :: curl_easy_setopt_c_funptr
     public :: curl_slist_append
     public :: curl_slist_free_all
     public :: curl_version_info
@@ -404,13 +405,22 @@ module curl
         end function curl_easy_perform
 
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_(curl, option, parameter) bind(c, name='curl_easy_setopt')
+        function curl_easy_setopt_c_ptr(curl, option, parameter) bind(c, name='curl_easy_setopt')
             import :: c_int, c_ptr
             type(c_ptr),            intent(in), value :: curl
             integer(kind=c_int),    intent(in), value :: option
             type(c_ptr),            intent(in), value :: parameter
-            integer(kind=c_int)                       :: curl_easy_setopt_
-        end function curl_easy_setopt_
+            integer(kind=c_int)                       :: curl_easy_setopt_c_ptr
+        end function curl_easy_setopt_c_ptr
+
+        ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
+        function curl_easy_setopt_c_funptr(curl, option, parameter) bind(c, name='curl_easy_setopt')
+            import :: c_funptr, c_int, c_ptr
+            type(c_ptr),            intent(in), value :: curl
+            integer(kind=c_int),    intent(in), value :: option
+            type(c_funptr),         intent(in), value :: parameter
+            integer(kind=c_int)                       :: curl_easy_setopt_c_funptr
+        end function curl_easy_setopt_c_funptr
 
         ! struct curl_slist *curl_slist_append(struct curl_slist *list, const char *string)
         function curl_slist_append(list, string) bind(c, name='curl_slist_append')
@@ -470,7 +480,7 @@ contains
         character(len=*), target, intent(in) :: parameter
         integer                              :: curl_easy_setopt_char
 
-        curl_easy_setopt_char = curl_easy_setopt_(curl, option, c_loc(parameter))
+        curl_easy_setopt_char = curl_easy_setopt_c_ptr(curl, option, c_loc(parameter))
     end function curl_easy_setopt_char
 
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
@@ -480,7 +490,7 @@ contains
         type(c_funptr), intent(in) :: parameter
         integer                    :: curl_easy_setopt_fptr
 
-        curl_easy_setopt_fptr = curl_easy_setopt_(curl, option, parameter)
+        curl_easy_setopt_fptr = curl_easy_setopt_c_funptr(curl, option, parameter)
     end function curl_easy_setopt_fptr
 
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
@@ -490,7 +500,7 @@ contains
         integer(kind=4), target, intent(in) :: parameter
         integer                             :: curl_easy_setopt_int
 
-        curl_easy_setopt_int = curl_easy_setopt_(curl, option, c_loc(parameter))
+        curl_easy_setopt_int = curl_easy_setopt_c_ptr(curl, option, c_loc(parameter))
     end function curl_easy_setopt_int
 
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
@@ -500,7 +510,7 @@ contains
         integer(kind=8), target, intent(in) :: parameter
         integer                             :: curl_easy_setopt_long
 
-        curl_easy_setopt_long = curl_easy_setopt_(curl, option, c_loc(parameter))
+        curl_easy_setopt_long = curl_easy_setopt_c_ptr(curl, option, c_loc(parameter))
     end function curl_easy_setopt_long
 
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
@@ -510,7 +520,7 @@ contains
         type(c_ptr), intent(in) :: parameter
         integer                 :: curl_easy_setopt_ptr
 
-        curl_easy_setopt_ptr = curl_easy_setopt_(curl, option, parameter)
+        curl_easy_setopt_ptr = curl_easy_setopt_c_ptr(curl, option, parameter)
     end function curl_easy_setopt_ptr
 
     ! curl_version_info_data *curl_version_info(CURLversion age)

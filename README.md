@@ -36,6 +36,7 @@ Link your Fortran application with `libfortran-curl.a -lcurl`.
 ## Examples
 Examples are provided in directory `examples/`:
 
+* **dict** queries a [DICT](https://en.wikipedia.org/wiki/DICT) server on TCP port 2628.
 * **download** fetches a remote file.
 * **gopher** prints the contents of a remote Gopher map file.
 * **http** makes an HTTP GET request.
@@ -50,15 +51,15 @@ $ make <name>
 ```
 
 ## Coverage
-| C Function Name       | Fortran Interface Name                  | Bound |
-|-----------------------|-----------------------------------------|-------|
-| `curl_easy_init`      | `curl_easy_init`                        | ✓     |
-| `curl_easy_perform`   | `curl_easy_perform`                     | ✓     |
-| `curl_easy_cleanup`   | `curl_easy_cleanup`                     | ✓     |
-| `curl_easy_setopt`    | `curl_easy_setopt`, `curl_easy_setopt_` | ✓     |
-| `curl_slist_append`   | `curl_slist_append`                     | ✓     |
-| `curl_slist_free_all` | `curl_slist_free_all`                   | ✓     |
-| `curl_version_info`   | `curl_version_info`                     | ✓     |
+| C Function Name       | Fortran Interface Name                                                    | Bound |
+|-----------------------|---------------------------------------------------------------------------|-------|
+| `curl_easy_init`      | `curl_easy_init`                                                          | ✓     |
+| `curl_easy_perform`   | `curl_easy_perform`                                                       | ✓     |
+| `curl_easy_cleanup`   | `curl_easy_cleanup`                                                       | ✓     |
+| `curl_easy_setopt`    | `curl_easy_setopt`, `curl_easy_setopt_c_ptr`, `curl_easy_setopt_c_funptr` | ✓     |
+| `curl_slist_append`   | `curl_slist_append`                                                       | ✓     |
+| `curl_slist_free_all` | `curl_slist_free_all`                                                     | ✓     |
+| `curl_version_info`   | `curl_version_info`                                                       | ✓     |
 
 | C Constant Name     | Fortran Interface Name | Bound |
 |---------------------|------------------------|-------|
