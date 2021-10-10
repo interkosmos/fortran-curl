@@ -460,6 +460,9 @@ module curl
         end function curl_version_now
     end interface
 
+    ! Fortran 2018 generic interface `curl_easy_setopt()`.
+    ! generic :: curl_easy_setopt => curl_easy_setopt_char, curl_easy_setopt_fptr, curl_easy_setopt_int, &
+    !                                curl_easy_setopt_long, curl_easy_setopt_ptr
     interface curl_easy_setopt
         ! Fortran 2008 generic interface `curl_easy_setopt()`.
         module procedure :: curl_easy_setopt_char
@@ -469,10 +472,25 @@ module curl
         module procedure :: curl_easy_setopt_ptr
     end interface
 
-    ! Fortran 2018 generic interface `curl_easy_setopt()`.
-    ! generic :: curl_easy_setopt => curl_easy_setopt_char, curl_easy_setopt_fptr, curl_easy_setopt_int, &
-    !                                curl_easy_setopt_long, curl_easy_setopt_ptr
+    interface
+        ! size_t strlen(const char *str)
+        function c_strlen(str) bind(c, name='strlen')
+            import :: c_ptr, c_size_t
+            type(c_ptr), intent(in), value :: str
+            integer(kind=c_size_t)         :: c_strlen
+        end function c_strlen
+    end interface
 contains
+    pure function copy(a)
+        character, intent(in)  :: a(:)
+        character(len=size(a)) :: copy
+        integer(kind=8)        :: i
+
+        do i = 1, size(a)
+            copy(i:i) = a(i)
+        end do
+    end function copy
+
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
     function curl_easy_setopt_char(curl, option, parameter)
         type(c_ptr),              intent(in) :: curl
@@ -542,28 +560,26 @@ contains
         allocate (curl_version_info)
     end function curl_version_info
 
-    subroutine c_f_str_ptr(c_str, f_str)
+    subroutine c_f_str_ptr(c_str, f_str, size)
         !! Utility routine that copies a C string, passed as a C pointer, to a
         !! Fortran string.
-        use, intrinsic :: iso_c_binding, only: c_associated, c_char, c_f_pointer, c_null_char, c_ptr
-        type(c_ptr),      intent(in)           :: c_str
-        character(len=*), intent(out)          :: f_str
-        character(kind=c_char, len=1), pointer :: chars(:)
-        integer                                :: i
+        type(c_ptr),                   intent(in)           :: c_str
+        character(len=:), allocatable, intent(out)          :: f_str
+        integer(kind=8),               intent(in), optional :: size
+        character(kind=c_char), pointer                     :: ptrs(:)
+        integer(kind=8)                                     :: sz
 
-        if (.not. c_associated(c_str)) then
-            f_str = ' '
-            return
+        if (.not. c_associated(c_str)) return
+
+        if (present(size)) then
+            sz = size
+        else
+            sz = c_strlen(c_str)
         end if
 
-        call c_f_pointer(c_str, chars, [ huge(0) ])
-        i = 1
-
-        do while (chars(i) /= c_null_char .and. i <= len(f_str))
-            f_str(i:i) = chars(i)
-            i = i + 1
-        end do
-
-        if (i < len(f_str)) f_str(i:) = ' '
+        if (sz <= 0) return
+        call c_f_pointer(c_str, ptrs, [ sz ])
+        allocate (character(len=sz) :: f_str)
+        f_str = copy(ptrs)
     end subroutine c_f_str_ptr
 end module curl

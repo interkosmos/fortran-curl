@@ -32,13 +32,10 @@ contains
         character(len=:), allocatable             :: response
 
         response_callback = int(0, kind=c_size_t)
-
         if (.not. c_associated(ptr)) return
 
-        allocate (character(len=nmemb) :: response)
-        call c_f_str_ptr(ptr, response)
+        call c_f_str_ptr(ptr, response, nmemb)
         write (*, '(a)', advance='no') response
-        deallocate (response)
 
         response_callback = nmemb
     end function response_callback

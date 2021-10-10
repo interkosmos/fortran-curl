@@ -35,9 +35,7 @@ contains
 
         call c_f_pointer(data, file_name)
         if (len_trim(file_name) == 0) return
-
-        allocate (character(len=nmemb) :: chunk)
-        call c_f_str_ptr(ptr, chunk)
+        call c_f_str_ptr(ptr, chunk, nmemb)
 
         open (access   = 'stream', &
               action   = 'write', &

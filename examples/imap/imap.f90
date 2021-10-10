@@ -32,12 +32,8 @@ contains
         write (*, '(a)') '---'
 
         if (.not. c_associated(ptr)) return
-
-        allocate (character(len=nmemb) :: str)
-        call c_f_str_ptr(ptr, str)
+        call c_f_str_ptr(ptr, str, nmemb)
         write (*, '(a)', advance='no') str
-        deallocate (str)
-
         write_callback = nmemb
     end function write_callback
 end module callback_imap

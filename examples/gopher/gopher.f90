@@ -33,8 +33,7 @@ contains
         if (.not. c_associated(ptr)) return
         if (.not. c_associated(data)) return
 
-        allocate (character(len=nmemb) :: tmp)
-        call c_f_str_ptr(ptr, tmp)
+        call c_f_str_ptr(ptr, tmp, nmemb)
         call c_f_pointer(data, response)
 
         if (.not. allocated(response%content)) &
@@ -64,7 +63,7 @@ module gopher
     private :: split
     public  :: read_gopher_map
 contains
-    function count_sub_string(s1, s2) result(c)
+    function count_sub_string(s1, s2) result (c)
         !! Returns the number of occurences of string `s2` in string `s1`.
         character(len=*), intent(in) :: s1
         character(len=*), intent(in) :: s2

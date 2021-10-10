@@ -39,8 +39,7 @@ contains
         if (.not. c_associated(ptr)) return
         if (.not. c_associated(data)) return
 
-        allocate (character(len=nmemb) :: tmp)
-        call c_f_str_ptr(ptr, tmp)
+        call c_f_str_ptr(ptr, tmp, nmemb)
         call c_f_pointer(data, response)
 
         if (response%size == 0) then
