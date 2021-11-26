@@ -46,10 +46,10 @@ contains
               position = 'append', &
               status   = 'unknown')
         if (rc /= 0) return
-        write (fu) chunk
+        write (fu, iostat=rc) chunk
         close (fu)
+        if (rc /= 0) return
 
-        deallocate (chunk)
         response_callback = nmemb
     end function response_callback
 end module callback_download

@@ -5,28 +5,8 @@
 ! Author:  Philipp Engel
 ! Licence: ISC
 module curl
-    use, intrinsic :: iso_c_binding, only: c_associated, c_char, c_f_pointer, c_funptr, &
-                                           c_int, c_int64_t, c_loc, c_long, c_ptr, c_size_t
+    use, intrinsic :: iso_c_binding
     implicit none
-
-    public :: c_f_str_ptr
-
-    public :: curl_easy_init
-    public :: curl_easy_perform
-    public :: curl_easy_cleanup
-    public :: curl_easy_setopt
-    public :: curl_easy_setopt_c_ptr
-    public :: curl_easy_setopt_c_funptr
-    public :: curl_slist_append
-    public :: curl_slist_free_all
-    public :: curl_version_info
-    public :: curl_version_now
-
-    private :: curl_easy_setopt_char
-    private :: curl_easy_setopt_fptr
-    private :: curl_easy_setopt_int
-    private :: curl_easy_setopt_long
-    private :: curl_easy_setopt_ptr
 
     integer(kind=c_int), parameter :: CURLOPTTYPE_LONG          = 0
     integer(kind=c_int), parameter :: CURLOPTTYPE_OBJECTPOINT   = 10000
@@ -394,12 +374,14 @@ module curl
         ! CURL *curl_easy_init(void)
         function curl_easy_init() bind(c, name='curl_easy_init')
             import :: c_ptr
+            implicit none
             type(c_ptr) :: curl_easy_init
         end function curl_easy_init
 
         ! CURLcode curl_easy_perform(CURL *curl)
         function curl_easy_perform(curl) bind(c, name='curl_easy_perform')
             import :: c_int, c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: curl
             integer(kind=c_int)            :: curl_easy_perform
         end function curl_easy_perform
@@ -407,6 +389,7 @@ module curl
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
         function curl_easy_setopt_c_ptr(curl, option, parameter) bind(c, name='curl_easy_setopt')
             import :: c_int, c_ptr
+            implicit none
             type(c_ptr),            intent(in), value :: curl
             integer(kind=c_int),    intent(in), value :: option
             type(c_ptr),            intent(in), value :: parameter
@@ -416,6 +399,7 @@ module curl
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
         function curl_easy_setopt_c_funptr(curl, option, parameter) bind(c, name='curl_easy_setopt')
             import :: c_funptr, c_int, c_ptr
+            implicit none
             type(c_ptr),            intent(in), value :: curl
             integer(kind=c_int),    intent(in), value :: option
             type(c_funptr),         intent(in), value :: parameter
@@ -425,6 +409,7 @@ module curl
         ! struct curl_slist *curl_slist_append(struct curl_slist *list, const char *string)
         function curl_slist_append(list, string) bind(c, name='curl_slist_append')
             import :: c_char, c_ptr
+            implicit none
             type(c_ptr),            intent(in), value :: list
             character(kind=c_char), intent(in)        :: string
             type(c_ptr)                               :: curl_slist_append
@@ -433,6 +418,7 @@ module curl
         ! curl_version_info_data *curl_version_info(CURLversion age)
         function curl_version_info_(age) bind(c, name='curl_version_info')
             import :: c_int, c_ptr
+            implicit none
             integer(kind=c_int), intent(in), value :: age
             type(c_ptr)                            :: curl_version_info_
         end function curl_version_info_
@@ -440,12 +426,14 @@ module curl
         ! void curl_easy_cleanup(CURL *curl)
         subroutine curl_easy_cleanup(curl) bind(c, name='curl_easy_cleanup')
             import :: c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: curl
         end subroutine curl_easy_cleanup
 
         ! void curl_slist_free_all(struct curl_slist *list)
         subroutine curl_slist_free_all(list) bind(c, name='curl_slist_free_all')
             import :: c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: list
         end subroutine curl_slist_free_all
     end interface
@@ -456,6 +444,7 @@ module curl
             !! Interface to wrapper function `curl_version_now()` for C constant
             !! `CURLVERSION_NOW`.
             import :: c_int
+            implicit none
             integer(kind=c_int) :: curl_version_now
         end function curl_version_now
     end interface
@@ -476,10 +465,31 @@ module curl
         ! size_t strlen(const char *str)
         function c_strlen(str) bind(c, name='strlen')
             import :: c_ptr, c_size_t
+            implicit none
             type(c_ptr), intent(in), value :: str
             integer(kind=c_size_t)         :: c_strlen
         end function c_strlen
     end interface
+
+    public :: c_f_str_ptr
+    public :: curl_easy_init
+    public :: curl_easy_perform
+    public :: curl_easy_cleanup
+    public :: curl_easy_setopt
+    public :: curl_easy_setopt_c_ptr
+    public :: curl_easy_setopt_c_funptr
+    public :: curl_slist_append
+    public :: curl_slist_free_all
+    public :: curl_version_info
+    public :: curl_version_now
+
+    private :: c_strlen
+    private :: copy
+    private :: curl_easy_setopt_char
+    private :: curl_easy_setopt_fptr
+    private :: curl_easy_setopt_int
+    private :: curl_easy_setopt_long
+    private :: curl_easy_setopt_ptr
 contains
     pure function copy(a)
         character, intent(in)  :: a(:)
@@ -577,7 +587,7 @@ contains
             sz = c_strlen(c_str)
         end if
 
-        if (sz <= 0) return
+        if (sz < 0) return
         call c_f_pointer(c_str, ptrs, [ sz ])
         allocate (character(len=sz) :: f_str)
         f_str = copy(ptrs)

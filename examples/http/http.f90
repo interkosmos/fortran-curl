@@ -13,12 +13,11 @@ module callback_http
     integer(kind=8), parameter, public :: MAX_SIZE = 4096
 
     type, public :: response_type
-        character(len=MAX_SIZE) :: content
-        integer(kind=8)         :: size
+        character(len=:), allocatable :: body
     end type response_type
 contains
     ! static size_t callback(char *ptr, size_t size, size_t nmemb, void *data)
-    function response_callback(ptr, size, nmemb, data) bind(c)
+    function response_callback(ptr, size, nmemb, client_data) bind(c)
         !! Callback function for `CURLOPT_WRITEFUNCTION` that appends the
         !! response chunk `ptr` to the given `data` of type `response_type`.
         !!
@@ -28,35 +27,28 @@ contains
         type(c_ptr),            intent(in), value :: ptr               !! C pointer to a chunk of the response.
         integer(kind=c_size_t), intent(in), value :: size              !! Always 1.
         integer(kind=c_size_t), intent(in), value :: nmemb             !! Size of the response chunk.
-        type(c_ptr),            intent(in), value :: data              !! C pointer to argument passed by caller.
+        type(c_ptr),            intent(in), value :: client_data       !! C pointer to argument passed by caller.
         integer(kind=c_size_t)                    :: response_callback !! Function return value.
         type(response_type), pointer              :: response          !! Stores response.
-        character(len=:), allocatable             :: tmp
-        integer(kind=8)                           :: i, j
+        character(len=:), allocatable             :: buf
 
         response_callback = int(0, kind=c_size_t)
 
+        ! Are the passed C pointers associated?
         if (.not. c_associated(ptr)) return
-        if (.not. c_associated(data)) return
+        if (.not. c_associated(client_data)) return
 
-        call c_f_str_ptr(ptr, tmp, nmemb)
-        call c_f_pointer(data, response)
+        ! Convert C pointer to Fortran pointer.
+        call c_f_pointer(client_data, response)
+        if (.not. allocated(response%body)) response%body = ''
 
-        if (response%size == 0) then
-            response%content = tmp
-        else
-            i = response%size + 1
-            j = i + nmemb
+        ! Convert C pointer to Fortran allocatable character.
+        call c_f_str_ptr(ptr, buf, nmemb)
+        if (.not. allocated(buf)) return
+        response%body = response%body // buf
+        deallocate (buf)
 
-            if (i > MAX_SIZE) return
-            if (j > MAX_SIZE) j = MAX_SIZE
-
-            response%content(i:j) = tmp
-        end if
-
-        response%size = response%size + nmemb
-
-        deallocate (tmp)
+        ! Return number of received bytes.
         response_callback = nmemb
     end function response_callback
 end module callback_http
@@ -90,12 +82,15 @@ program main
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_loc(response))
 
     ! Send request.
-    if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
-        print '(a)', 'Error: curl_easy_perform() failed'
-    end if
-
+    rc = curl_easy_perform(curl_ptr)
     call curl_easy_cleanup(curl_ptr)
 
+    if (rc /= CURLE_OK) then
+        print '(a)', 'Error: curl_easy_perform() failed'
+        stop
+    end if
+
     ! Output response.
-    print '(a)', trim(response%content)
+    if (allocated(response%body)) &
+        print '(a)', response%body
 end program main

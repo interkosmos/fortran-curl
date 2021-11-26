@@ -22,34 +22,34 @@ IMAP     = imap
 SMTP     = smtp
 VERSION  = version
 
-.PHONY: all clean dict download gopher http imap smtp version
+.PHONY: all clean
 
-all: $(TARGET)
+all: $(TARGET) $(DICT) $(DOWNLOAD) $(GOPHER) $(HTTP) $(IMAP) $(SMTP) $(VERSION)
 
 $(TARGET):
 	$(CC) $(CFLAGS) -c src/curlv.c
 	$(FC) $(FFLAGS) -c src/curl.f90
 	$(AR) $(ARFLAGS) $(TARGET) curl.o curlv.o
 
-dict: $(TARGET)
+$(DICT): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(DICT) examples/dict/dict.f90 $(TARGET) $(LDLIBS)
 
-download: $(TARGET)
+$(DOWNLOAD): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(DOWNLOAD) examples/download/download.f90 $(TARGET) $(LDLIBS)
 
-gopher: $(TARGET)
+$(GOPHER): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(GOPHER) examples/gopher/gopher.f90 $(TARGET) $(LDLIBS)
 
-http: $(TARGET)
+$(HTTP): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(HTTP) examples/http/http.f90 $(TARGET) $(LDLIBS)
 
-imap: $(TARGET)
+$(IMAP): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(IMAP) examples/imap/imap.f90 $(TARGET) $(LDLIBS)
 
-smtp: $(TARGET)
+$(SMTP): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(SMTP) examples/smtp/smtp.f90 $(TARGET) $(LDLIBS)
 
-version: $(TARGET)
+$(VERSION): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(VERSION) examples/version/version.f90 $(TARGET) $(LDLIBS)
 
 clean:

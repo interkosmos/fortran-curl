@@ -71,7 +71,7 @@ This projects supports the Fortran Package Manager
 run:
 
 ```
-$ fpm build
+$ fpm build --profile release
 ```
 
 The example applications are available with the ``fpm run --example`` command.
@@ -80,7 +80,7 @@ You can use ``fortran-curl`` in your *fpm* projects with
 
 ```toml
 [dependencies]
-fortran-curl.git = "https://interkosmos/fortran-curl.git"
+fortran-curl = { git = "https://github.com/interkosmos/fortran-curl.git" }
 ```
 
 ## Licence
