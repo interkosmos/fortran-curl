@@ -611,6 +611,7 @@ module curl
     private :: curl_easy_getinfo_int
     private :: curl_easy_getinfo_long
     private :: curl_easy_getinfo_ptr
+    private :: curl_easy_getinfo_double
 contains
     pure function copy(a)
         character, intent(in)  :: a(:)
