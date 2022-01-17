@@ -347,6 +347,86 @@ module curl
         enumerator :: CURLVERSION_LAST
     end enum
 
+    integer(c_int), parameter :: CURLINFO_STRING   = int(z'100000')
+    integer(c_int), parameter :: CURLINFO_LONG     = int(z'200000')
+    integer(c_int), parameter :: CURLINFO_DOUBLE   = int(z'300000')
+    integer(c_int), parameter :: CURLINFO_SLIST    = int(z'400000')
+    integer(c_int), parameter :: CURLINFO_PTR      = int(z'400000') !/* same as SLIST */
+    integer(c_int), parameter :: CURLINFO_SOCKET   = int(z'500000')
+    integer(c_int), parameter :: CURLINFO_OFF_T    = int(z'600000')
+    integer(c_int), parameter :: CURLINFO_MASK     = int(z'0fffff')
+    integer(c_int), parameter :: CURLINFO_TYPEMASK = int(z'f00000')
+
+    integer(c_int), parameter :: CURLINFO_NONE = 0!, /* first, never use this */
+    integer(c_int), parameter :: CURLINFO_EFFECTIVE_URL    = CURLINFO_STRING + 1
+    integer(c_int), parameter :: CURLINFO_RESPONSE_CODE    = CURLINFO_LONG   + 2
+    integer(c_int), parameter :: CURLINFO_TOTAL_TIME       = CURLINFO_DOUBLE + 3
+    integer(c_int), parameter :: CURLINFO_NAMELOOKUP_TIME  = CURLINFO_DOUBLE + 4
+    integer(c_int), parameter :: CURLINFO_CONNECT_TIME     = CURLINFO_DOUBLE + 5
+    integer(c_int), parameter :: CURLINFO_PRETRANSFER_TIME = CURLINFO_DOUBLE + 6
+    integer(c_int), parameter :: CURLINFO_SIZE_UPLOAD      = CURLINFO_DOUBLE + 7
+    integer(c_int), parameter :: CURLINFO_SIZE_UPLOAD_T    = CURLINFO_OFF_T  + 7
+    integer(c_int), parameter :: CURLINFO_SIZE_DOWNLOAD    = CURLINFO_DOUBLE + 8
+    integer(c_int), parameter :: CURLINFO_SIZE_DOWNLOAD_T  = CURLINFO_OFF_T  + 8
+    integer(c_int), parameter :: CURLINFO_SPEED_DOWNLOAD   = CURLINFO_DOUBLE + 9
+    integer(c_int), parameter :: CURLINFO_SPEED_DOWNLOAD_T = CURLINFO_OFF_T  + 9
+    integer(c_int), parameter :: CURLINFO_SPEED_UPLOAD     = CURLINFO_DOUBLE + 10
+    integer(c_int), parameter :: CURLINFO_SPEED_UPLOAD_T   = CURLINFO_OFF_T  + 10
+    integer(c_int), parameter :: CURLINFO_HEADER_SIZE      = CURLINFO_LONG   + 11
+    integer(c_int), parameter :: CURLINFO_REQUEST_SIZE     = CURLINFO_LONG   + 12
+    integer(c_int), parameter :: CURLINFO_SSL_VERIFYRESULT = CURLINFO_LONG   + 13
+    integer(c_int), parameter :: CURLINFO_FILETIME         = CURLINFO_LONG   + 14
+    integer(c_int), parameter :: CURLINFO_FILETIME_T       = CURLINFO_OFF_T  + 14
+    integer(c_int), parameter :: CURLINFO_CONTENT_LENGTH_DOWNLOAD   = CURLINFO_DOUBLE + 15
+    integer(c_int), parameter :: CURLINFO_CONTENT_LENGTH_DOWNLOAD_T = CURLINFO_OFF_T  + 15
+    integer(c_int), parameter :: CURLINFO_CONTENT_LENGTH_UPLOAD     = CURLINFO_DOUBLE + 16
+    integer(c_int), parameter :: CURLINFO_CONTENT_LENGTH_UPLOAD_T   = CURLINFO_OFF_T  + 16
+    integer(c_int), parameter :: CURLINFO_STARTTRANSFER_TIME = CURLINFO_DOUBLE + 17
+    integer(c_int), parameter :: CURLINFO_CONTENT_TYPE     = CURLINFO_STRING + 18
+    integer(c_int), parameter :: CURLINFO_REDIRECT_TIME    = CURLINFO_DOUBLE + 19
+    integer(c_int), parameter :: CURLINFO_REDIRECT_COUNT   = CURLINFO_LONG   + 20
+    integer(c_int), parameter :: CURLINFO_PRIVATE          = CURLINFO_STRING + 21
+    integer(c_int), parameter :: CURLINFO_HTTP_CONNECTCODE = CURLINFO_LONG   + 22
+    integer(c_int), parameter :: CURLINFO_HTTPAUTH_AVAIL   = CURLINFO_LONG   + 23
+    integer(c_int), parameter :: CURLINFO_PROXYAUTH_AVAIL  = CURLINFO_LONG   + 24
+    integer(c_int), parameter :: CURLINFO_OS_ERRNO         = CURLINFO_LONG   + 25
+    integer(c_int), parameter :: CURLINFO_NUM_CONNECTS     = CURLINFO_LONG   + 26
+    integer(c_int), parameter :: CURLINFO_SSL_ENGINES      = CURLINFO_SLIST  + 27
+    integer(c_int), parameter :: CURLINFO_COOKIELIST       = CURLINFO_SLIST  + 28
+    integer(c_int), parameter :: CURLINFO_LASTSOCKET       = CURLINFO_LONG   + 29
+    integer(c_int), parameter :: CURLINFO_FTP_ENTRY_PATH   = CURLINFO_STRING + 30
+    integer(c_int), parameter :: CURLINFO_REDIRECT_URL     = CURLINFO_STRING + 31
+    integer(c_int), parameter :: CURLINFO_PRIMARY_IP       = CURLINFO_STRING + 32
+    integer(c_int), parameter :: CURLINFO_APPCONNECT_TIME  = CURLINFO_DOUBLE + 33
+    integer(c_int), parameter :: CURLINFO_CERTINFO         = CURLINFO_PTR    + 34
+    integer(c_int), parameter :: CURLINFO_CONDITION_UNMET  = CURLINFO_LONG   + 35
+    integer(c_int), parameter :: CURLINFO_RTSP_SESSION_ID  = CURLINFO_STRING + 36
+    integer(c_int), parameter :: CURLINFO_RTSP_CLIENT_CSEQ = CURLINFO_LONG   + 37
+    integer(c_int), parameter :: CURLINFO_RTSP_SERVER_CSEQ = CURLINFO_LONG   + 38
+    integer(c_int), parameter :: CURLINFO_RTSP_CSEQ_RECV   = CURLINFO_LONG   + 39
+    integer(c_int), parameter :: CURLINFO_PRIMARY_PORT     = CURLINFO_LONG   + 40
+    integer(c_int), parameter :: CURLINFO_LOCAL_IP         = CURLINFO_STRING + 41
+    integer(c_int), parameter :: CURLINFO_LOCAL_PORT       = CURLINFO_LONG   + 42
+    integer(c_int), parameter :: CURLINFO_TLS_SESSION      = CURLINFO_PTR    + 43
+    integer(c_int), parameter :: CURLINFO_ACTIVESOCKET     = CURLINFO_SOCKET + 44
+    integer(c_int), parameter :: CURLINFO_TLS_SSL_PTR      = CURLINFO_PTR    + 45
+    integer(c_int), parameter :: CURLINFO_HTTP_VERSION     = CURLINFO_LONG   + 46
+    integer(c_int), parameter :: CURLINFO_PROXY_SSL_VERIFYRESULT = CURLINFO_LONG + 47
+    integer(c_int), parameter :: CURLINFO_PROTOCOL         = CURLINFO_LONG   + 48
+    integer(c_int), parameter :: CURLINFO_SCHEME           = CURLINFO_STRING + 49
+    integer(c_int), parameter :: CURLINFO_TOTAL_TIME_T     = CURLINFO_OFF_T + 50
+    integer(c_int), parameter :: CURLINFO_NAMELOOKUP_TIME_T = CURLINFO_OFF_T + 51
+    integer(c_int), parameter :: CURLINFO_CONNECT_TIME_T   = CURLINFO_OFF_T + 52
+    integer(c_int), parameter :: CURLINFO_PRETRANSFER_TIME_T = CURLINFO_OFF_T + 53
+    integer(c_int), parameter :: CURLINFO_STARTTRANSFER_TIME_T = CURLINFO_OFF_T + 54
+    integer(c_int), parameter :: CURLINFO_REDIRECT_TIME_T  = CURLINFO_OFF_T + 55
+    integer(c_int), parameter :: CURLINFO_APPCONNECT_TIME_T = CURLINFO_OFF_T + 56
+    integer(c_int), parameter :: CURLINFO_RETRY_AFTER      = CURLINFO_OFF_T + 57
+    integer(c_int), parameter :: CURLINFO_EFFECTIVE_METHOD = CURLINFO_STRING + 58
+    integer(c_int), parameter :: CURLINFO_PROXY_ERROR      = CURLINFO_LONG + 59
+    integer(c_int), parameter :: CURLINFO_REFERER          = CURLINFO_STRING + 60
+    integer(c_int), parameter :: CURLINFO_LASTONE          = 60
+
     ! curl_version_info_data
     type, bind(c) :: curl_version
         integer(kind=c_int)  :: age
@@ -406,6 +486,26 @@ module curl
             integer(kind=c_int)                       :: curl_easy_setopt_c_funptr
         end function curl_easy_setopt_c_funptr
 
+        ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+        function curl_easy_getinfo_c_ptr(curl, option, parameter) bind(c, name='curl_easy_getinfo')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: curl
+            integer(kind=c_int),    intent(in), value :: option
+            type(c_ptr),            intent(in), value :: parameter
+            integer(kind=c_int)                       :: curl_easy_getinfo_c_ptr
+        end function curl_easy_getinfo_c_ptr
+
+        ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+        function curl_easy_getinfo_c_funptr(curl, option, parameter) bind(c, name='curl_easy_getinfo')
+            import :: c_funptr, c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: curl
+            integer(kind=c_int),    intent(in), value :: option
+            type(c_funptr),         intent(in), value :: parameter
+            integer(kind=c_int)                       :: curl_easy_getinfo_c_funptr
+        end function curl_easy_getinfo_c_funptr
+
         ! struct curl_slist *curl_slist_append(struct curl_slist *list, const char *string)
         function curl_slist_append(list, string) bind(c, name='curl_slist_append')
             import :: c_char, c_ptr
@@ -461,6 +561,19 @@ module curl
         module procedure :: curl_easy_setopt_ptr
     end interface
 
+    ! Fortran 2018 generic interface `curl_easy_getinfo()`.
+    ! generic :: curl_easy_getinfo => curl_easy_getinfo_char, curl_easy_getinfo_fptr, curl_easy_getinfo_int, &
+    !                                curl_easy_getinfo_long, curl_easy_getinfo_ptr
+    interface curl_easy_getinfo
+        ! Fortran 2008 generic interface `curl_easy_getinfo()`.
+        module procedure :: curl_easy_getinfo_char
+        module procedure :: curl_easy_getinfo_fptr
+        module procedure :: curl_easy_getinfo_int
+        module procedure :: curl_easy_getinfo_long
+        module procedure :: curl_easy_getinfo_double
+        module procedure :: curl_easy_getinfo_ptr
+    end interface
+
     interface
         ! size_t strlen(const char *str)
         function c_strlen(str) bind(c, name='strlen')
@@ -478,6 +591,9 @@ module curl
     public :: curl_easy_setopt
     public :: curl_easy_setopt_c_ptr
     public :: curl_easy_setopt_c_funptr
+    public :: curl_easy_getinfo
+    public :: curl_easy_getinfo_c_ptr
+    public :: curl_easy_getinfo_c_funptr
     public :: curl_slist_append
     public :: curl_slist_free_all
     public :: curl_version_info
@@ -490,6 +606,11 @@ module curl
     private :: curl_easy_setopt_int
     private :: curl_easy_setopt_long
     private :: curl_easy_setopt_ptr
+    private :: curl_easy_getinfo_char
+    private :: curl_easy_getinfo_fptr
+    private :: curl_easy_getinfo_int
+    private :: curl_easy_getinfo_long
+    private :: curl_easy_getinfo_ptr
 contains
     pure function copy(a)
         character, intent(in)  :: a(:)
@@ -550,6 +671,66 @@ contains
 
         curl_easy_setopt_ptr = curl_easy_setopt_c_ptr(curl, option, parameter)
     end function curl_easy_setopt_ptr
+
+    ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+    function curl_easy_getinfo_char(curl, option, parameter)
+        type(c_ptr),              intent(in) :: curl
+        integer,                  intent(in) :: option
+        character(len=*), target, intent(in) :: parameter
+        integer                              :: curl_easy_getinfo_char
+
+        curl_easy_getinfo_char = curl_easy_getinfo_c_ptr(curl, option, c_loc(parameter))
+    end function curl_easy_getinfo_char
+
+    ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+    function curl_easy_getinfo_fptr(curl, option, parameter)
+        type(c_ptr),    intent(in) :: curl
+        integer,        intent(in) :: option
+        type(c_funptr), intent(in) :: parameter
+        integer                    :: curl_easy_getinfo_fptr
+
+        curl_easy_getinfo_fptr = curl_easy_getinfo_c_funptr(curl, option, parameter)
+    end function curl_easy_getinfo_fptr
+
+    ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+    function curl_easy_getinfo_int(curl, option, parameter)
+        type(c_ptr),             intent(in) :: curl
+        integer    ,             intent(in) :: option
+        integer(kind=4), target, intent(in) :: parameter
+        integer                             :: curl_easy_getinfo_int
+
+        curl_easy_getinfo_int = curl_easy_getinfo_c_ptr(curl, option, c_loc(parameter))
+    end function curl_easy_getinfo_int
+
+    ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+    function curl_easy_getinfo_long(curl, option, parameter)
+        type(c_ptr),             intent(in) :: curl
+        integer,                 intent(in) :: option
+        integer(kind=8), target, intent(in) :: parameter
+        integer                             :: curl_easy_getinfo_long
+
+        curl_easy_getinfo_long = curl_easy_getinfo_c_ptr(curl, option, c_loc(parameter))
+    end function curl_easy_getinfo_long
+
+    ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+    function curl_easy_getinfo_ptr(curl, option, parameter)
+        type(c_ptr), intent(in) :: curl
+        integer,     intent(in) :: option
+        type(c_ptr), intent(in) :: parameter
+        integer                 :: curl_easy_getinfo_ptr
+
+        curl_easy_getinfo_ptr = curl_easy_getinfo_c_ptr(curl, option, parameter)
+    end function curl_easy_getinfo_ptr
+
+    ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+    function curl_easy_getinfo_double(curl, option, parameter)
+        type(c_ptr),             intent(in) :: curl
+        integer,                 intent(in) :: option
+        real(kind=8),    target, intent(in) :: parameter
+        integer                             :: curl_easy_getinfo_double
+
+        curl_easy_getinfo_double = curl_easy_getinfo_c_ptr(curl, option, c_loc(parameter))
+    end function curl_easy_getinfo_double
 
     ! curl_version_info_data *curl_version_info(CURLversion age)
     function curl_version_info(age)
