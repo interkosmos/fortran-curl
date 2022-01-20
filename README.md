@@ -38,6 +38,7 @@ Examples are provided in directory `examples/`:
 
 * **dict** queries a [DICT](https://en.wikipedia.org/wiki/DICT) server on TCP port 2628.
 * **download** fetches a remote file.
+* **getinfo** prints request-related information to console.
 * **gopher** prints the contents of a remote Gopher map file.
 * **http** makes an HTTP GET request.
 * **imap** examines the `INBOX` of an IMAP mailbox (SSL).
@@ -51,13 +52,14 @@ $ make <name>
 ```
 
 ## Coverage
-| C Function Name       | Fortran Interface Name                                                    | Bound |
+| C Function Name       | Fortran Interface Name                                                       | Bound |
 |-----------------------|------------------------------------------------------------------------------|-------|
+| `curl_easy_cleanup`   | `curl_easy_cleanup`                                                          | ✓     |
+| `curl_easy_getinfo`   | `curl_easy_getinfo`, `curl_easy_getinfo_`                                    | ✓     |
 | `curl_easy_init`      | `curl_easy_init`                                                             | ✓     |
 | `curl_easy_perform`   | `curl_easy_perform`                                                          | ✓     |
-| `curl_easy_cleanup`   | `curl_easy_cleanup`                                                          | ✓     |
 | `curl_easy_setopt`    | `curl_easy_setopt`, `curl_easy_setopt_c_ptr`, `curl_easy_setopt_c_funptr`    | ✓     |
-| `curl_easy_getinfo`   | `curl_easy_getinfo`, `curl_easy_getinfo_c_ptr`, `curl_easy_getinfo_c_funptr` | ✓     |
+| `curl_easy_strerror`  | `curl_easy_strerror`                                                         | ✓     |
 | `curl_slist_append`   | `curl_slist_append`                                                          | ✓     |
 | `curl_slist_free_all` | `curl_slist_free_all`                                                        | ✓     |
 | `curl_version_info`   | `curl_version_info`                                                          | ✓     |

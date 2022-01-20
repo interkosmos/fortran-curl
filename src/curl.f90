@@ -590,9 +590,9 @@ module curl
     public :: curl_easy_setopt
     public :: curl_easy_setopt_c_funptr
     public :: curl_easy_setopt_c_ptr
+    public :: curl_easy_strerror
     public :: curl_slist_append
     public :: curl_slist_free_all
-    public :: curl_easy_strerror
     public :: curl_version_info
     public :: curl_version_now
 

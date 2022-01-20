@@ -27,15 +27,21 @@ program main
     rc = curl_easy_perform(curl_ptr)
 
     if (rc == CURLE_OK) then
-        if (curl_easy_getinfo(curl_ptr, CURLINFO_RESPONSE_CODE, code) == CURLE_OK) then
+        rc = curl_easy_getinfo(curl_ptr, CURLINFO_RESPONSE_CODE, code)
+
+        if (rc == CURLE_OK) then
             print '("Response Code: ", i0)', code
         end if
 
-        if (curl_easy_getinfo(curl_ptr, CURLINFO_CONTENT_TYPE, str) == CURLE_OK) then
+        rc = curl_easy_getinfo(curl_ptr, CURLINFO_CONTENT_TYPE, str)
+
+        if (rc == CURLE_OK) then
             print '("Content Type.: ", a)', str
         end if
 
-        if (curl_easy_getinfo(curl_ptr, CURLINFO_TOTAL_TIME, total_time) == CURLE_OK) then
+        rc = curl_easy_getinfo(curl_ptr, CURLINFO_TOTAL_TIME, total_time)
+
+        if (rc == CURLE_OK) then
             print '("Total Time...: ", f5.3, " s")', total_time
         end if
     else
