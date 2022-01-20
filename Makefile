@@ -16,15 +16,17 @@ TARGET  = libfortran-curl.a
 
 DICT     = dict
 DOWNLOAD = download
+GETINFO  = getinfo
 GOPHER   = gopher
 HTTP     = http
 IMAP     = imap
 SMTP     = smtp
 VERSION  = version
 
-.PHONY: all clean
+.PHONY: all clean examples
 
-all: $(TARGET) $(DICT) $(DOWNLOAD) $(GOPHER) $(HTTP) $(IMAP) $(SMTP) $(VERSION)
+all: $(TARGET)
+examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(SMTP) $(VERSION)
 
 $(TARGET):
 	$(CC) $(CFLAGS) -c src/curlv.c
@@ -36,6 +38,9 @@ $(DICT): $(TARGET)
 
 $(DOWNLOAD): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(DOWNLOAD) examples/download/download.f90 $(TARGET) $(LDLIBS)
+
+$(GETINFO): $(TARGET)
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $(GETINFO) examples/getinfo/getinfo.f90 $(TARGET) $(LDLIBS)
 
 $(GOPHER): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(GOPHER) examples/gopher/gopher.f90 $(TARGET) $(LDLIBS)
@@ -58,6 +63,7 @@ clean:
 	if [ -e $(TARGET) ]; then rm $(TARGET); fi
 	if [ -e $(DICT) ]; then rm $(DICT); fi
 	if [ -e $(DOWNLOAD) ]; then rm $(DOWNLOAD); fi
+	if [ -e $(GETINFO) ]; then rm $(GETINFO); fi
 	if [ -e $(GOPHER) ]; then rm $(GOPHER); fi
 	if [ -e $(HTTP) ]; then rm $(HTTP); fi
 	if [ -e $(IMAP) ]; then rm $(IMAP); fi

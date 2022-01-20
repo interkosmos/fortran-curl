@@ -21,6 +21,11 @@ source-dir = "examples/download"
 main = "download.f90"
 
 [[example]]
+name = "getinfo"
+source-dir = "examples/getinfo"
+main = "getinfo.f90"
+
+[[example]]
 name = "gopher"
 source-dir = "examples/gopher"
 main = "gopher.f90"
