@@ -6,6 +6,7 @@
 ! Licence: ISC
 module curl
     use, intrinsic :: iso_c_binding
+    use, intrinsic :: iso_fortran_env, only: i8 => int64, r8 => real64
     implicit none
 
     integer(kind=c_int), parameter :: CURLOPTTYPE_LONG          = 0
@@ -613,7 +614,7 @@ contains
     pure function copy(a)
         character, intent(in)  :: a(:)
         character(len=size(a)) :: copy
-        integer(kind=8)        :: i
+        integer(kind=i8)       :: i
 
         do i = 1, size(a)
             copy(i:i) = a(i)
@@ -635,10 +636,10 @@ contains
 
     ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
     function curl_easy_getinfo_double(curl, option, parameter) result(rc)
-        type(c_ptr),          intent(in)  :: curl
-        integer,              intent(in)  :: option
-        real(kind=8), target, intent(out) :: parameter
-        integer                           :: rc
+        type(c_ptr),           intent(in)  :: curl
+        integer,               intent(in)  :: option
+        real(kind=r8), target, intent(out) :: parameter
+        integer                            :: rc
 
         rc = curl_easy_getinfo_(curl, option, c_loc(parameter))
     end function curl_easy_getinfo_double
@@ -655,10 +656,10 @@ contains
 
     ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
     function curl_easy_getinfo_long(curl, option, parameter) result(rc)
-        type(c_ptr),             intent(in)  :: curl
-        integer,                 intent(in)  :: option
-        integer(kind=8), target, intent(out) :: parameter
-        integer                              :: rc
+        type(c_ptr),              intent(in)  :: curl
+        integer,                  intent(in)  :: option
+        integer(kind=i8), target, intent(out) :: parameter
+        integer                               :: rc
 
         rc = curl_easy_getinfo_(curl, option, c_loc(parameter))
     end function curl_easy_getinfo_long
@@ -705,10 +706,10 @@ contains
 
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
     function curl_easy_setopt_long(curl, option, parameter) result(rc)
-        type(c_ptr),             intent(in) :: curl
-        integer,                 intent(in) :: option
-        integer(kind=8), target, intent(in) :: parameter
-        integer                             :: rc
+        type(c_ptr),              intent(in) :: curl
+        integer,                  intent(in) :: option
+        integer(kind=i8), target, intent(in) :: parameter
+        integer                              :: rc
 
         rc = curl_easy_setopt_c_ptr(curl, option, c_loc(parameter))
     end function curl_easy_setopt_long
@@ -764,9 +765,9 @@ contains
         !! Fortran string.
         type(c_ptr),                   intent(in)           :: c_str
         character(len=:), allocatable, intent(out)          :: f_str
-        integer(kind=8),               intent(in), optional :: size
+        integer(kind=i8),              intent(in), optional :: size
         character(kind=c_char), pointer                     :: ptrs(:)
-        integer(kind=8)                                     :: sz
+        integer(kind=i8)                                    :: sz
 
         if (.not. c_associated(c_str)) return
 

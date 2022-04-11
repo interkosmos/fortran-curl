@@ -40,6 +40,7 @@ end module callback_imap
 
 program main
     use, intrinsic :: iso_c_binding
+    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
     use :: callback_imap
     implicit none
@@ -59,10 +60,10 @@ program main
         rc = curl_easy_setopt(curl_ptr, CURLOPT_USERNAME,       USERNAME // c_null_char)
         rc = curl_easy_setopt(curl_ptr, CURLOPT_PASSWORD,       PASSWORD // c_null_char)
         rc = curl_easy_setopt(curl_ptr, CURLOPT_CUSTOMREQUEST,  'EXAMINE INBOX' // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYPEER, int(1, kind=8))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYHOST, int(1, kind=8))
+        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYPEER, int(1, kind=i8))
+        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYHOST, int(1, kind=i8))
         rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,  c_funloc(write_callback))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        int(1, kind=8))
+        rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        int(1, kind=i8))
 
         ! Perform request..
         if (curl_easy_perform(curl_ptr) /= CURLE_OK) then

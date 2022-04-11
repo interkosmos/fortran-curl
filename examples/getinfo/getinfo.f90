@@ -6,6 +6,7 @@
 ! Licence: ISC
 program main
     use, intrinsic :: iso_c_binding
+    use, intrinsic :: iso_fortran_env, only: r8 => real64
     use :: curl
     implicit none
 
@@ -13,7 +14,7 @@ program main
     character(len=:), allocatable  :: str
     integer                        :: code
     integer                        :: rc
-    real(kind=8)                   :: total_time
+    real(kind=r8)                  :: total_time
     type(c_ptr)                    :: curl_ptr
 
     curl_ptr = curl_easy_init()

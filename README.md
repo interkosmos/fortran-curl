@@ -79,7 +79,7 @@ $ fpm build --profile release
 
 The example applications are available with the ``fpm run --example`` command.
 
-You can use ``fortran-curl`` in your *fpm* projects with
+You can use ``fortran-curl`` in your *fpm* projects with:
 
 ```toml
 [dependencies]

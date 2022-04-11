@@ -75,6 +75,7 @@ end module callback_smtp
 
 program main
     use, intrinsic :: iso_c_binding
+    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
     use :: callback_smtp
     implicit none
@@ -115,14 +116,14 @@ program main
         rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            URL // c_null_char)
         rc = curl_easy_setopt(curl_ptr, CURLOPT_USERNAME,       USERNAME // c_null_char)
         rc = curl_easy_setopt(curl_ptr, CURLOPT_PASSWORD,       PASSWORD // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYPEER, int(1, kind=8))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYHOST, int(1, kind=8))
+        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYPEER, int(1, kind=i8))
+        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYHOST, int(1, kind=i8))
         rc = curl_easy_setopt(curl_ptr, CURLOPT_MAIL_FROM,      FROM // c_null_char)
         rc = curl_easy_setopt(curl_ptr, CURLOPT_MAIL_RCPT,      list_ptr)
         rc = curl_easy_setopt(curl_ptr, CURLOPT_READDATA,       c_loc(upload))
         rc = curl_easy_setopt(curl_ptr, CURLOPT_READFUNCTION,   c_funloc(upload_callback))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_UPLOAD,         int(1, kind=8))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        int(1, kind=8))
+        rc = curl_easy_setopt(curl_ptr, CURLOPT_UPLOAD,         int(1, kind=i8))
+        rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        int(1, kind=i8))
 
         ! Send e-mail.
         if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
@@ -146,11 +147,11 @@ contains
                                                     'i0.2, ":", i0.2, ":", i0.2, " ", a)'
         character(len=31) :: rfc2822
         character(len=5)  :: z
-        integer(kind=8)   :: dt(8), w
+        integer(kind=i8)  :: dt(8), w
 
         call date_and_time(zone=z, values=dt)
         w = 1 + modulo(dt(1) + int((dt(1) - 1) / 4) - int((dt(1) - 1) / 100) + int((dt(1) - 1) / 400), &
-                       int(7, kind=8))
+                       int(7, kind=i8))
         write (rfc2822, dt_fmt) days(w), dt(3), months(dt(2)), dt(1), dt(5), dt(6), dt(7), z
     end function rfc2822
 end program main
