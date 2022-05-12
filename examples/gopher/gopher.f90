@@ -63,7 +63,7 @@ module gopher
     private :: split
     public  :: read_gopher_map
 contains
-    function count_sub_string(s1, s2) result (c)
+    function count_sub_string(s1, s2) result(c)
         !! Returns the number of occurences of string `s2` in string `s1`.
         character(len=*), intent(in) :: s1
         character(len=*), intent(in) :: s2
@@ -105,7 +105,7 @@ contains
         ! Tokenise the lines.
         do i = 1, n
             ! Split line by tabular.
-            call split(lines(i), tokens, '	')
+            call split(lines(i), tokens, achar(9))
 
             items(i)%item_type = tokens(1)(1:1)
             items(i)%label     = trim(tokens(1)(2:))

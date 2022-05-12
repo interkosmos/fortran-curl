@@ -241,6 +241,35 @@ module curl
     integer(kind=c_int), parameter :: CURL_GLOBAL_DEFAULT   = CURL_GLOBAL_ALL
     integer(kind=c_int), parameter :: CURL_GLOBAL_ACK_EINTR = shiftl(1, 2)
 
+    integer(kind=c_long), parameter :: CURLAUTH_NONE         = 0
+    integer(kind=c_long), parameter :: CURLAUTH_BASIC        = shiftl(1, 0)
+    integer(kind=c_long), parameter :: CURLAUTH_DIGEST       = shiftl(1, 1)
+    integer(kind=c_long), parameter :: CURLAUTH_NEGOTIATE    = shiftl(1, 2)
+    integer(kind=c_long), parameter :: CURLAUTH_GSSNEGOTIATE = CURLAUTH_NEGOTIATE
+    integer(kind=c_long), parameter :: CURLAUTH_GSSAPI       = CURLAUTH_NEGOTIATE
+    integer(kind=c_long), parameter :: CURLAUTH_NTLM         = shiftl(1, 3)
+    integer(kind=c_long), parameter :: CURLAUTH_DIGEST_IE    = shiftl(1, 4)
+    integer(kind=c_long), parameter :: CURLAUTH_NTLM_WB      = shiftl(1, 5)
+    integer(kind=c_long), parameter :: CURLAUTH_BEARER       = shiftl(1, 6)
+    integer(kind=c_long), parameter :: CURLAUTH_AWS_SIGV4    = shiftl(1, 7)
+    integer(kind=c_long), parameter :: CURLAUTH_ONLY         = shiftl(1, 31)
+    integer(kind=c_long), parameter :: CURLAUTH_ANY          = not(CURLAUTH_DIGEST_IE)
+    integer(kind=c_long), parameter :: CURLAUTH_ANYSAFE      = not(ior(CURLAUTH_BASIC, CURLAUTH_DIGEST_IE))
+
+    integer(kind=c_int), parameter :: CURLSSH_AUTH_ANY       = not(0)
+    integer(kind=c_int), parameter :: CURLSSH_AUTH_NONE      = 0
+    integer(kind=c_int), parameter :: CURLSSH_AUTH_PUBLICKEY = shiftl(1, 0)
+    integer(kind=c_int), parameter :: CURLSSH_AUTH_PASSWORD  = shiftl(1, 1)
+    integer(kind=c_int), parameter :: CURLSSH_AUTH_HOST      = shiftl(1, 2)
+    integer(kind=c_int), parameter :: CURLSSH_AUTH_KEYBOARD  = shiftl(1, 3)
+    integer(kind=c_int), parameter :: CURLSSH_AUTH_AGENT     = shiftl(1, 4)
+    integer(kind=c_int), parameter :: CURLSSH_AUTH_GSSAPI    = shiftl(1, 5)
+    integer(kind=c_int), parameter :: CURLSSH_AUTH_DEFAULT   = CURLSSH_AUTH_ANY
+
+    integer(kind=c_int), parameter :: CURLGSSAPI_DELEGATION_NONE        = 0
+    integer(kind=c_int), parameter :: CURLGSSAPI_DELEGATION_POLICY_FLAG = shiftl(1, 0)
+    integer(kind=c_int), parameter :: CURLGSSAPI_DELEGATION_FLAG        = shiftl(1, 1)
+
     enum, bind(c)
         enumerator :: CURLE_OK
         enumerator :: CURLE_UNSUPPORTED_PROTOCOL
@@ -570,9 +599,6 @@ module curl
         module procedure :: curl_easy_getinfo_ptr
     end interface
 
-    ! Fortran 2018 generic interface `curl_easy_setopt()`.
-    ! generic :: curl_easy_setopt => curl_easy_setopt_char, curl_easy_setopt_fptr, curl_easy_setopt_int, &
-    !                                curl_easy_setopt_long, curl_easy_setopt_ptr
     interface curl_easy_setopt
         ! Fortran 2008 generic interface `curl_easy_setopt()`.
         module procedure :: curl_easy_setopt_char
