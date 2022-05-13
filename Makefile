@@ -20,13 +20,14 @@ GETINFO  = getinfo
 GOPHER   = gopher
 HTTP     = http
 IMAP     = imap
+POST     = post
 SMTP     = smtp
 VERSION  = version
 
 .PHONY: all clean examples
 
 all: $(TARGET)
-examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(SMTP) $(VERSION)
+examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(POST) $(SMTP) $(VERSION)
 
 $(TARGET):
 	$(CC) $(CFLAGS) -c src/curlv.c
@@ -51,6 +52,9 @@ $(HTTP): $(TARGET)
 $(IMAP): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(IMAP) examples/imap/imap.f90 $(TARGET) $(LDLIBS)
 
+$(POST): $(TARGET)
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $(POST) examples/post/post.f90 $(TARGET) $(LDLIBS)
+
 $(SMTP): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(SMTP) examples/smtp/smtp.f90 $(TARGET) $(LDLIBS)
 
@@ -67,5 +71,6 @@ clean:
 	if [ -e $(GOPHER) ]; then rm $(GOPHER); fi
 	if [ -e $(HTTP) ]; then rm $(HTTP); fi
 	if [ -e $(IMAP) ]; then rm $(IMAP); fi
+	if [ -e $(POST) ]; then rm $(POST); fi
 	if [ -e $(SMTP) ]; then rm $(SMTP); fi
 	if [ -e $(VERSION) ]; then rm $(VERSION); fi

@@ -1,10 +1,10 @@
-! http.f90
+! post.f90
 !
-! Basic HTTP client in Fortran, using libcurl.
+! Example that uses HTTP POST method.
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback_http
+module callback_post
     use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl, only: c_f_str_ptr
     implicit none
@@ -50,36 +50,34 @@ contains
         ! Return number of received bytes.
         response_callback = nmemb
     end function response_callback
-end module callback_http
+end module callback_post
 
 program main
     use, intrinsic :: iso_c_binding
     use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
-    use :: callback_http
+    use :: callback_post
     implicit none
 
-    character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
-    character(len=*), parameter :: DEFAULT_URL      = 'http://worldtimeapi.org/api/timezone/Europe/London.txt'
-    type(c_ptr)                 :: curl_ptr
-    integer                     :: rc
-    type(response_type), target :: response
+    character(len=*), parameter :: DEFAULT_URL = 'https://httpbin.org/post'
+
+    character(len=:), allocatable, target :: content
+    integer                               :: rc
+    type(c_ptr)                           :: curl_ptr
+    type(response_type),           target :: response
+
+    content = 'test=fortran'
 
     curl_ptr = curl_easy_init()
-
-    if (.not. c_associated(curl_ptr)) then
-        stop 'Error: curl_easy_init() failed'
-    end if
+    if (.not. c_associated(curl_ptr)) stop 'Error: curl_easy_init() failed'
 
     ! Set curl options.
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL // c_null_char)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL // c_null_char)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_FOLLOWLOCATION,   1)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_TIMEOUT,          10)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         1)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT,   10)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_loc(response))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            DEFAULT_URL // c_null_char)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDS,     c_loc(content))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDSIZE,  len(content, kind=i8))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,  c_funloc(response_callback))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,      c_loc(response))
 
     ! Send request.
     rc = curl_easy_perform(curl_ptr)
@@ -91,6 +89,5 @@ program main
     end if
 
     ! Output response.
-    if (allocated(response%content)) &
-        print '(a)', response%content
+    if (allocated(response%content)) print '(a)', response%content
 end program main

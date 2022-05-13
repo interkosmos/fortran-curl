@@ -1,5 +1,5 @@
 name = "fortran-curl"
-version = "0.2.0"
+version = "0.3.0"
 license = "ISC"
 author = "Philipp Engel"
 maintainer = "@interkosmos"
@@ -44,6 +44,11 @@ main = "imap.f90"
 name = "smtp"
 source-dir = "examples/smtp"
 main = "smtp.f90"
+
+[[example]]
+name = "post"
+source-dir = "examples/post"
+main = "post.f90"
 
 [[example]]
 name = "version"
