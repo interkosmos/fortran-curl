@@ -40,6 +40,7 @@ jobs:
     - name: Install libcurl
       if: contains(matrix.os, 'ubuntu')
       run: |
+        sudo apt-get update
         sudo apt-get install libcurl4-openssl-dev
 
     - name: Install fpm
