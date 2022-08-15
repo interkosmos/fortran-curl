@@ -30,9 +30,9 @@ all: $(TARGET)
 examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(POST) $(SMTP) $(VERSION)
 
 $(TARGET):
-	$(CC) $(CFLAGS) -c src/curlv.c
+	$(CC) $(CFLAGS) -c src/curl_macro.c
 	$(FC) $(FFLAGS) -c src/curl.f90
-	$(AR) $(ARFLAGS) $(TARGET) curl.o curlv.o
+	$(AR) $(ARFLAGS) $(TARGET) curl.o curl_macro.o
 
 $(DICT): $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(DICT) examples/dict/dict.f90 $(TARGET) $(LDLIBS)

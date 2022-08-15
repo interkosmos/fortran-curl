@@ -1,4 +1,4 @@
-/* curlv.c */
+/* curl_macro.c */
 #include <curl/curl.h>
 
 /* Wrapper function that provides access to the constant `CURLVERSION_NOW`. */
