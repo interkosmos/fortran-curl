@@ -366,7 +366,13 @@ module curl
     integer(kind=c_int), parameter, public :: CURLE_SSL_INVALIDCERTSTATUS    = 91
     integer(kind=c_int), parameter, public :: CURLE_HTTP2_STREAM             = 92
     integer(kind=c_int), parameter, public :: CURLE_RECURSIVE_API_CALL       = 93
-    integer(kind=c_int), parameter, public :: CURL_LAST                      = 94
+    integer(kind=c_int), parameter, public :: CURLE_AUTH_ERROR               = 94
+    integer(kind=c_int), parameter, public :: CURLE_HTTP3                    = 95
+    integer(kind=c_int), parameter, public :: CURLE_QUIC_CONNECT_ERROR       = 96
+    integer(kind=c_int), parameter, public :: CURLE_PROXY                    = 97
+    integer(kind=c_int), parameter, public :: CURLE_SSL_CLIENTCERT           = 98
+    integer(kind=c_int), parameter, public :: CURLE_UNRECOVERABLE_POLL       = 99
+    integer(kind=c_int), parameter, public :: CURLE_LAST                     = 100 ! never use this
 
     ! CURLversion
     integer(kind=c_int), parameter, public :: CURLVERSION_FIRST  = 0
