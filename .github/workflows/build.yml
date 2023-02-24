@@ -11,7 +11,7 @@ jobs:
 
     env:
       FC: gfortran
-      GCC_V: 10
+      GCC_V: 12
       OMP_NUM_THREADS: 2,1
       EXAMPLES: >-
         download
