@@ -86,7 +86,7 @@ contains
     subroutine read_gopher_map(string, items)
         !! Tokenises given `string` containing a Gopher map and puts each
         !! line as derived type `gopher_item_type` into `items`.
-        integer, parameter :: MAX_LEN = 1024 !! Maximum length of each line in Gopher map.
+        integer, parameter :: MAX_LEN = 4096 !! Maximum length of each line in Gopher map.
 
         character(len=*),                    intent(in)  :: string         !! String of Gopher map.
         type(gopher_item_type), allocatable, intent(out) :: items(:)       !! Array of Gopher map items.
@@ -98,6 +98,7 @@ contains
         ! Number of lines in Gopher map.
         n = count_sub_string(string, CRLF) + 1
 
+        allocate (lines(n))
         allocate (items(n))
 
         ! Split file into lines.
