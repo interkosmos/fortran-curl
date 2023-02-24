@@ -25,9 +25,10 @@ contains
         integer(kind=c_size_t), intent(in), value :: nmemb             !! Size of the response chunk.
         type(c_ptr),            intent(in), value :: data              !! C pointer to argument passed by caller.
         integer(kind=c_size_t)                    :: response_callback !! Function return value.
-        character(len=32), pointer                :: file_name         !! File to store response to.
-        character(len=:), allocatable             :: chunk             !! Response chunk.
-        integer(kind=i8)                          :: fu, rc
+
+        character(len=32), pointer    :: file_name ! File to store response to.
+        character(len=:), allocatable :: chunk     ! Response chunk.
+        integer(kind=i8)              :: fu, rc
 
         response_callback = int(0, kind=c_size_t)
 
@@ -63,11 +64,12 @@ program main
     implicit none
 
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
-    character(len=*), parameter :: DEFAULT_URL      = 'http://worldtimeapi.org/api/timezone/Europe/London.txt'
-    character(len=32), target   :: file_name        = 'data.txt'
-    integer                     :: rc
-    logical                     :: file_exists
-    type(c_ptr)                 :: curl_ptr
+    character(len=*), parameter :: DEFAULT_URL      = 'https://netlib.org/fftpack/test.f'
+
+    character(len=32), target :: file_name = 'data.txt'
+    integer                   :: rc
+    logical                   :: file_exists
+    type(c_ptr)               :: curl_ptr
 
     inquire (file=trim(file_name), exist=file_exists)
 
@@ -92,13 +94,13 @@ program main
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_loc(file_name))
 
-    print '(5a)', 'Saving "', DEFAULT_URL, '" to file "', trim(file_name), '" ...'
+    print '("Saving ", a, " to file ", a, " ...")', DEFAULT_URL, trim(file_name)
 
     ! Send request.
     if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
-        print '(a)', 'Error: curl_easy_perform() failed'
+        print '("Error: curl_easy_perform() failed")'
     else
-        print '(a)', 'Done.'
+        print '("Done.")'
     end if
 
     call curl_easy_cleanup(curl_ptr)

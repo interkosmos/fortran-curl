@@ -83,10 +83,7 @@ program main
     rc = curl_easy_perform(curl_ptr)
     call curl_easy_cleanup(curl_ptr)
 
-    if (rc /= CURLE_OK) then
-        print '(a)', 'Error: curl_easy_perform() failed'
-        stop
-    end if
+    if (rc /= CURLE_OK) stop 'Error: curl_easy_perform() failed'
 
     ! Output response.
     if (allocated(response%content)) print '(a)', response%content

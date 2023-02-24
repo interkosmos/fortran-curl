@@ -1,7 +1,7 @@
 # fortran-curl
 A collection of ISO C binding interfaces to
 [libcurl](https://curl.haxx.se/libcurl/) for Fortran 2008. Compilation has been
-tested with GNU Fortran 11 and cURL 7.83.0.
+tested with GNU Fortran 12 and cURL 7.87.0.
 
 ## Dependencies
 Install cURL with development headers. On FreeBSD, run:
