@@ -44,9 +44,9 @@ jobs:
         sudo apt-get install libcurl4-openssl-dev
 
     - name: Install fpm
-      uses: fortran-lang/setup-fpm@v3
+      uses: fortran-lang/setup-fpm@v5
       with:
-        fpm-version: 'v0.1.3'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build (debug)
       run: fpm build
