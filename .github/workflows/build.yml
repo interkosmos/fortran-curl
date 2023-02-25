@@ -8,6 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+        fpm-version: ['latest']
 
     env:
       FC: gfortran
@@ -44,7 +45,7 @@ jobs:
         sudo apt-get install libcurl4-openssl-dev
 
     - name: Install fpm
-      uses: fortran-lang/setup-fpm
+      uses: fortran-lang/setup-fpm@v3
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
