@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        fpm-version: ['latest']
+        fpm-version: ['current']
 
     env:
       FC: gfortran
