@@ -87,6 +87,20 @@ You can use ``fortran-curl`` in your *fpm* projects with:
 [dependencies]
 fortran-curl = { git = "https://github.com/interkosmos/fortran-curl.git" }
 ```
+## Contribute
+
+For smaller changes:
+
+1. Fork `the repository` on Github.
+2. Create a branch off **master**.
+3. Make your changes.
+4. Send a pull request.
+
+For larger changes:
+
+1. Join the [Discourse Group](https://fortran-lang.discourse.group/).
+2. Discuss your proposal on the mailing list.
+3. When consensus is reached, implement it as described above.
 
 ## Licence
 ISC
