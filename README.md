@@ -99,7 +99,7 @@ For smaller changes:
 For larger changes:
 
 1. Join the [Discourse Group](https://fortran-lang.discourse.group/).
-2. Discuss your proposal on the mailing list.
+2. Discuss your proposal on the Group.
 3. When consensus is reached, implement it as described above.
 
 ## Licence
