@@ -88,12 +88,11 @@ You can use ``fortran-curl`` in your *fpm* projects with:
 fortran-curl = { git = "https://github.com/interkosmos/fortran-curl.git" }
 ```
 ## Contribute
-
 For smaller changes:
 
-1. Fork `the repository` on Github.
+1. Fork this repository from GitHub.
 2. Create a branch off **master**.
-3. Make your changes.
+3. Commit your changes.
 4. Send a pull request.
 
 For larger changes:
