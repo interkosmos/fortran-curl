@@ -10,6 +10,12 @@ keywords = ["curl", "libcurl", "http", "gopher", "smtp", "imap", "dict"]
 [build]
 link = "curl"
 
+[library]
+source-dir = "src"
+
+[install]
+library = true
+
 [[example]]
 name = "dict"
 source-dir = "examples/dict"
