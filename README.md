@@ -57,11 +57,13 @@ $ make <name>
 | C Function Name       | Fortran Interface Name                                                | Bound |
 |-----------------------|-----------------------------------------------------------------------|-------|
 | `curl_easy_cleanup`   | `curl_easy_cleanup`                                                   | ✓     |
+| `curl_easy_escape`    | `curl_easy_escape`                                                    | ✓     |
 | `curl_easy_getinfo`   | `curl_easy_getinfo`, `curl_easy_getinfo_`                             | ✓     |
 | `curl_easy_init`      | `curl_easy_init`                                                      | ✓     |
 | `curl_easy_perform`   | `curl_easy_perform`                                                   | ✓     |
 | `curl_easy_setopt`    | `curl_easy_setopt`, `curl_easy_setopt_funptr`, `curl_easy_setopt_ptr` | ✓     |
 | `curl_easy_strerror`  | `curl_easy_strerror`                                                  | ✓     |
+| `curl_escape`         | `curl_escape`                                                         | ✓     |
 | `curl_slist_append`   | `curl_slist_append`                                                   | ✓     |
 | `curl_slist_free_all` | `curl_slist_free_all`                                                 | ✓     |
 | `curl_version_info`   | `curl_version_info`                                                   | ✓     |
