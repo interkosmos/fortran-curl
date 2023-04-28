@@ -1,7 +1,7 @@
 # fortran-curl
 A collection of ISO C binding interfaces to
 [libcurl](https://curl.haxx.se/libcurl/) for Fortran 2008. Compilation has been
-tested with GNU Fortran 12 and cURL 7.87.0. The library is also available on
+tested with GNU Fortran 12 and cURL 8.0.1. The library is also available on
 [MacPorts](https://ports.macports.org/port/fortran-curl/).
 
 ## Dependencies

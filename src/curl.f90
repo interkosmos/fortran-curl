@@ -12,9 +12,13 @@ module curl
 
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_LONG          = 0
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_OBJECTPOINT   = 10000
-    integer(kind=c_int), parameter, public :: CURLOPTTYPE_STRINGPOINT   = 10000
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_FUNCTIONPOINT = 20000
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_OFF_T         = 30000
+    integer(kind=c_int), parameter, public :: CURLOPTTYPE_BLOB          = 40000
+    integer(kind=c_int), parameter, public :: CURLOPTTYPE_STRINGPOINT   = CURLOPTTYPE_OBJECTPOINT
+    integer(kind=c_int), parameter, public :: CURLOPTTYPE_SLISTPOINT    = CURLOPTTYPE_OBJECTPOINT
+    integer(kind=c_int), parameter, public :: CURLOPTTYPE_CBPOINT       = CURLOPTTYPE_OBJECTPOINT
+    integer(kind=c_int), parameter, public :: CURLOPTTYPE_VALUES        = CURLOPTTYPE_LONG
 
     integer(kind=c_int), parameter, public :: CURLOPT_WRITEDATA                  = CURLOPTTYPE_OBJECTPOINT + 1
     integer(kind=c_int), parameter, public :: CURLOPT_URL                        = CURLOPTTYPE_OBJECTPOINT + 2
@@ -230,6 +234,90 @@ module curl
     integer(kind=c_int), parameter, public :: CURLOPT_PINNEDPUBLICKEY            = CURLOPTTYPE_OBJECTPOINT + 230
     integer(kind=c_int), parameter, public :: CURLOPT_UNIX_SOCKET_PATH           = CURLOPTTYPE_OBJECTPOINT + 231
     integer(kind=c_int), parameter, public :: CURLOPT_DEFAULT_PROTOCOL           = CURLOPTTYPE_STRINGPOINT + 238
+    integer(kind=c_int), parameter, public :: CURLOPT_STREAM_WEIGHT              = CURLOPTTYPE_LONG + 239
+    integer(kind=c_int), parameter, public :: CURLOPT_STREAM_DEPENDS             = CURLOPTTYPE_OBJECTPOINT + 240
+    integer(kind=c_int), parameter, public :: CURLOPT_STREAM_DEPENDS_E           = CURLOPTTYPE_OBJECTPOINT + 241
+    integer(kind=c_int), parameter, public :: CURLOPT_TFTP_NO_OPTIONS            = CURLOPTTYPE_LONG + 242
+    integer(kind=c_int), parameter, public :: CURLOPT_CONNECT_TO                 = CURLOPTTYPE_SLISTPOINT + 243
+    integer(kind=c_int), parameter, public :: CURLOPT_TCP_FASTOPEN               = CURLOPTTYPE_LONG + 244
+    integer(kind=c_int), parameter, public :: CURLOPT_KEEP_SENDING_ON_ERROR      = CURLOPTTYPE_LONG + 245
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_CAINFO               = CURLOPTTYPE_STRINGPOINT + 246
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_CAPATH               = CURLOPTTYPE_STRINGPOINT + 247
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSL_VERIFYPEER       = CURLOPTTYPE_LONG + 248
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSL_VERIFYHOST       = CURLOPTTYPE_LONG + 249
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSLVERSION           = CURLOPTTYPE_VALUES + 250
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_TLSAUTH_USERNAME     = CURLOPTTYPE_STRINGPOINT + 251
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_TLSAUTH_PASSWORD     = CURLOPTTYPE_STRINGPOINT + 252
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_TLSAUTH_TYPE         = CURLOPTTYPE_STRINGPOINT + 253
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSLCERT              = CURLOPTTYPE_STRINGPOINT + 254
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSLCERTTYPE          = CURLOPTTYPE_STRINGPOINT + 255
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSLKEY               = CURLOPTTYPE_STRINGPOINT + 256
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSLKEYTYPE           = CURLOPTTYPE_STRINGPOINT + 257
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_KEYPASSWD            = CURLOPTTYPE_STRINGPOINT + 258
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSL_CIPHER_LIST      = CURLOPTTYPE_STRINGPOINT + 259
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_CRLFILE              = CURLOPTTYPE_STRINGPOINT + 260
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSL_OPTIONS          = CURLOPTTYPE_LONG + 261
+    integer(kind=c_int), parameter, public :: CURLOPT_PRE_PROXY                  = CURLOPTTYPE_STRINGPOINT + 262
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_PINNEDPUBLICKEY      = CURLOPTTYPE_STRINGPOINT + 263
+    integer(kind=c_int), parameter, public :: CURLOPT_ABSTRACT_UNIX_SOCKET       = CURLOPTTYPE_STRINGPOINT + 264
+    integer(kind=c_int), parameter, public :: CURLOPT_SUPPRESS_CONNECT_HEADERS   = CURLOPTTYPE_LONG + 265
+    integer(kind=c_int), parameter, public :: CURLOPT_REQUEST_TARGET             = CURLOPTTYPE_STRINGPOINT + 266
+    integer(kind=c_int), parameter, public :: CURLOPT_SOCKS5_AUTH                = CURLOPTTYPE_LONG + 267
+    integer(kind=c_int), parameter, public :: CURLOPT_SSH_COMPRESSION            = CURLOPTTYPE_LONG + 268
+    integer(kind=c_int), parameter, public :: CURLOPT_MIMEPOST                   = CURLOPTTYPE_OBJECTPOINT + 269
+    integer(kind=c_int), parameter, public :: CURLOPT_TIMEVALUE_LARGE            = CURLOPTTYPE_OFF_T + 270
+    integer(kind=c_int), parameter, public :: CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS  = CURLOPTTYPE_LONG + 271
+    integer(kind=c_int), parameter, public :: CURLOPT_RESOLVER_START_FUNCTION    = CURLOPTTYPE_FUNCTIONPOINT + 272
+    integer(kind=c_int), parameter, public :: CURLOPT_RESOLVER_START_DATA        = CURLOPTTYPE_CBPOINT + 273
+    integer(kind=c_int), parameter, public :: CURLOPT_HAPROXYPROTOCOL            = CURLOPTTYPE_LONG + 274
+    integer(kind=c_int), parameter, public :: CURLOPT_DNS_SHUFFLE_ADDRESSES      = CURLOPTTYPE_LONG + 275
+    integer(kind=c_int), parameter, public :: CURLOPT_TLS13_CIPHERS              = CURLOPTTYPE_STRINGPOINT + 276
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_TLS13_CIPHERS        = CURLOPTTYPE_STRINGPOINT + 277
+    integer(kind=c_int), parameter, public :: CURLOPT_DISALLOW_USERNAME_IN_URL   = CURLOPTTYPE_LONG + 278
+    integer(kind=c_int), parameter, public :: CURLOPT_DOH_URL                    = CURLOPTTYPE_STRINGPOINT + 279
+    integer(kind=c_int), parameter, public :: CURLOPT_UPLOAD_BUFFERSIZE          = CURLOPTTYPE_LONG + 280
+    integer(kind=c_int), parameter, public :: CURLOPT_UPKEEP_INTERVAL_MS         = CURLOPTTYPE_LONG + 281
+    integer(kind=c_int), parameter, public :: CURLOPT_CURLU                      = CURLOPTTYPE_OBJECTPOINT + 282
+    integer(kind=c_int), parameter, public :: CURLOPT_TRAILERFUNCTION            = CURLOPTTYPE_FUNCTIONPOINT + 283
+    integer(kind=c_int), parameter, public :: CURLOPT_TRAILERDATA                = CURLOPTTYPE_CBPOINT + 284
+    integer(kind=c_int), parameter, public :: CURLOPT_HTTP09_ALLOWED             = CURLOPTTYPE_LONG + 285
+    integer(kind=c_int), parameter, public :: CURLOPT_ALTSVC_CTRL                = CURLOPTTYPE_LONG + 286
+    integer(kind=c_int), parameter, public :: CURLOPT_ALTSVC                     = CURLOPTTYPE_STRINGPOINT + 287
+    integer(kind=c_int), parameter, public :: CURLOPT_MAXAGE_CONN                = CURLOPTTYPE_LONG + 288
+    integer(kind=c_int), parameter, public :: CURLOPT_SASL_AUTHZID               = CURLOPTTYPE_STRINGPOINT + 289
+    integer(kind=c_int), parameter, public :: CURLOPT_MAIL_RCPT_ALLLOWFAILS      = CURLOPTTYPE_LONG + 290
+    integer(kind=c_int), parameter, public :: CURLOPT_SSLCERT_BLOB               = CURLOPTTYPE_BLOB + 291
+    integer(kind=c_int), parameter, public :: CURLOPT_SSLKEY_BLOB                = CURLOPTTYPE_BLOB + 292
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSLCERT_BLOB         = CURLOPTTYPE_BLOB + 293
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_SSLKEY_BLOB          = CURLOPTTYPE_BLOB + 294
+    integer(kind=c_int), parameter, public :: CURLOPT_ISSUERCERT_BLOB            = CURLOPTTYPE_BLOB + 295
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_ISSUERCERT           = CURLOPTTYPE_STRINGPOINT + 296
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_ISSUERCERT_BLOB      = CURLOPTTYPE_BLOB + 297
+    integer(kind=c_int), parameter, public :: CURLOPT_SSL_EC_CURVES              = CURLOPTTYPE_STRINGPOINT + 298
+    integer(kind=c_int), parameter, public :: CURLOPT_HSTS_CTRL                  = CURLOPTTYPE_LONG + 299
+    integer(kind=c_int), parameter, public :: CURLOPT_HSTS                       = CURLOPTTYPE_STRINGPOINT + 300
+    integer(kind=c_int), parameter, public :: CURLOPT_HSTSREADFUNCTION           = CURLOPTTYPE_FUNCTIONPOINT + 301
+    integer(kind=c_int), parameter, public :: CURLOPT_HSTSREADDATA               = CURLOPTTYPE_CBPOINT + 302
+    integer(kind=c_int), parameter, public :: CURLOPT_HSTSWRITEFUNCTION          = CURLOPTTYPE_FUNCTIONPOINT + 303
+    integer(kind=c_int), parameter, public :: CURLOPT_HSTSWRITEDATA              = CURLOPTTYPE_CBPOINT + 304
+    integer(kind=c_int), parameter, public :: CURLOPT_AWS_SIGV4                  = CURLOPTTYPE_STRINGPOINT + 305
+    integer(kind=c_int), parameter, public :: CURLOPT_DOH_SSL_VERIFYPEER         = CURLOPTTYPE_LONG + 306
+    integer(kind=c_int), parameter, public :: CURLOPT_DOH_SSL_VERIFYHOST         = CURLOPTTYPE_LONG + 307
+    integer(kind=c_int), parameter, public :: CURLOPT_DOH_SSL_VERIFYSTATUS       = CURLOPTTYPE_LONG + 308
+    integer(kind=c_int), parameter, public :: CURLOPT_CAINFO_BLOB                = CURLOPTTYPE_BLOB + 309
+    integer(kind=c_int), parameter, public :: CURLOPT_PROXY_CAINFO_BLOB          = CURLOPTTYPE_BLOB + 310
+    integer(kind=c_int), parameter, public :: CURLOPT_SSH_HOST_PUBLIC_KEY_SHA256 = CURLOPTTYPE_STRINGPOINT + 311
+    integer(kind=c_int), parameter, public :: CURLOPT_PREREQFUNCTION             = CURLOPTTYPE_FUNCTIONPOINT + 312
+    integer(kind=c_int), parameter, public :: CURLOPT_PREREQDATA                 = CURLOPTTYPE_CBPOINT + 313
+    integer(kind=c_int), parameter, public :: CURLOPT_MAXLIFETIME_CONN           = CURLOPTTYPE_LONG + 314
+    integer(kind=c_int), parameter, public :: CURLOPT_MIME_OPTIONS               = CURLOPTTYPE_LONG + 315
+    integer(kind=c_int), parameter, public :: CURLOPT_SSH_HOSTKEYFUNCTION        = CURLOPTTYPE_FUNCTIONPOINT + 316
+    integer(kind=c_int), parameter, public :: CURLOPT_SSH_HOSTKEYDATA            = CURLOPTTYPE_CBPOINT + 317
+    integer(kind=c_int), parameter, public :: CURLOPT_PROTOCOLS_STR              = CURLOPTTYPE_STRINGPOINT + 318
+    integer(kind=c_int), parameter, public :: CURLOPT_REDIR_PROTOCOLS_STR        = CURLOPTTYPE_STRINGPOINT + 319
+    integer(kind=c_int), parameter, public :: CURLOPT_WS_OPTIONS                 = CURLOPTTYPE_LONG + 320
+    integer(kind=c_int), parameter, public :: CURLOPT_CA_CACHE_TIMEOUT           = CURLOPTTYPE_LONG + 321
+    integer(kind=c_int), parameter, public :: CURLOPT_QUICK_EXIT                 = CURLOPTTYPE_LONG + 322
 
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_WHATEVER = 0
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_V4       = 1
@@ -266,6 +354,16 @@ module curl
     integer(kind=c_int), parameter, public :: CURLSSH_AUTH_AGENT     = shiftl(1, 4)
     integer(kind=c_int), parameter, public :: CURLSSH_AUTH_GSSAPI    = shiftl(1, 5)
     integer(kind=c_int), parameter, public :: CURLSSH_AUTH_DEFAULT   = CURLSSH_AUTH_ANY
+
+    integer(kind=c_int), parameter, public :: CURL_SSLVERSION_DEFAULT = 0
+    integer(kind=c_int), parameter, public :: CURL_SSLVERSION_TLSv1   = 1
+    integer(kind=c_int), parameter, public :: CURL_SSLVERSION_SSLv2   = 2
+    integer(kind=c_int), parameter, public :: CURL_SSLVERSION_SSLv3   = 3
+    integer(kind=c_int), parameter, public :: CURL_SSLVERSION_TLSv1_0 = 4
+    integer(kind=c_int), parameter, public :: CURL_SSLVERSION_TLSv1_1 = 5
+    integer(kind=c_int), parameter, public :: CURL_SSLVERSION_TLSv1_2 = 6
+    integer(kind=c_int), parameter, public :: CURL_SSLVERSION_TLSv1_3 = 7
+    integer(kind=c_int), parameter, public :: CURL_SSLVERSION_LAST    = 8
 
     integer(kind=c_int), parameter, public :: CURLGSSAPI_DELEGATION_NONE        = 0
     integer(kind=c_int), parameter, public :: CURLGSSAPI_DELEGATION_POLICY_FLAG = shiftl(1, 0)
@@ -375,12 +473,28 @@ module curl
     integer(kind=c_int), parameter, public :: CURLE_LAST                     = 100 ! never use this
 
     ! CURLversion
-    integer(kind=c_int), parameter, public :: CURLVERSION_FIRST  = 0
-    integer(kind=c_int), parameter, public :: CURLVERSION_SECOND = 1
-    integer(kind=c_int), parameter, public :: CURLVERSION_THIRD  = 2
-    integer(kind=c_int), parameter, public :: CURLVERSION_FOURTH = 3
-    integer(kind=c_int), parameter, public :: CURLVERSION_FIFTH  = 4
-    integer(kind=c_int), parameter, public :: CURLVERSION_LAST   = 5
+    integer(kind=c_int), parameter, public :: CURLVERSION_FIRST    = 0
+    integer(kind=c_int), parameter, public :: CURLVERSION_SECOND   = 1
+    integer(kind=c_int), parameter, public :: CURLVERSION_THIRD    = 2
+    integer(kind=c_int), parameter, public :: CURLVERSION_FOURTH   = 3
+    integer(kind=c_int), parameter, public :: CURLVERSION_FIFTH    = 4
+    integer(kind=c_int), parameter, public :: CURLVERSION_SIXTH    = 5
+    integer(kind=c_int), parameter, public :: CURLVERSION_SEVENTH  = 6
+    integer(kind=c_int), parameter, public :: CURLVERSION_EIGHTH   = 7
+    integer(kind=c_int), parameter, public :: CURLVERSION_NINTH    = 8
+    integer(kind=c_int), parameter, public :: CURLVERSION_TENTH    = 9
+    integer(kind=c_int), parameter, public :: CURLVERSION_ELEVENTH = 10
+    integer(kind=c_int), parameter, public :: CURLVERSION_LAST     = 11
+
+    ! curl_infotype
+    integer(kind=c_int), parameter, public :: CURLINFO_TEXT         = 0
+    integer(kind=c_int), parameter, public :: CURLINFO_HEADER_IN    = 1
+    integer(kind=c_int), parameter, public :: CURLINFO_HEADER_OUT   = 2
+    integer(kind=c_int), parameter, public :: CURLINFO_DATA_IN      = 3
+    integer(kind=c_int), parameter, public :: CURLINFO_DATA_OUT     = 4
+    integer(kind=c_int), parameter, public :: CURLINFO_SSL_DATA_IN  = 5
+    integer(kind=c_int), parameter, public :: CURLINFO_SSL_DATA_OUT = 6
+    integer(kind=c_int), parameter, public :: CURLINFO_END          = 7
 
     integer(kind=c_int), parameter, public :: CURLINFO_STRING   = int(z'100000')
     integer(kind=c_int), parameter, public :: CURLINFO_LONG     = int(z'200000')
@@ -467,7 +581,7 @@ module curl
     integer(kind=c_int), parameter, public :: CURLINFO_LASTONE                   = 62
 
     ! curl_version_info_data
-    type, bind(c), public :: curl_version
+    type, bind(c), public :: curl_version_info_data
         integer(kind=c_int)  :: age
         type(c_ptr)          :: version
         integer(kind=c_int)  :: version_num
@@ -487,9 +601,26 @@ module curl
         integer(kind=c_int)  :: nghttp2_ver_num
         type(c_ptr)          :: nghttp2_version
         type(c_ptr)          :: quic_version
-    end type curl_version
+        type(c_ptr)          :: cainfo
+        type(c_ptr)          :: capat
+        integer(kind=c_int)  :: zstd_ver_num
+        type(c_ptr)          :: zstd_version
+        type(c_ptr)          :: hyper_version
+        type(c_ptr)          :: gsasl_version
+        type(c_ptr)          :: feature_names
+    end type curl_version_info_data
 
     interface
+        ! char *curl_easy_escape(CURL *handle, const char *string, int length)
+        function curl_easy_escape_(curl, string, length) bind(c, name='curl_easy_escape')
+            import :: c_char, c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: curl
+            character(kind=c_char), intent(in)        :: string
+            integer(kind=c_int),    intent(in), value :: length
+            type(c_ptr)                               :: curl_easy_escape_
+        end function curl_easy_escape_
+
         ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
         function curl_easy_getinfo_(curl, option, parameter) bind(c, name='curl_easy_getinfo')
             import :: c_int, c_ptr
@@ -544,6 +675,15 @@ module curl
             type(c_funptr),      intent(in), value :: parameter
             integer(kind=c_int)                    :: curl_easy_setopt_c_funptr
         end function curl_easy_setopt_c_funptr
+
+        ! char *curl_escape(const char *string, int length)
+        function curl_escape_(string, length) bind(c, name='curl_escape')
+            import :: c_char, c_int, c_ptr
+            implicit none
+            character(kind=c_char), intent(in)        :: string
+            integer(kind=c_int),    intent(in), value :: length
+            type(c_ptr)                               :: curl_escape_
+        end function curl_escape_
 
         ! struct curl_slist *curl_slist_append(struct curl_slist *list, const char *string)
         function curl_slist_append(list, string) bind(c, name='curl_slist_append')
@@ -626,6 +766,7 @@ module curl
 
     public :: c_f_str_ptr
     public :: curl_easy_cleanup
+    public :: curl_easy_escape
     public :: curl_easy_getinfo
     public :: curl_easy_getinfo_
     public :: curl_easy_init
@@ -637,6 +778,7 @@ module curl
     public :: curl_easy_setopt_long
     public :: curl_easy_setopt_ptr
     public :: curl_easy_strerror
+    public :: curl_escape
     public :: curl_slist_append
     public :: curl_slist_free_all
     public :: curl_version_info
@@ -653,6 +795,33 @@ contains
             copy(i:i) = a(i)
         end do
     end function copy
+
+    ! char *curl_easy_escape(CURL *handle, const char *string, int length)
+    function curl_easy_escape(curl, string, length) result(escaped)
+        type(c_ptr),      intent(in)           :: curl
+        character(len=*), intent(in)           :: string
+        integer,          intent(in), optional :: length
+        character(len=:), allocatable          :: escaped
+
+        integer     :: n
+        type(c_ptr) :: ptr
+
+        if (present(length)) then
+            n = length
+        else
+            n = len(string)
+        end if
+
+        ptr = c_null_ptr
+        ptr = curl_easy_escape_(curl, string, n)
+
+        if (.not. c_associated(ptr)) then
+            escaped = ''
+            return
+        end if
+
+        call c_f_str_ptr(ptr, escaped)
+    end function curl_easy_escape
 
     ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
     function curl_easy_getinfo_char(curl, option, parameter) result(rc)
@@ -774,14 +943,39 @@ contains
         call c_f_str_ptr(ptr, str)
     end function curl_easy_strerror
 
+    ! char *curl_escape(const char *string, int length)
+    function curl_escape(string, length) result(escaped)
+        character(len=*), intent(in)           :: string
+        integer,          intent(in), optional :: length
+        character(len=:), allocatable          :: escaped
+
+        integer     :: n
+        type(c_ptr) :: ptr
+
+        if (present(length)) then
+            n = length
+        else
+            n = len(string)
+        end if
+
+        ptr = c_null_ptr
+        ptr = curl_escape_(string, n)
+
+        if (.not. c_associated(ptr)) then
+            escaped = ''
+            return
+        end if
+
+        call c_f_str_ptr(ptr, escaped)
+    end function curl_escape
+
     ! curl_version_info_data *curl_version_info(CURLversion age)
     function curl_version_info(age)
         !! Wrapper for `curl_version_info_()` that converts the returned C
-        !! pointer to Fortran pointer of derived type `curl_version` (a.k.a. C
-        !! struct `curl_version_info_data`).
-        integer, intent(in)         :: age
-        type(curl_version), pointer :: curl_version_info
-        type(c_ptr)                 :: ptr
+        !! pointer to Fortran pointer of derived type `curl_version_info_data`.
+        integer, intent(in)                   :: age
+        type(curl_version_info_data), pointer :: curl_version_info
+        type(c_ptr)                           :: ptr
 
         ptr = curl_version_info_(age)
 
