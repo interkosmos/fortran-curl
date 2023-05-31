@@ -369,6 +369,13 @@ module curl
     integer(kind=c_int), parameter, public :: CURLGSSAPI_DELEGATION_POLICY_FLAG = shiftl(1, 0)
     integer(kind=c_int), parameter, public :: CURLGSSAPI_DELEGATION_FLAG        = shiftl(1, 1)
 
+    ! curl_usessl
+    integer(kind=c_int), parameter, public :: CURLUSESSL_NONE    = 0
+    integer(kind=c_int), parameter, public :: CURLUSESSL_TRY     = 1
+    integer(kind=c_int), parameter, public :: CURLUSESSL_CONTROL = 2
+    integer(kind=c_int), parameter, public :: CURLUSESSL_ALL     = 3
+    integer(kind=c_int), parameter, public :: CURLUSESSL_LAST    = 4
+
     ! CURLcode
     integer(kind=c_int), parameter, public :: CURLE_OK                       = 0
     integer(kind=c_int), parameter, public :: CURLE_UNSUPPORTED_PROTOCOL     = 1
