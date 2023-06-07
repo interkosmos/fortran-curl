@@ -587,6 +587,12 @@ module curl
     integer(kind=c_int), parameter, public :: CURLINFO_CAPATH                    = CURLINFO_STRING + 62
     integer(kind=c_int), parameter, public :: CURLINFO_LASTONE                   = 62
 
+    ! curl_slist
+    type, bind(c), public :: curl_slist
+        type(c_ptr) :: data
+        type(c_ptr) :: next
+    end type curl_slist
+
     ! curl_version_info_data
     type, bind(c), public :: curl_version_info_data
         integer(kind=c_int)  :: age
