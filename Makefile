@@ -5,10 +5,10 @@ FC      = gfortran
 CC      = gcc
 AR      = ar
 PREFIX  = /usr/local
-DEBUG   = #-ggdb3 -O0
+DEBUG   = #-ggdb3 -O0 -fcheck=all -fmax-errors=1 -Wall
 
-FFLAGS  = $(DEBUG) -Wall -Wno-unused-dummy-argument -std=f2008 -fmax-errors=1 -fcheck=all
-CFLAGS  = $(DEBUG) -Wall
+FFLAGS  = $(DEBUG) -std=f2008
+CFLAGS  =
 LDFLAGS = -I$(PREFIX)/include/ -L$(PREFIX)/lib/
 LDLIBS  = -lcurl
 ARFLAGS = rcs
