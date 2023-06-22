@@ -615,7 +615,7 @@ module curl
         type(c_ptr)          :: nghttp2_version
         type(c_ptr)          :: quic_version
         type(c_ptr)          :: cainfo
-        type(c_ptr)          :: capat
+        type(c_ptr)          :: capath
         integer(kind=c_int)  :: zstd_ver_num
         type(c_ptr)          :: zstd_version
         type(c_ptr)          :: hyper_version
@@ -660,6 +660,16 @@ module curl
         end function curl_easy_perform
 
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
+        function curl_easy_setopt_c_char(curl, option, parameter) bind(c, name='curl_easy_setopt')
+            import :: c_char, c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: curl
+            integer(kind=c_int),    intent(in), value :: option
+            character(kind=c_char), intent(in)        :: parameter
+            integer(kind=c_int)                       :: curl_easy_setopt_c_char
+        end function curl_easy_setopt_c_char
+
+        ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
         function curl_easy_setopt_c_long(curl, option, parameter) bind(c, name='curl_easy_setopt')
             import :: c_int, c_long, c_ptr
             implicit none
@@ -689,6 +699,25 @@ module curl
             integer(kind=c_int)                    :: curl_easy_setopt_c_funptr
         end function curl_easy_setopt_c_funptr
 
+        ! const char *curl_easy_strerror(CURLcode code)
+        function curl_easy_strerror_(code) bind(c, name='curl_easy_strerror')
+            import :: c_int, c_ptr
+            implicit none
+            integer(kind=c_int), intent(in), value :: code
+            type(c_ptr)                            :: curl_easy_strerror_
+        end function curl_easy_strerror_
+
+        ! char *curl_easy_unescape(CURL *handle, const char *string, int length, int *outlength)
+        function curl_easy_unescape_(curl, string, length, outlength) bind(c, name='curl_easy_unescape')
+            import :: c_char, c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: curl
+            character(kind=c_char), intent(in)        :: string
+            integer(kind=c_int),    intent(in), value :: length
+            integer(kind=c_int),    intent(out)       :: outlength
+            type(c_ptr)                               :: curl_easy_unescape_
+        end function curl_easy_unescape_
+
         ! char *curl_escape(const char *string, int length)
         function curl_escape_(string, length) bind(c, name='curl_escape')
             import :: c_char, c_int, c_ptr
@@ -698,22 +727,120 @@ module curl
             type(c_ptr)                               :: curl_escape_
         end function curl_escape_
 
+        ! curl_mimepart *curl_mime_addpart(curl_mime *mime)
+        function curl_mime_addpart(curl) bind(c, name='curl_mime_addpart')
+            import :: c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: curl
+            type(c_ptr)                    :: curl_mime_addpart
+        end function curl_mime_addpart
+
+        ! CURLcode curl_mime_data(curl_mimepart *part, const char *data, size_t datasize)
+        function curl_mime_data(part, data, datasize) bind(c, name='curl_mime_data')
+            import :: c_char, c_int, c_ptr, c_size_t
+            implicit none
+            type(c_ptr),            intent(in), value :: part
+            character(kind=c_char), intent(in)        :: data
+            integer(kind=c_size_t), intent(in), value :: datasize
+            integer(kind=c_int)                       :: curl_mime_data
+        end function curl_mime_data
+
+        ! CURLcode curl_mime_encoder(curl_mimepart *part, const char *encoding)
+        function curl_mime_encoder_(part, encoding) bind(c, name='curl_mime_encoder')
+            import :: c_char, c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: part
+            character(kind=c_char), intent(in)        :: encoding
+            integer(kind=c_int)                       :: curl_mime_encoder_
+        end function curl_mime_encoder_
+
+        ! CURLcode curl_mime_filedata(curl_mimepart *part, const char *filename)
+        function curl_mime_filedata_(part, filename) bind(c, name='curl_mime_filedata')
+            import :: c_char, c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: part
+            character(kind=c_char), intent(in)        :: filename
+            integer(kind=c_int)                       :: curl_mime_filedata_
+        end function curl_mime_filedata_
+
+        ! CURLcode curl_mime_filename(curl_mimepart *part, const char *filename)
+        function curl_mime_filename_(part, filename) bind(c, name='curl_mime_filename')
+            import :: c_char, c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: part
+            character(kind=c_char), intent(in)        :: filename
+            integer(kind=c_int)                       :: curl_mime_filename_
+        end function curl_mime_filename_
+
+        ! CURLcode curl_mime_headers(curl_mimepart *part, struct curl_slist *headers, int take_ownership)
+        function curl_mime_headers(part, headers, take_ownership) bind(c, name='curl_mime_headers')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr),         intent(in), value :: part
+            type(c_ptr),         intent(in), value :: headers
+            integer(kind=c_int), intent(in), value :: take_ownership
+            integer(kind=c_int)                    :: curl_mime_headers
+        end function curl_mime_headers
+
+        ! curl_mime *curl_mime_init(CURL *easy)
+        function curl_mime_init(curl) bind(c, name='curl_mime_init')
+            import :: c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: curl
+            type(c_ptr)                    :: curl_mime_init
+        end function curl_mime_init
+
+        ! CURLcode curl_mime_name(curl_mimepart *part, const char *name)
+        function curl_mime_name_(part, name) bind(c, name='curl_mime_name')
+            import :: c_char, c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: part
+            character(kind=c_char), intent(in)        :: name
+            integer(kind=c_int)                       :: curl_mime_name_
+        end function curl_mime_name_
+
+        ! CURLcode curl_mime_subparts(curl_mimepart *part, curl_mime *subparts)
+        function curl_mime_subparts(part, subparts) bind(c, name='curl_mime_subparts')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: part
+            type(c_ptr), intent(in), value :: subparts
+            integer(kind=c_int)            :: curl_mime_subparts
+        end function curl_mime_subparts
+
+        ! CURLcode curl_mime_type(curl_mimepart *part, const char *mimetype)
+        function curl_mime_type_(part, mimetype) bind(c, name='curl_mime_type')
+            import :: c_char, c_int, c_ptr
+            implicit none
+            type(c_ptr),            intent(in), value :: part
+            character(kind=c_char), intent(in)        :: mimetype
+            integer(kind=c_int)                       :: curl_mime_type_
+        end function curl_mime_type_
+
         ! struct curl_slist *curl_slist_append(struct curl_slist *list, const char *string)
-        function curl_slist_append(list, string) bind(c, name='curl_slist_append')
+        function curl_slist_append_(list, string) bind(c, name='curl_slist_append')
             import :: c_char, c_ptr
             implicit none
             type(c_ptr),            intent(in), value :: list
             character(kind=c_char), intent(in)        :: string
-            type(c_ptr)                               :: curl_slist_append
-        end function curl_slist_append
+            type(c_ptr)                               :: curl_slist_append_
+        end function curl_slist_append_
 
-        ! const char *curl_easy_strerror(CURLcode code)
-        function curl_easy_strerror_(code) bind(c, name='curl_easy_strerror')
-            import :: c_int, c_ptr
+        ! char *curl_unescape(const char *string, int length)
+        function curl_unescape_(string, length) bind(c, name='curl_unescape')
+            import :: c_char, c_int, c_ptr
             implicit none
-            integer(kind=c_int), intent(in), value :: code
-            type(c_ptr)                            :: curl_easy_strerror_
-        end function curl_easy_strerror_
+            character(kind=c_char), intent(in)        :: string
+            integer(kind=c_int),    intent(in), value :: length
+            type(c_ptr)                               :: curl_unescape_
+        end function curl_unescape_
+
+        ! char *curl_version(void)
+        function curl_version_() bind(c, name='curl_version')
+            import :: c_ptr
+            implicit none
+            type(c_ptr) :: curl_version_
+        end function curl_version_
 
         ! curl_version_info_data *curl_version_info(CURLversion age)
         function curl_version_info_(age) bind(c, name='curl_version_info')
@@ -729,6 +856,13 @@ module curl
             implicit none
             type(c_ptr), intent(in), value :: curl
         end subroutine curl_easy_cleanup
+
+        ! void curl_mime_free(curl_mime *mime)
+        subroutine curl_mime_free(mime) bind(c, name='curl_mime_free')
+            import :: c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: mime
+        end subroutine curl_mime_free
 
         ! void curl_slist_free_all(struct curl_slist *list)
         subroutine curl_slist_free_all(list) bind(c, name='curl_slist_free_all')
@@ -760,16 +894,15 @@ module curl
     end interface
 
     interface curl_easy_getinfo
-        ! Fortran 2008 generic interface `curl_easy_getinfo()`.
+        !! Fortran 2008 generic interface `curl_easy_getinfo()`.
         module procedure :: curl_easy_getinfo_char
         module procedure :: curl_easy_getinfo_double
-        module procedure :: curl_easy_getinfo_int
         module procedure :: curl_easy_getinfo_long
         module procedure :: curl_easy_getinfo_ptr
     end interface
 
     interface curl_easy_setopt
-        ! Fortran 2008 generic interface `curl_easy_setopt()`.
+        !! Fortran 2008 generic interface `curl_easy_setopt()`.
         module procedure :: curl_easy_setopt_char
         module procedure :: curl_easy_setopt_funptr
         module procedure :: curl_easy_setopt_int
@@ -781,7 +914,6 @@ module curl
     public :: curl_easy_cleanup
     public :: curl_easy_escape
     public :: curl_easy_getinfo
-    public :: curl_easy_getinfo_
     public :: curl_easy_init
     public :: curl_easy_perform
     public :: curl_easy_setopt
@@ -791,9 +923,23 @@ module curl
     public :: curl_easy_setopt_long
     public :: curl_easy_setopt_ptr
     public :: curl_easy_strerror
+    public :: curl_easy_unescape
     public :: curl_escape
+    public :: curl_mime_addpart
+    public :: curl_mime_data
+    public :: curl_mime_encoder
+    public :: curl_mime_filedata
+    public :: curl_mime_filename
+    public :: curl_mime_free
+    public :: curl_mime_headers
+    public :: curl_mime_init
+    public :: curl_mime_name
+    public :: curl_mime_subparts
+    public :: curl_mime_type
     public :: curl_slist_append
     public :: curl_slist_free_all
+    public :: curl_unescape
+    public :: curl_version
     public :: curl_version_info
     public :: curl_version_now
 
@@ -804,7 +950,7 @@ contains
         character(len=size(a)) :: copy
         integer(kind=i8)       :: i
 
-        do i = 1, size(a)
+        do i = 1, size(a, kind=i8)
             copy(i:i) = a(i)
         end do
     end function copy
@@ -842,38 +988,35 @@ contains
         integer,                       intent(in)  :: option
         character(len=:), allocatable, intent(out) :: parameter
         integer                                    :: rc
-        type(c_ptr), target                        :: ptr
+
+        type(c_ptr), target :: ptr
 
         ptr = c_null_ptr
         rc = curl_easy_getinfo_(curl, option, c_loc(ptr))
-        if (rc == CURLE_OK .and. c_associated(ptr)) call c_f_str_ptr(ptr, parameter)
+
+        if (rc /= CURLE_OK .or. .not. c_associated(ptr)) then
+            parameter = ''
+            return
+        end if
+
+        call c_f_str_ptr(ptr, parameter)
     end function curl_easy_getinfo_char
 
     ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
     function curl_easy_getinfo_double(curl, option, parameter) result(rc)
-        type(c_ptr),           intent(in)  :: curl
-        integer,               intent(in)  :: option
-        real(kind=r8), target, intent(out) :: parameter
-        integer                            :: rc
+        type(c_ptr),                 intent(in)  :: curl
+        integer,                     intent(in)  :: option
+        real(kind=c_double), target, intent(out) :: parameter
+        integer                                  :: rc
 
         rc = curl_easy_getinfo_(curl, option, c_loc(parameter))
     end function curl_easy_getinfo_double
 
     ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
-    function curl_easy_getinfo_int(curl, option, parameter) result(rc)
-        type(c_ptr),              intent(in)  :: curl
-        integer    ,              intent(in)  :: option
-        integer(kind=i4), target, intent(out) :: parameter
-        integer                               :: rc
-
-        rc = curl_easy_getinfo_(curl, option, c_loc(parameter))
-    end function curl_easy_getinfo_int
-
-    ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
     function curl_easy_getinfo_long(curl, option, parameter) result(rc)
-        type(c_ptr),              intent(in)  :: curl
-        integer,                  intent(in)  :: option
-        integer(kind=i8), target, intent(out) :: parameter
+        type(c_ptr),                  intent(in)  :: curl
+        integer,                      intent(in)  :: option
+        integer(kind=c_long), target, intent(out) :: parameter
         integer                               :: rc
 
         rc = curl_easy_getinfo_(curl, option, c_loc(parameter))
@@ -891,12 +1034,12 @@ contains
 
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
     function curl_easy_setopt_char(curl, option, parameter) result(rc)
-        type(c_ptr),              intent(in) :: curl
-        integer,                  intent(in) :: option
-        character(len=*), target, intent(in) :: parameter
-        integer                              :: rc
+        type(c_ptr),      intent(in) :: curl
+        integer,          intent(in) :: option
+        character(len=*), intent(in) :: parameter
+        integer                      :: rc
 
-        rc = curl_easy_setopt_c_ptr(curl, option, c_loc(parameter))
+        rc = curl_easy_setopt_c_char(curl, option, parameter // c_null_char)
     end function curl_easy_setopt_char
 
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
@@ -956,6 +1099,36 @@ contains
         call c_f_str_ptr(ptr, str)
     end function curl_easy_strerror
 
+    ! char *curl_easy_unescape(CURL *handle, const char *string, int length, int *outlength)
+    function curl_easy_unescape(curl, string, length, outlength) result(unescaped)
+        type(c_ptr),      intent(in)            :: curl
+        character(len=*), intent(in)            :: string
+        integer,          intent(in),  optional :: length
+        integer,          intent(out), optional :: outlength
+        character(len=:), allocatable           :: unescaped
+
+        integer     :: n, o
+        type(c_ptr) :: ptr
+
+        if (present(length)) then
+            n = length
+        else
+            n = len(string)
+        end if
+
+        ptr = c_null_ptr
+        ptr = curl_easy_unescape_(curl, string, n, o)
+
+        if (present(outlength)) outlength = o
+
+        if (.not. c_associated(ptr)) then
+            unescaped = ''
+            return
+        end if
+
+        call c_f_str_ptr(ptr, unescaped, int(o, kind=i8))
+    end function curl_easy_unescape
+
     ! char *curl_escape(const char *string, int length)
     function curl_escape(string, length) result(escaped)
         character(len=*), intent(in)           :: string
@@ -981,6 +1154,101 @@ contains
 
         call c_f_str_ptr(ptr, escaped)
     end function curl_escape
+
+    ! CURLcode curl_mime_encoder(curl_mimepart *part, const char *encoding)
+    function curl_mime_encoder(part, encoding) result(rc)
+        type(c_ptr),      intent(in) :: part
+        character(len=*), intent(in) :: encoding
+        integer                      :: rc
+
+        rc = curl_mime_encoder_(part, encoding // c_null_char)
+    end function curl_mime_encoder
+
+    ! CURLcode curl_mime_filedata(curl_mimepart *part, const char *filename)
+    function curl_mime_filedata(part, filename) result(rc)
+        type(c_ptr),      intent(in) :: part
+        character(len=*), intent(in) :: filename
+        integer                      :: rc
+
+        rc = curl_mime_filedata_(part, filename // c_null_char)
+    end function curl_mime_filedata
+
+    ! CURLcode curl_mime_filename(curl_mimepart *part, const char *filename)
+    function curl_mime_filename(part, filename) result(rc)
+        type(c_ptr),      intent(in) :: part
+        character(len=*), intent(in) :: filename
+        integer                      :: rc
+
+        rc = curl_mime_filename_(part, filename // c_null_char)
+    end function curl_mime_filename
+
+    ! CURLcode curl_mime_name(curl_mimepart *part, const char *name)
+    function curl_mime_name(part, name) result(rc)
+        type(c_ptr),      intent(in) :: part
+        character(len=*), intent(in) :: name
+        integer                      :: rc
+
+        rc = curl_mime_name_(part, name // c_null_char)
+    end function curl_mime_name
+
+    ! CURLcode curl_mime_type(curl_mimepart *part, const char *mimetype)
+    function curl_mime_type(part, mimetype) result(rc)
+        type(c_ptr),      intent(in) :: part
+        character(len=*), intent(in) :: mimetype
+        integer                      :: rc
+
+        rc = curl_mime_type_(part, mimetype // c_null_char)
+    end function curl_mime_type
+
+    ! char *curl_unescape(const char *string, int length)
+    function curl_unescape(string, length) result(unescaped)
+        character(len=*), intent(in)           :: string
+        integer,          intent(in), optional :: length
+        character(len=:), allocatable          :: unescaped
+
+        integer     :: n
+        type(c_ptr) :: ptr
+
+        if (present(length)) then
+            n = length
+        else
+            n = len(string)
+        end if
+
+        ptr = c_null_ptr
+        ptr = curl_unescape_(string, n)
+
+        if (.not. c_associated(ptr)) then
+            unescaped = ''
+            return
+        end if
+
+        call c_f_str_ptr(ptr, unescaped)
+    end function curl_unescape
+
+    ! struct curl_slist *curl_slist_append(struct curl_slist *list, const char *string)
+    function curl_slist_append(list, string) result(ptr)
+        type(c_ptr),      intent(in) :: list
+        character(len=*), intent(in) :: string
+        type(c_ptr)                  :: ptr
+
+        ptr = curl_slist_append_(list, string // c_null_char)
+    end function curl_slist_append
+
+    ! char *curl_version(void)
+    function curl_version()
+        character(len=:), allocatable :: curl_version
+        type(c_ptr)                   :: ptr
+
+        ptr = curl_version_()
+
+        if (.not. c_associated(ptr)) then
+            curl_version = ''
+            return
+        end if
+
+        call c_f_str_ptr(ptr, curl_version)
+    end function curl_version
 
     ! curl_version_info_data *curl_version_info(CURLversion age)
     function curl_version_info(age)

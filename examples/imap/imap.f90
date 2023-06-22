@@ -7,7 +7,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback_imap
+module imap_callback
     use, intrinsic :: iso_c_binding
     use :: curl, only: c_f_str_ptr
     implicit none
@@ -36,13 +36,12 @@ contains
         write (*, '(a)', advance='no') str
         write_callback = nmemb
     end function write_callback
-end module callback_imap
+end module imap_callback
 
 program main
     use, intrinsic :: iso_c_binding
-    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
-    use :: callback_imap
+    use :: imap_callback
     implicit none
 
     character(len=*), parameter :: URL      = 'imaps://example.com' ! IMAP server (SSL).
@@ -54,22 +53,22 @@ program main
 
     curl_ptr = curl_easy_init()
 
-    if (c_associated(curl_ptr)) then
-        ! Set curl options.
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            URL // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_USERNAME,       USERNAME // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_PASSWORD,       PASSWORD // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_CUSTOMREQUEST,  'EXAMINE INBOX' // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYPEER, int(1, kind=i8))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYHOST, int(1, kind=i8))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,  c_funloc(write_callback))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        int(1, kind=i8))
+    if (.not. c_associated(curl_ptr)) stop 'Error: curl_easy_init() failed'
 
-        ! Perform request..
-        if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
-            print '(a)', 'Error: curl_easy_perform() failed'
-        end if
+    ! Set curl options.
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            URL)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_USERNAME,       USERNAME)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_PASSWORD,       PASSWORD)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_CUSTOMREQUEST,  'EXAMINE INBOX')
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYPEER, 1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYHOST, 1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,  c_funloc(write_callback))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        1)
 
-        call curl_easy_cleanup(curl_ptr)
+    ! Perform request..
+    if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
+        print '(a)', 'Error: curl_easy_perform() failed'
     end if
+
+    call curl_easy_cleanup(curl_ptr)
 end program main

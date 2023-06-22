@@ -4,7 +4,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback_gopher
+module gopher_callback
     use :: curl, only: c_f_str_ptr
     implicit none
     private
@@ -44,12 +44,12 @@ contains
         deallocate (tmp)
         response_callback = nmemb
     end function response_callback
-end module callback_gopher
+end module gopher_callback
 
 module gopher
     implicit none
     private
-    character(len=1), parameter :: CRLF = new_line('A')
+    character, parameter :: NL = new_line('A')
 
     type, public :: gopher_item_type
         character(len=1)              :: item_type
@@ -96,13 +96,13 @@ contains
         integer                             :: i, n, rc
 
         ! Number of lines in Gopher map.
-        n = count_sub_string(string, CRLF) + 1
+        n = count_sub_string(string, NL) + 1
 
         allocate (lines(n))
         allocate (items(n))
 
         ! Split file into lines.
-        call split(string, lines, CRLF)
+        call split(string, lines, NL)
 
         ! Tokenise the lines.
         do i = 1, n
@@ -150,13 +150,14 @@ end module gopher
 
 program main
     use, intrinsic :: iso_c_binding
-    use :: callback_gopher
+    use :: gopher_callback
     use :: curl
     use :: gopher
     implicit none
 
-    character(len=*), parameter         :: DEFAULT_PROTOCOL = 'gopher'
-    character(len=*), parameter         :: DEFAULT_URL      = 'gopher://gopher.floodgap.com/'
+    character(len=*), parameter :: DEFAULT_PROTOCOL = 'gopher'
+    character(len=*), parameter :: DEFAULT_URL      = 'gopher://gopher.floodgap.com/'
+
     integer                             :: i, rc
     type(c_ptr)                         :: curl_ptr
     type(gopher_item_type), allocatable :: items(:)
@@ -164,29 +165,26 @@ program main
 
     curl_ptr = curl_easy_init()
 
-    if (c_associated(curl_ptr)) then
-        ! Set curl options.
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_loc(response))
+    if (.not. c_associated(curl_ptr)) stop 'Error: curl_easy_init() failed'
 
-        ! Send request.
-        if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
-            print '(a)', 'Error: curl_easy_perform() failed'
-        else
-            call read_gopher_map(trim(response%content), items)
+    ! Set curl options.
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_loc(response))
 
-            ! Print Gopher map to screen.
-            if (allocated(items)) then
-                do i = 1, size(items)
-                    print '(a)', items(i)%label
-                end do
-            end if
-
-            deallocate (items)
-        end if
-    end if
-
+    ! Send request.
+    rc = curl_easy_perform(curl_ptr)
     call curl_easy_cleanup(curl_ptr)
+
+    if (rc /= CURLE_OK) stop 'Error: curl_easy_perform() failed'
+
+    call read_gopher_map(trim(response%content), items)
+
+    ! Print Gopher map to screen.
+    if (.not. allocated(items)) stop 'Error: parsing Gopher map failed'
+
+    do i = 1, size(items)
+        print '(a)', items(i)%label
+    end do
 end program main

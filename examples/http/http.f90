@@ -4,7 +4,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback_http
+module http_callback
     use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl, only: c_f_str_ptr
     implicit none
@@ -28,8 +28,9 @@ contains
         integer(kind=c_size_t), intent(in), value :: nmemb             !! Size of the response chunk.
         type(c_ptr),            intent(in), value :: client_data       !! C pointer to argument passed by caller.
         integer(kind=c_size_t)                    :: response_callback !! Function return value.
-        type(response_type), pointer              :: response          !! Stores response.
-        character(len=:), allocatable             :: buf
+
+        type(response_type), pointer  :: response
+        character(len=:), allocatable :: buf
 
         response_callback = int(0, kind=c_size_t)
 
@@ -50,17 +51,18 @@ contains
         ! Return number of received bytes.
         response_callback = nmemb
     end function response_callback
-end module callback_http
+end module http_callback
 
 program main
     use, intrinsic :: iso_c_binding
     use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
-    use :: callback_http
+    use :: http_callback
     implicit none
 
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
     character(len=*), parameter :: DEFAULT_URL      = 'http://worldtimeapi.org/api/timezone/Europe/London.txt'
+
     type(c_ptr)                 :: curl_ptr
     integer                     :: rc
     type(response_type), target :: response
@@ -72,8 +74,8 @@ program main
     end if
 
     ! Set curl options.
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL // c_null_char)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL // c_null_char)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_FOLLOWLOCATION,   1)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_TIMEOUT,          10)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         1)
@@ -85,12 +87,9 @@ program main
     rc = curl_easy_perform(curl_ptr)
     call curl_easy_cleanup(curl_ptr)
 
-    if (rc /= CURLE_OK) then
-        print '(a)', 'Error: curl_easy_perform() failed'
-        stop
-    end if
+    if (rc /= CURLE_OK) stop 'Error: curl_easy_perform() failed'
 
     ! Output response.
-    if (allocated(response%content)) &
-        print '(a)', response%content
+    if (.not. allocated(response%content)) stop 'Error: no response data'
+    print '(a)', response%content
 end program main

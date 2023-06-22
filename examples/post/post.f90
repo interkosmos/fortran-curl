@@ -4,8 +4,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback_post
-    use, intrinsic :: iso_fortran_env, only: i8 => int64
+module post_callback
     use :: curl, only: c_f_str_ptr
     implicit none
     private
@@ -50,21 +49,20 @@ contains
         ! Return number of received bytes.
         response_callback = nmemb
     end function response_callback
-end module callback_post
+end module post_callback
 
 program main
     use, intrinsic :: iso_c_binding
-    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
-    use :: callback_post
+    use :: post_callback
     implicit none
 
     character(len=*), parameter :: DEFAULT_URL = 'https://httpbin.org/post'
 
-    character(len=:), allocatable, target :: content
-    integer                               :: rc
-    type(c_ptr)                           :: curl_ptr
-    type(response_type),           target :: response
+    character(len=:), allocatable :: content
+    integer                       :: rc
+    type(c_ptr)                   :: curl_ptr
+    type(response_type), target   :: response
 
     content = 'test=fortran'
 
@@ -72,10 +70,10 @@ program main
     if (.not. c_associated(curl_ptr)) stop 'Error: curl_easy_init() failed'
 
     ! Set curl options.
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            DEFAULT_URL // c_null_char)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            DEFAULT_URL)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        1)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDS,     c_loc(content))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDSIZE,  len(content, kind=i8))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDS,     content)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDSIZE,  len(content))
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,  c_funloc(response_callback))
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,      c_loc(response))
 
@@ -86,5 +84,6 @@ program main
     if (rc /= CURLE_OK) stop 'Error: curl_easy_perform() failed'
 
     ! Output response.
-    if (allocated(response%content)) print '(a)', response%content
+    if (.not. allocated(response%content)) stop 'Error: no response data'
+    print '(a)', response%content
 end program main

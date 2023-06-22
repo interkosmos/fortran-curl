@@ -10,7 +10,7 @@
 !
 ! Author:  John S. Urban, Philipp Engel
 ! Licence: ISC
-module callback_dict
+module dict_callback
     use :: curl, only: c_f_str_ptr
     implicit none
     private
@@ -39,20 +39,20 @@ contains
 
         response_callback = nmemb
     end function response_callback
-end module callback_dict
+end module dict_callback
 
 program main
     use, intrinsic :: iso_c_binding
-    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
-    use :: callback_dict
+    use :: dict_callback
     implicit none
 
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'dict'
     character(len=*), parameter :: DEFAULT_URL      = 'dict://dict.org/'
     character(len=*), parameter :: DICT_QUERY       = 'd:FORTRAN'
-    type(c_ptr)                 :: curl_ptr
-    integer                     :: rc
+
+    type(c_ptr) :: curl_ptr
+    integer     :: rc
 
     curl_ptr = curl_easy_init()
 
@@ -61,11 +61,11 @@ program main
     end if
 
     ! Set curl options.
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL // c_null_char)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL // DICT_QUERY // c_null_char)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_TIMEOUT,          int(10, kind=i8))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         int( 1, kind=i8))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT,   int(10, kind=i8))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL // DICT_QUERY)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_TIMEOUT,          10)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT,   10)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
 
     ! Send request.

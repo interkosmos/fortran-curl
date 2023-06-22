@@ -7,7 +7,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback_smtp
+module smtp_callback
     use, intrinsic :: iso_c_binding
     implicit none
     private
@@ -47,9 +47,10 @@ contains
         integer(kind=c_size_t), intent(in), value :: nmemb
         type(c_ptr),            intent(in), value :: data
         integer(kind=c_size_t)                    :: upload_callback
-        integer(kind=c_size_t)                    :: n
-        type(upload_type), pointer                :: upload
-        type(c_ptr)                               :: tmp
+
+        integer(kind=c_size_t)     :: n
+        type(upload_type), pointer :: upload
+        type(c_ptr)                :: tmp
 
         upload_callback = int(0, kind=c_size_t)
 
@@ -71,13 +72,12 @@ contains
         ! Return the copied bytes.
         upload_callback = n
     end function upload_callback
-end module callback_smtp
+end module smtp_callback
 
 program main
     use, intrinsic :: iso_c_binding
-    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
-    use :: callback_smtp
+    use :: smtp_callback
     implicit none
 
     character(len=*), parameter :: CRLF     = achar(13) // achar(10) // c_null_char
@@ -107,32 +107,32 @@ program main
 
     curl_ptr = curl_easy_init()
 
-    if (c_associated(curl_ptr)) then
-        ! Add recipients.
-        list_ptr = curl_slist_append(c_null_ptr, TO // c_null_char)
-        list_ptr = curl_slist_append(list_ptr,   CC // c_null_char)
+    if (.not. c_associated(curl_ptr)) stop 'Error: curl_easy_init() failed'
 
-        ! Set curl options.
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            URL // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_USERNAME,       USERNAME // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_PASSWORD,       PASSWORD // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYPEER, int(1, kind=i8))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYHOST, int(1, kind=i8))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_MAIL_FROM,      FROM // c_null_char)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_MAIL_RCPT,      list_ptr)
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_READDATA,       c_loc(upload))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_READFUNCTION,   c_funloc(upload_callback))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_UPLOAD,         int(1, kind=i8))
-        rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        int(1, kind=i8))
+    ! Add recipients.
+    list_ptr = curl_slist_append(c_null_ptr, TO)
+    list_ptr = curl_slist_append(list_ptr,   CC)
 
-        ! Send e-mail.
-        if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
-            print '(a)', 'Error: curl_easy_perform() failed'
-        end if
+    ! Set curl options.
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            URL)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_USERNAME,       USERNAME)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_PASSWORD,       PASSWORD)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYPEER, 1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYHOST, 1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_MAIL_FROM,      FROM)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_MAIL_RCPT,      list_ptr)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_READDATA,       c_loc(upload))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_READFUNCTION,   c_funloc(upload_callback))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_UPLOAD,         1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        1)
 
-        call curl_slist_free_all(list_ptr)
-        call curl_easy_cleanup(curl_ptr)
+    ! Send e-mail.
+    if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
+        print '(a)', 'Error: curl_easy_perform() failed'
     end if
+
+    call curl_slist_free_all(list_ptr)
+    call curl_easy_cleanup(curl_ptr)
 contains
     function rfc2822()
         ! Returns current time and date in RFC 2822 format:
@@ -140,6 +140,7 @@ contains
         !     https://www.ietf.org/rfc/rfc2822.txt
         !
         ! Example: `Thu, 01 Sep 2016 10:11:12 -0500`.
+        use, intrinsic :: iso_fortran_env, only: i8 => int64
         character(len=3), parameter :: days(7)    = [ 'Sun', 'Mon', 'Thu', 'Wed', 'Thu', 'Fri', 'Sat' ]
         character(len=3), parameter :: months(12) = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', &
                                                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]

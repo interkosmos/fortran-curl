@@ -4,7 +4,7 @@
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
-module callback_download
+module download_callback
     use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl, only: c_f_str_ptr
     implicit none
@@ -54,13 +54,12 @@ contains
 
         response_callback = nmemb
     end function response_callback
-end module callback_download
+end module download_callback
 
 program main
     use, intrinsic :: iso_c_binding
-    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
-    use :: callback_download
+    use :: download_callback
     implicit none
 
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
@@ -85,12 +84,12 @@ program main
     end if
 
     ! Set curl options.
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL // c_null_char)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL // c_null_char)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_FOLLOWLOCATION,   int( 1, kind=i8))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_TIMEOUT,          int(10, kind=i8))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         int( 1, kind=i8))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT,   int(10, kind=i8))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_DEFAULT_PROTOCOL, DEFAULT_PROTOCOL)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              DEFAULT_URL)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_FOLLOWLOCATION,   1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_TIMEOUT,          10)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT,   10)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEFUNCTION,    c_funloc(response_callback))
     rc = curl_easy_setopt(curl_ptr, CURLOPT_WRITEDATA,        c_loc(file_name))
 

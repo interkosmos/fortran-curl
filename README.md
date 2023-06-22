@@ -63,9 +63,23 @@ $ make <name>
 | `curl_easy_perform`   | `curl_easy_perform`                                                   | ✓     |
 | `curl_easy_setopt`    | `curl_easy_setopt`, `curl_easy_setopt_funptr`, `curl_easy_setopt_ptr` | ✓     |
 | `curl_easy_strerror`  | `curl_easy_strerror`                                                  | ✓     |
+| `curl_easy_unescape`  | `curl_easy_unescape`                                                  | ✓     |
 | `curl_escape`         | `curl_escape`                                                         | ✓     |
+| `curl_mime_addpart`   | `curl_mime_addpart`                                                   | ✓     |
+| `curl_mime_data`      | `curl_mime_data`                                                      | ✓     |
+| `curl_mime_encoder`   | `curl_mime_encoder`                                                   | ✓     |
+| `curl_mime_filedata`  | `curl_mime_filedata`                                                  | ✓     |
+| `curl_mime_filename`  | `curl_mime_filename`                                                  | ✓     |
+| `curl_mime_free`      | `curl_mime_free`                                                      | ✓     |
+| `curl_mime_headers`   | `curl_mime_headers`                                                   | ✓     |
+| `curl_mime_init`      | `curl_mime_init`                                                      | ✓     |
+| `curl_mime_name`      | `curl_mime_name`                                                      | ✓     |
+| `curl_mime_subparts`  | `curl_mime_subparts`                                                  | ✓     |
+| `curl_mime_type`      | `curl_mime_type`                                                      | ✓     |
 | `curl_slist_append`   | `curl_slist_append`                                                   | ✓     |
 | `curl_slist_free_all` | `curl_slist_free_all`                                                 | ✓     |
+| `curl_unescape`       | `curl_unescape`                                                       | ✓     |
+| `curl_version`        | `curl_version`                                                        | ✓     |
 | `curl_version_info`   | `curl_version_info`                                                   | ✓     |
 
 | C Constant Name     | Fortran Interface Name | Bound |
