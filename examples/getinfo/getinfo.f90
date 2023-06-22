@@ -13,9 +13,8 @@ program main
     character(len=*), parameter :: DEFAULT_URL = 'https://www.example.com/'
 
     character(len=:), allocatable :: str
-    integer                       :: rc
-    integer(kind=c_long)          :: code
-    real(kind=c_double)           :: total_time
+    integer                       :: code, rc
+    real(kind=r8)                 :: total_time
     type(c_ptr)                   :: curl_ptr
 
     curl_ptr = curl_easy_init()

@@ -9,69 +9,57 @@
 ! Licence: ISC
 module smtp_callback
     use, intrinsic :: iso_c_binding
+    use, intrinsic :: iso_fortran_env, only: i8 => int64
     implicit none
     private
-    public :: upload_callback
+    public :: read_callback
 
-    ! Client data for `upload_callback()`.
-    type, public :: upload_type
-        character(len=512), allocatable :: payload(:)
-        integer                         :: index
-    end type upload_type
-
-    interface
-        ! void *memcpy(void *dest, const void *src, size_t n)
-        function c_memcpy(dest, src, n) bind(c, name='memcpy')
-          import :: c_ptr, c_size_t
-          type(c_ptr),            intent(in), value :: dest
-          type(c_ptr),            intent(in), value :: src
-          integer(kind=c_size_t), intent(in), value :: n
-          type(c_ptr)                               :: c_memcpy
-        end function c_memcpy
-
-        ! size_t strlen(const char *s)
-        function c_strlen(s) bind(c, name='strlen')
-            import :: c_char, c_size_t
-            character(kind=c_char), intent(in) :: s
-            integer(c_size_t)                  :: c_strlen
-        end function c_strlen
-    end interface
+    ! Client data for `read_callback()`.
+    type, public :: payload_type
+        character(len=:), allocatable :: data
+        integer(kind=i8)              :: length = 0_i8
+        integer(kind=i8)              :: nbytes = 0_i8
+    end type payload_type
 contains
-    ! static size_t callback(void *ptr, size_t size, size_t nmemb, void *data)
-    function upload_callback(ptr, sze, nmemb, data) bind(c)
-        !! Callback function for `CURLOPT_READFUNCTION` that copies the payload
-        !! of the given `data` ptr (derived type `upload_type`) chunk-wise to
-        !! `ptr` and returns the byte count.
-        type(c_ptr),            intent(in), value :: ptr
-        integer(kind=c_size_t), intent(in), value :: sze
-        integer(kind=c_size_t), intent(in), value :: nmemb
-        type(c_ptr),            intent(in), value :: data
-        integer(kind=c_size_t)                    :: upload_callback
+    function read_callback(ptr, sz, nmemb, data) bind(c) result(n)
+        !! Callback function to upload payload passed via `data` to the
+        !! memory chunk in `ptr`.
+        type(c_ptr),            intent(in), value :: ptr   !! C pointer to a chunk of memory.
+        integer(kind=c_size_t), intent(in), value :: sz    !! Always 1.
+        integer(kind=c_size_t), intent(in), value :: nmemb !! Size of the memory chunk.
+        type(c_ptr),            intent(in), value :: data  !! C pointer to argument passed by caller.
+        integer(kind=c_size_t)                    :: n     !! Function return value.
 
-        integer(kind=c_size_t)     :: n
-        type(upload_type), pointer :: upload
-        type(c_ptr)                :: tmp
+        character(len=:),   pointer :: chunk
+        integer(kind=i8)            :: length, room
+        type(payload_type), pointer :: payload
 
-        upload_callback = int(0, kind=c_size_t)
+        n = int(0, kind=c_size_t)
+        room = sz * nmemb
 
-        if (sze == 0 .or. nmemb == 0 .or. sze * nmemb < 1) return
-        if (.not. c_associated(data)) return
+        if (sz == 0 .or. nmemb == 0 .or. room < 1) return
+        if (.not. c_associated(ptr) .or. .not. c_associated(data)) return
 
-        ! Get upload data.
-        call c_f_pointer(data, upload)
-        if (.not. allocated(upload%payload)) return
+        chunk   => null()
+        payload => null()
 
-        ! Check if upload of payload is complete.
-        if (upload%index >= size(upload%payload)) return
+        call c_f_pointer(ptr, chunk)
+        call c_f_pointer(data, payload)
 
-        ! Copy payload to given C pointer.
-        upload%index = upload%index + 1
-        n   = c_strlen(upload%payload(upload%index))
-        tmp = c_memcpy(ptr, c_loc(upload%payload(upload%index)), n)
+        if (.not. associated(chunk)) return
+        if (.not. associated(payload)) return
 
-        ! Return the copied bytes.
-        upload_callback = n
-    end function upload_callback
+        if (.not. allocated(payload%data) .or. payload%length <= 0) return
+        if (payload%nbytes == payload%length) return
+
+        length = payload%length - payload%nbytes
+        if (room < length) length = room
+
+        chunk = payload%data(payload%nbytes + 1:payload%nbytes + length)
+        payload%nbytes = payload%nbytes + length
+
+        n = int(length, kind=c_size_t)
+    end function read_callback
 end module smtp_callback
 
 program main
@@ -80,7 +68,7 @@ program main
     use :: smtp_callback
     implicit none
 
-    character(len=*), parameter :: CRLF     = achar(13) // achar(10) // c_null_char
+    character(len=*), parameter :: CRLF     = achar(13) // achar(10)
     character(len=*), parameter :: FROM     = '<mail@example.com>'      ! Sender of mail.
     character(len=*), parameter :: TO       = '<to@example.com>'        ! Mail receiver.
     character(len=*), parameter :: CC       = '<cc@example.com>'        ! CC mail receiver.
@@ -89,31 +77,30 @@ program main
     character(len=*), parameter :: USERNAME = 'mail@example.com'        ! SMTP user name.
     character(len=*), parameter :: PASSWORD = 'secret'                  ! SMTP password.
 
-    type(c_ptr)               :: curl_ptr
-    type(c_ptr)               :: list_ptr
-    type(upload_type), target :: upload
-    integer                   :: rc
+    type(c_ptr)                :: curl_ptr
+    type(c_ptr)                :: list_ptr
+    type(payload_type), target :: payload
+    integer                    :: rc
 
-    allocate (upload%payload(8))
-    upload%payload(1) = 'Date: ' // rfc2822() // CRLF
-    upload%payload(2) = 'To: ' // TO // CRLF
-    upload%payload(3) = 'From: ' // FROM // CRLF
-    upload%payload(4) = 'Cc: ' // CC // CRLF
-    upload%payload(5) = 'Subject: ' // SUBJECT // CRLF
-    upload%payload(6) = CRLF
-    upload%payload(7) = 'Hello, from Fortran!' // CRLF
-    upload%payload(8) = CRLF
-    upload%index = 0
+    ! Plain text mail.
+    payload%data = 'Date: '    // rfc2822() // CRLF // &
+                   'To: '      // TO        // CRLF // &
+                   'From: '    // FROM      // CRLF // &
+                   'Cc: '      // CC        // CRLF // &
+                   'Subject: ' // SUBJECT   // CRLF // &
+                   CRLF // &
+                   'Hello, from Fortran!' // CRLF // &
+                   CRLF
 
+    ! Initialise cURL.
     curl_ptr = curl_easy_init()
-
     if (.not. c_associated(curl_ptr)) stop 'Error: curl_easy_init() failed'
 
     ! Add recipients.
     list_ptr = curl_slist_append(c_null_ptr, TO)
     list_ptr = curl_slist_append(list_ptr,   CC)
 
-    ! Set curl options.
+    ! Set cURL options.
     rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            URL)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_USERNAME,       USERNAME)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_PASSWORD,       PASSWORD)
@@ -121,14 +108,14 @@ program main
     rc = curl_easy_setopt(curl_ptr, CURLOPT_SSL_VERIFYHOST, 1)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_MAIL_FROM,      FROM)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_MAIL_RCPT,      list_ptr)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_READDATA,       c_loc(upload))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_READFUNCTION,   c_funloc(upload_callback))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_READDATA,       c_loc(payload))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_READFUNCTION,   c_funloc(read_callback))
     rc = curl_easy_setopt(curl_ptr, CURLOPT_UPLOAD,         1)
     rc = curl_easy_setopt(curl_ptr, CURLOPT_VERBOSE,        1)
 
     ! Send e-mail.
     if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
-        print '(a)', 'Error: curl_easy_perform() failed'
+        print '("Error: curl_easy_perform() failed")'
     end if
 
     call curl_slist_free_all(list_ptr)
@@ -141,11 +128,12 @@ contains
         !
         ! Example: `Thu, 01 Sep 2016 10:11:12 -0500`.
         use, intrinsic :: iso_fortran_env, only: i8 => int64
-        character(len=3), parameter :: days(7)    = [ 'Sun', 'Mon', 'Thu', 'Wed', 'Thu', 'Fri', 'Sat' ]
-        character(len=3), parameter :: months(12) = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', &
+        character(len=3), parameter :: DAYS(7)    = [ 'Sun', 'Mon', 'Thu', 'Wed', 'Thu', 'Fri', 'Sat' ]
+        character(len=3), parameter :: MONTHS(12) = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', &
                                                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
-        character(len=*), parameter :: dt_fmt     = '(a, ", ", i0.2, " ", a, " ", i4, " ", ' // &
-                                                    'i0.2, ":", i0.2, ":", i0.2, " ", a)'
+
+        character(len=*), parameter :: DT_FMT  = '(a, ", ", i0.2, " ", a, " ", i4, " ", ' // &
+                                                 'i0.2, ":", i0.2, ":", i0.2, " ", a)'
         character(len=31) :: rfc2822
         character(len=5)  :: z
         integer(kind=i8)  :: dt(8), w
@@ -153,6 +141,6 @@ contains
         call date_and_time(zone=z, values=dt)
         w = 1 + modulo(dt(1) + int((dt(1) - 1) / 4) - int((dt(1) - 1) / 100) + int((dt(1) - 1) / 400), &
                        int(7, kind=i8))
-        write (rfc2822, dt_fmt) days(w), dt(3), months(dt(2)), dt(1), dt(5), dt(6), dt(7), z
+        write (rfc2822, DT_FMT) DAYS(w), dt(3), MONTHS(dt(2)), dt(1), dt(5), dt(6), dt(7), z
     end function rfc2822
 end program main
