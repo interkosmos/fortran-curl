@@ -897,6 +897,7 @@ module curl
         !! Fortran 2008 generic interface `curl_easy_getinfo()`.
         module procedure :: curl_easy_getinfo_char
         module procedure :: curl_easy_getinfo_double
+        module procedure :: curl_easy_getinfo_int
         module procedure :: curl_easy_getinfo_long
         module procedure :: curl_easy_getinfo_ptr
     end interface
@@ -1013,13 +1014,27 @@ contains
     end function curl_easy_getinfo_double
 
     ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
-    function curl_easy_getinfo_long(curl, option, parameter) result(rc)
-        type(c_ptr),                  intent(in)  :: curl
-        integer,                      intent(in)  :: option
-        integer(kind=c_long), target, intent(out) :: parameter
-        integer                               :: rc
+    function curl_easy_getinfo_int(curl, option, parameter) result(rc)
+        type(c_ptr),      intent(in)  :: curl
+        integer,          intent(in)  :: option
+        integer(kind=i4), intent(out) :: parameter
+        integer                       :: rc
+        integer(kind=c_long), target  :: i
 
-        rc = curl_easy_getinfo_(curl, option, c_loc(parameter))
+        rc = curl_easy_getinfo_(curl, option, c_loc(i))
+        parameter = int(i)
+    end function curl_easy_getinfo_int
+
+    ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+    function curl_easy_getinfo_long(curl, option, parameter) result(rc)
+        type(c_ptr),      intent(in)  :: curl
+        integer,          intent(in)  :: option
+        integer(kind=i8), intent(out) :: parameter
+        integer                       :: rc
+        integer(kind=c_long), target  :: i
+
+        rc = curl_easy_getinfo_(curl, option, c_loc(i))
+        parameter = int(i, kind=i8)
     end function curl_easy_getinfo_long
 
     ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
