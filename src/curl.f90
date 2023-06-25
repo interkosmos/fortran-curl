@@ -10,6 +10,7 @@ module curl
     implicit none
     private
 
+    integer(kind=i8)   , parameter, public :: CURL_ZERO_TERMINATED      = -1
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_LONG          = 0
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_OBJECTPOINT   = 10000
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_FUNCTIONPOINT = 20000
