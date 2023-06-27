@@ -587,6 +587,9 @@ module curl
     integer(kind=c_int), parameter, public :: CURLINFO_CAPATH                    = CURLINFO_STRING + 62
     integer(kind=c_int), parameter, public :: CURLINFO_LASTONE                   = 62
 
+    integer(kind=c_size_t), parameter, public :: CURL_ZERO_TERMINATED   = int(-1, kind=c_size_t)
+    integer(kind=c_int),    parameter, public :: CURLMIMEOPT_FORMESCAPE = shiftl(1, 0)
+
     ! curl_slist
     type, bind(c), public :: curl_slist
         type(c_ptr) :: data

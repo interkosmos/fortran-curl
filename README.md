@@ -1,7 +1,7 @@
 # fortran-curl
 A collection of ISO C binding interfaces to
 [libcurl](https://curl.haxx.se/libcurl/) for Fortran 2008. Compilation has been
-tested with GNU Fortran 12 and cURL 8.0.1. The library is also available on
+tested with GNU Fortran 13 and cURL 8.1.2. The library is also available on
 [MacPorts](https://ports.macports.org/port/fortran-curl/).
 
 ## Dependencies
@@ -58,7 +58,7 @@ $ make <name>
 |-----------------------|-----------------------------------------------------------------------|-------|
 | `curl_easy_cleanup`   | `curl_easy_cleanup`                                                   | ✓     |
 | `curl_easy_escape`    | `curl_easy_escape`                                                    | ✓     |
-| `curl_easy_getinfo`   | `curl_easy_getinfo`, `curl_easy_getinfo_`                             | ✓     |
+| `curl_easy_getinfo`   | `curl_easy_getinfo`                                                   | ✓     |
 | `curl_easy_init`      | `curl_easy_init`                                                      | ✓     |
 | `curl_easy_perform`   | `curl_easy_perform`                                                   | ✓     |
 | `curl_easy_setopt`    | `curl_easy_setopt`, `curl_easy_setopt_funptr`, `curl_easy_setopt_ptr` | ✓     |
