@@ -946,19 +946,7 @@ module curl
     public :: curl_version
     public :: curl_version_info
     public :: curl_version_now
-
-    private :: copy
 contains
-    pure function copy(a)
-        character, intent(in)  :: a(:)
-        character(len=size(a)) :: copy
-        integer(kind=i8)       :: i
-
-        do i = 1, size(a, kind=i8)
-            copy(i:i) = a(i)
-        end do
-    end function copy
-
     ! char *curl_easy_escape(CURL *handle, const char *string, int length)
     function curl_easy_escape(curl, string, length) result(escaped)
         type(c_ptr),      intent(in)           :: curl
@@ -1286,27 +1274,28 @@ contains
         allocate (curl_version_info)
     end function curl_version_info
 
-    subroutine c_f_str_ptr(c_str, f_str, size)
-        !! Utility routine that copies a C string, passed as a C pointer, to a
-        !! Fortran string.
-        type(c_ptr),                   intent(in)           :: c_str
-        character(len=:), allocatable, intent(out)          :: f_str
-        integer(kind=i8),              intent(in), optional :: size
+    subroutine c_f_str_ptr(c_str, f_str)
+        !! Copies a C string, passed as a C pointer, to a Fortran string.
+        type(c_ptr),                   intent(in)  :: c_str
+        character(len=:), allocatable, intent(out) :: f_str
 
         character(kind=c_char), pointer :: ptrs(:)
-        integer(kind=i8)                :: sz
+        integer(kind=c_size_t)          :: i, sz
 
-        if (.not. c_associated(c_str)) return
-
-        if (present(size)) then
-            sz = size
-        else
+        copy_block: block
+            if (.not. c_associated(c_str)) exit copy_block
             sz = c_strlen(c_str)
-        end if
+            if (sz < 0) exit copy_block
+            call c_f_pointer(c_str, ptrs, [ sz ])
+            allocate (character(len=sz) :: f_str)
 
-        if (sz < 0) return
-        call c_f_pointer(c_str, ptrs, [ sz ])
-        allocate (character(len=sz) :: f_str)
-        f_str = copy(ptrs)
+            do i = 1, sz
+                f_str(i:i) = ptrs(i)
+            end do
+
+            return
+        end block copy_block
+
+        if (.not. allocated(f_str)) f_str = ''
     end subroutine c_f_str_ptr
 end module curl
