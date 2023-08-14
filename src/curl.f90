@@ -1274,17 +1274,24 @@ contains
         allocate (curl_version_info)
     end function curl_version_info
 
-    subroutine c_f_str_ptr(c_str, f_str)
+    subroutine c_f_str_ptr(c_str, f_str, size)
         !! Copies a C string, passed as a C pointer, to a Fortran string.
-        type(c_ptr),                   intent(in)  :: c_str
-        character(len=:), allocatable, intent(out) :: f_str
+        type(c_ptr),                   intent(in)           :: c_str
+        character(len=:), allocatable, intent(out)          :: f_str
+        integer(kind=i8),              intent(in), optional :: size
 
         character(kind=c_char), pointer :: ptrs(:)
-        integer(kind=c_size_t)          :: i, sz
+        integer(kind=i8)                :: i, sz
 
         copy_block: block
             if (.not. c_associated(c_str)) exit copy_block
-            sz = c_strlen(c_str)
+
+            if (present(size)) then
+                sz = size
+            else
+                sz = c_strlen(c_str)
+            end if
+
             if (sz < 0) exit copy_block
             call c_f_pointer(c_str, ptrs, [ sz ])
             allocate (character(len=sz) :: f_str)
