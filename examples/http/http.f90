@@ -61,7 +61,7 @@ program main
     implicit none
 
     character(len=*), parameter :: DEFAULT_PROTOCOL = 'http'
-    character(len=*), parameter :: DEFAULT_URL      = 'http://worldtimeapi.org/api/timezone/Europe/London.txt'
+    character(len=*), parameter :: DEFAULT_URL      = 'https://www.netlib.org/slatec/readme'
 
     type(c_ptr)                 :: curl_ptr
     integer                     :: rc

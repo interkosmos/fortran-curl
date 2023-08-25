@@ -963,14 +963,7 @@ contains
             n = len(string)
         end if
 
-        ptr = c_null_ptr
         ptr = curl_easy_escape_(curl, string, n)
-
-        if (.not. c_associated(ptr)) then
-            escaped = ''
-            return
-        end if
-
         call c_f_str_ptr(ptr, escaped)
     end function curl_easy_escape
 
@@ -985,12 +978,6 @@ contains
 
         ptr = c_null_ptr
         rc = curl_easy_getinfo_(curl, option, c_loc(ptr))
-
-        if (rc /= CURLE_OK .or. .not. c_associated(ptr)) then
-            parameter = ''
-            return
-        end if
-
         call c_f_str_ptr(ptr, parameter)
     end function curl_easy_getinfo_char
 
@@ -1094,14 +1081,7 @@ contains
         character(len=:), allocatable :: str
         type(c_ptr)                   :: ptr
 
-        ptr = c_null_ptr
         ptr = curl_easy_strerror_(code)
-
-        if (.not. c_associated(ptr)) then
-            str = ''
-            return
-        end if
-
         call c_f_str_ptr(ptr, str)
     end function curl_easy_strerror
 
@@ -1122,17 +1102,9 @@ contains
             n = len(string)
         end if
 
-        ptr = c_null_ptr
         ptr = curl_easy_unescape_(curl, string, n, o)
-
-        if (present(outlength)) outlength = o
-
-        if (.not. c_associated(ptr)) then
-            unescaped = ''
-            return
-        end if
-
         call c_f_str_ptr(ptr, unescaped, int(o, kind=i8))
+        if (present(outlength)) outlength = o
     end function curl_easy_unescape
 
     ! char *curl_escape(const char *string, int length)
@@ -1150,14 +1122,7 @@ contains
             n = len(string)
         end if
 
-        ptr = c_null_ptr
         ptr = curl_escape_(string, n)
-
-        if (.not. c_associated(ptr)) then
-            escaped = ''
-            return
-        end if
-
         call c_f_str_ptr(ptr, escaped)
     end function curl_escape
 
@@ -1221,14 +1186,7 @@ contains
             n = len(string)
         end if
 
-        ptr = c_null_ptr
         ptr = curl_unescape_(string, n)
-
-        if (.not. c_associated(ptr)) then
-            unescaped = ''
-            return
-        end if
-
         call c_f_str_ptr(ptr, unescaped)
     end function curl_unescape
 
@@ -1247,12 +1205,6 @@ contains
         type(c_ptr)                   :: ptr
 
         ptr = curl_version_()
-
-        if (.not. c_associated(ptr)) then
-            curl_version = ''
-            return
-        end if
-
         call c_f_str_ptr(ptr, curl_version)
     end function curl_version
 
@@ -1283,16 +1235,14 @@ contains
         character(kind=c_char), pointer :: ptrs(:)
         integer(kind=i8)                :: i, sz
 
-        copy_block: block
-            if (.not. c_associated(c_str)) exit copy_block
-
+        copy_if: if (c_associated(c_str)) then
             if (present(size)) then
                 sz = size
             else
                 sz = c_strlen(c_str)
             end if
 
-            if (sz < 0) exit copy_block
+            if (sz < 0) exit copy_if
             call c_f_pointer(c_str, ptrs, [ sz ])
             allocate (character(len=sz) :: f_str)
 
@@ -1301,7 +1251,7 @@ contains
             end do
 
             return
-        end block copy_block
+        end if copy_if
 
         if (.not. allocated(f_str)) f_str = ''
     end subroutine c_f_str_ptr
