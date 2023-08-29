@@ -163,6 +163,7 @@ program main
     type(gopher_item_type), allocatable :: items(:)
     type(response_type), target         :: response
 
+    rc = curl_global_init(CURL_GLOBAL_DEFAULT)
     curl_ptr = curl_easy_init()
 
     if (.not. c_associated(curl_ptr)) stop 'Error: curl_easy_init() failed'
@@ -176,6 +177,7 @@ program main
     ! Send request.
     rc = curl_easy_perform(curl_ptr)
     call curl_easy_cleanup(curl_ptr)
+    call curl_global_cleanup()
 
     if (rc /= CURLE_OK) stop 'Error: curl_easy_perform() failed'
 

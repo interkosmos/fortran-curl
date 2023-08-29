@@ -1,17 +1,18 @@
 # fortran-curl
+
 A collection of ISO C binding interfaces to
 [libcurl](https://curl.haxx.se/libcurl/) for Fortran 2008. Compilation has been
 tested with GNU Fortran 13 and cURL 8.1.2. The library is also available on
 [MacPorts](https://ports.macports.org/port/fortran-curl/).
 
-## Dependencies
+## Build Instructions
+
 Install cURL with development headers. On FreeBSD, run:
 
 ```
 # pkg install ftp/curl
 ```
 
-## Compilation
 Clone the repository and then run `make` to build the interfaces:
 
 ```
@@ -35,6 +36,7 @@ $ make PREFIX=/usr
 Link your Fortran application with `libfortran-curl.a -lcurl`.
 
 ## Examples
+
 Examples are provided in directory `examples/`:
 
 * **dict** queries a [DICT](https://en.wikipedia.org/wiki/DICT) server on TCP port 2628.
@@ -54,6 +56,7 @@ $ make <name>
 ```
 
 ## Coverage
+
 | C Function Name       | Fortran Interface Name                                                | Bound |
 |-----------------------|-----------------------------------------------------------------------|-------|
 | `curl_easy_cleanup`   | `curl_easy_cleanup`                                                   | ✓     |
@@ -65,6 +68,8 @@ $ make <name>
 | `curl_easy_strerror`  | `curl_easy_strerror`                                                  | ✓     |
 | `curl_easy_unescape`  | `curl_easy_unescape`                                                  | ✓     |
 | `curl_escape`         | `curl_escape`                                                         | ✓     |
+| `curl_global_cleanup` | `curl_global_cleanup`                                                 | ✓     |
+| `curl_global_init`    | `curl_global_init`                                                    | ✓     |
 | `curl_mime_addpart`   | `curl_mime_addpart`                                                   | ✓     |
 | `curl_mime_data`      | `curl_mime_data`                                                      | ✓     |
 | `curl_mime_encoder`   | `curl_mime_encoder`                                                   | ✓     |
@@ -87,6 +92,7 @@ $ make <name>
 | `CURLVERSION_NOW`   | `curl_version_now`     | ✓     |
 
 ## Support for fpm
+
 This projects supports the Fortran Package Manager
 ([fpm](https://github.com/fortran-lang/fpm)). To build the project with *fpm*,
 run:
@@ -103,7 +109,9 @@ You can use ``fortran-curl`` in your *fpm* projects with:
 [dependencies]
 fortran-curl = { git = "https://github.com/interkosmos/fortran-curl.git" }
 ```
+
 ## Contribute
+
 For smaller changes:
 
 1. Fork this repository from GitHub.
@@ -118,4 +126,5 @@ For larger changes:
 3. When consensus is reached, implement it as described above.
 
 ## Licence
+
 ISC

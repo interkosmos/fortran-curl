@@ -17,6 +17,7 @@ program main
     real(kind=r8)                 :: total_time
     type(c_ptr)                   :: curl_ptr
 
+    rc = curl_global_init(CURL_GLOBAL_DEFAULT)
     curl_ptr = curl_easy_init()
     if (.not. c_associated(curl_ptr)) stop 'Error: curl_easy_init() failed'
 
@@ -27,29 +28,28 @@ program main
     print '("Sending request ...")'
     rc = curl_easy_perform(curl_ptr)
 
-    if (rc /= CURLE_OK) then
+    if (rc == CURLE_OK) then
+        rc = curl_easy_getinfo(curl_ptr, CURLINFO_RESPONSE_CODE, code)
+
+        if (rc == CURLE_OK) then
+            print '("Response Code: ", i0)', code
+        end if
+
+        rc = curl_easy_getinfo(curl_ptr, CURLINFO_CONTENT_TYPE, str)
+
+        if (rc == CURLE_OK) then
+            print '("Content Type.: ", a)', str
+        end if
+
+        rc = curl_easy_getinfo(curl_ptr, CURLINFO_TOTAL_TIME, total_time)
+
+        if (rc == CURLE_OK) then
+            print '("Total Time...: ", f5.3, " s")', total_time
+        end if
+    else
         print '("Error: ", a)', curl_easy_strerror(rc)
-        call curl_easy_cleanup(curl_ptr)
-        stop
-    end if
-
-    rc = curl_easy_getinfo(curl_ptr, CURLINFO_RESPONSE_CODE, code)
-
-    if (rc == CURLE_OK) then
-        print '("Response Code: ", i0)', code
-    end if
-
-    rc = curl_easy_getinfo(curl_ptr, CURLINFO_CONTENT_TYPE, str)
-
-    if (rc == CURLE_OK) then
-        print '("Content Type.: ", a)', str
-    end if
-
-    rc = curl_easy_getinfo(curl_ptr, CURLINFO_TOTAL_TIME, total_time)
-
-    if (rc == CURLE_OK) then
-        print '("Total Time...: ", f5.3, " s")', total_time
     end if
 
     call curl_easy_cleanup(curl_ptr)
+    call curl_global_cleanup()
 end program main

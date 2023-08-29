@@ -54,6 +54,7 @@ program main
     type(c_ptr) :: curl_ptr
     integer     :: rc
 
+    rc = curl_global_init(CURL_GLOBAL_DEFAULT)
     curl_ptr = curl_easy_init()
 
     if (.not. c_associated(curl_ptr)) then
@@ -74,4 +75,5 @@ program main
     end if
 
     call curl_easy_cleanup(curl_ptr)
+    call curl_global_cleanup()
 end program main

@@ -93,6 +93,7 @@ program main
                    CRLF
 
     ! Initialise cURL.
+    rc = curl_global_init(CURL_GLOBAL_DEFAULT)
     curl_ptr = curl_easy_init()
     if (.not. c_associated(curl_ptr)) stop 'Error: curl_easy_init() failed'
 
@@ -120,6 +121,7 @@ program main
 
     call curl_slist_free_all(list_ptr)
     call curl_easy_cleanup(curl_ptr)
+    call curl_global_cleanup()
 contains
     function rfc2822()
         ! Returns current time and date in RFC 2822 format:

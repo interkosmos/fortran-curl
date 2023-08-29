@@ -730,6 +730,14 @@ module curl
             type(c_ptr)                               :: curl_escape_
         end function curl_escape_
 
+        ! CURLcode curl_global_init(long flags)
+        function curl_global_init_(flags) bind(c, name='curl_global_init')
+            import :: c_int, c_long
+            implicit none
+            integer(kind=c_long), intent(in), value :: flags
+            integer(kind=c_int)                     :: curl_global_init_
+        end function curl_global_init_
+
         ! curl_mimepart *curl_mime_addpart(curl_mime *mime)
         function curl_mime_addpart(curl) bind(c, name='curl_mime_addpart')
             import :: c_ptr
@@ -860,6 +868,10 @@ module curl
             type(c_ptr), intent(in), value :: curl
         end subroutine curl_easy_cleanup
 
+        ! void curl_global_cleanup(void)
+        subroutine curl_global_cleanup() bind(c, name='curl_global_cleanup')
+        end subroutine curl_global_cleanup
+
         ! void curl_mime_free(curl_mime *mime)
         subroutine curl_mime_free(mime) bind(c, name='curl_mime_free')
             import :: c_ptr
@@ -929,6 +941,8 @@ module curl
     public :: curl_easy_strerror
     public :: curl_easy_unescape
     public :: curl_escape
+    public :: curl_global_cleanup
+    public :: curl_global_init
     public :: curl_mime_addpart
     public :: curl_mime_data
     public :: curl_mime_encoder
@@ -1125,6 +1139,14 @@ contains
         ptr = curl_escape_(string, n)
         call c_f_str_ptr(ptr, escaped)
     end function curl_escape
+
+    ! CURLcode curl_global_init(long flags)
+    function curl_global_init(flags) result(rc)
+        integer, intent(in) :: flags
+        integer             :: rc
+
+        rc = curl_global_init_(int(flags, kind=c_long))
+    end function curl_global_init
 
     ! CURLcode curl_mime_encoder(curl_mimepart *part, const char *encoding)
     function curl_mime_encoder(part, encoding) result(rc)

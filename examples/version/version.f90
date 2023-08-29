@@ -7,10 +7,12 @@
 program main
     use :: curl
     implicit none
-    character(len=:), allocatable :: host, vcurl, vssl
-    character(len=:), allocatable :: str, escaped, unescaped
-
+    integer                               :: rc
+    character(len=:), allocatable         :: host, vcurl, vssl
+    character(len=:), allocatable         :: str, escaped, unescaped
     type(curl_version_info_data), pointer :: data
+
+    rc = curl_global_init(CURL_GLOBAL_DEFAULT)
 
     print '("Version: ", a, /)', curl_version()
 
@@ -30,4 +32,6 @@ program main
 
     print '(/, "Escaped:   ", a)', escaped
     print '("Unescaped: ", a)',    unescaped
+
+    call curl_global_cleanup()
 end program main
