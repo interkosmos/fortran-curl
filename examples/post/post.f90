@@ -5,6 +5,7 @@
 ! Author:  Philipp Engel
 ! Licence: ISC
 module post_callback
+    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl, only: c_f_str_ptr
     implicit none
     private
@@ -41,7 +42,7 @@ contains
         if (.not. allocated(response%content)) response%content = ''
 
         ! Convert C pointer to Fortran allocatable character.
-        call c_f_str_ptr(ptr, buf, nmemb)
+        call c_f_str_ptr(ptr, buf, int(nmemb, kind=i8))
         if (.not. allocated(buf)) return
         response%content = response%content // buf
         deallocate (buf)

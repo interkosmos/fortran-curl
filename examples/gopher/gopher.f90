@@ -5,6 +5,7 @@
 ! Author:  Philipp Engel
 ! Licence: ISC
 module gopher_callback
+    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl, only: c_f_str_ptr
     implicit none
     private
@@ -33,7 +34,7 @@ contains
         if (.not. c_associated(ptr)) return
         if (.not. c_associated(data)) return
 
-        call c_f_str_ptr(ptr, tmp, nmemb)
+        call c_f_str_ptr(ptr, tmp, int(nmemb, kind=i8))
         call c_f_pointer(data, response)
 
         if (.not. allocated(response%content)) &

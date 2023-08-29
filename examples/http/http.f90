@@ -43,7 +43,7 @@ contains
         if (.not. allocated(response%content)) response%content = ''
 
         ! Convert C pointer to Fortran allocatable character.
-        call c_f_str_ptr(ptr, buf, nmemb)
+        call c_f_str_ptr(ptr, buf, int(nmemb, kind=i8))
         if (.not. allocated(buf)) return
         response%content = response%content // buf
         deallocate (buf)

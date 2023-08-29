@@ -11,6 +11,7 @@
 ! Author:  John S. Urban, Philipp Engel
 ! Licence: ISC
 module dict_callback
+    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl, only: c_f_str_ptr
     implicit none
     private
@@ -34,7 +35,7 @@ contains
         response_callback = int(0, kind=c_size_t)
         if (.not. c_associated(ptr)) return
 
-        call c_f_str_ptr(ptr, response, nmemb)
+        call c_f_str_ptr(ptr, response, int(nmemb, kind=i8)
         write (*, '(a)', advance='no') response
 
         response_callback = nmemb

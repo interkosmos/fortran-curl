@@ -9,6 +9,7 @@
 ! Licence: ISC
 module imap_callback
     use, intrinsic :: iso_c_binding
+    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl, only: c_f_str_ptr
     implicit none
     private
@@ -32,7 +33,7 @@ contains
         write (*, '(a)') '---'
 
         if (.not. c_associated(ptr)) return
-        call c_f_str_ptr(ptr, str, nmemb)
+        call c_f_str_ptr(ptr, str, int(nmemb, kind=i8))
         write (*, '(a)', advance='no') str
         write_callback = nmemb
     end function write_callback

@@ -37,7 +37,7 @@ contains
 
         call c_f_pointer(data, file_name)
         if (len_trim(file_name) == 0) return
-        call c_f_str_ptr(ptr, chunk, nmemb)
+        call c_f_str_ptr(ptr, chunk, int(nmemb, kind=i8))
 
         open (access   = 'stream', &
               action   = 'write', &
