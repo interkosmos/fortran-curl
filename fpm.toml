@@ -16,47 +16,47 @@ source-dir = "src"
 [install]
 library = true
 
-[[example]]
+[[executable]]
 name = "dict"
 source-dir = "examples/dict"
 main = "dict.f90"
 
-[[example]]
+[[executable]]
 name = "download"
 source-dir = "examples/download"
 main = "download.f90"
 
-[[example]]
+[[executable]]
 name = "getinfo"
 source-dir = "examples/getinfo"
 main = "getinfo.f90"
 
-[[example]]
+[[executable]]
 name = "gopher"
 source-dir = "examples/gopher"
 main = "gopher.f90"
 
-[[example]]
+[[executable]]
 name = "http"
 source-dir = "examples/http"
 main = "http.f90"
 
-[[example]]
+[[executable]]
 name = "imap"
 source-dir = "examples/imap"
 main = "imap.f90"
 
-[[example]]
+[[executable]]
 name = "smtp"
 source-dir = "examples/smtp"
 main = "smtp.f90"
 
-[[example]]
+[[executable]]
 name = "post"
 source-dir = "examples/post"
 main = "post.f90"
 
-[[example]]
+[[executable]]
 name = "version"
 source-dir = "examples/version"
 main = "version.f90"

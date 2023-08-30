@@ -318,6 +318,7 @@ module curl
     integer(kind=c_int), parameter, public :: CURLOPT_WS_OPTIONS                 = CURLOPTTYPE_LONG + 320
     integer(kind=c_int), parameter, public :: CURLOPT_CA_CACHE_TIMEOUT           = CURLOPTTYPE_LONG + 321
     integer(kind=c_int), parameter, public :: CURLOPT_QUICK_EXIT                 = CURLOPTTYPE_LONG + 322
+    integer(kind=c_int), parameter, public :: CURLOPT_HAPROXY_CLIENT_IP          = CURLOPTTYPE_STRINGPOINT + 323
 
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_WHATEVER = 0
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_V4       = 1
@@ -368,6 +369,8 @@ module curl
     integer(kind=c_int), parameter, public :: CURLGSSAPI_DELEGATION_NONE        = 0
     integer(kind=c_int), parameter, public :: CURLGSSAPI_DELEGATION_POLICY_FLAG = shiftl(1, 0)
     integer(kind=c_int), parameter, public :: CURLGSSAPI_DELEGATION_FLAG        = shiftl(1, 1)
+
+    integer(kind=c_int), parameter, public :: CURL_ERROR_SIZE = 256
 
     ! curl_usessl
     integer(kind=c_int), parameter, public :: CURLUSESSL_NONE    = 0
@@ -590,40 +593,51 @@ module curl
     integer(kind=c_size_t), parameter, public :: CURL_ZERO_TERMINATED   = int(-1, kind=c_size_t)
     integer(kind=c_int),    parameter, public :: CURLMIMEOPT_FORMESCAPE = shiftl(1, 0)
 
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_NONE              = 0
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_1_0               = 1
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_1_1               = 2
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_2_0               = 3
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_2TLS              = 4
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE = 5
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_3                 = 30
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_3ONLY             = 31
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_LAST              = 32
+    integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_2                 = CURL_HTTP_VERSION_2_0
+
     ! curl_slist
     type, bind(c), public :: curl_slist
-        type(c_ptr) :: data
-        type(c_ptr) :: next
+        type(c_ptr) :: data = c_null_ptr
+        type(c_ptr) :: next = c_null_ptr
     end type curl_slist
 
     ! curl_version_info_data
     type, bind(c), public :: curl_version_info_data
-        integer(kind=c_int)  :: age
-        type(c_ptr)          :: version
-        integer(kind=c_int)  :: version_num
-        type(c_ptr)          :: host
-        integer(kind=c_int)  :: features
-        type(c_ptr)          :: ssl_version
-        integer(kind=c_long) :: ssl_version_num
-        type(c_ptr)          :: libz_version
-        type(c_ptr)          :: protocols
-        type(c_ptr)          :: ares
-        integer(kind=c_int)  :: ares_num
-        type(c_ptr)          :: libidn
-        integer(kind=c_int)  :: iconv_ver_num
-        type(c_ptr)          :: libssh_version
-        integer(kind=c_int)  :: brotli_ver_num
-        type(c_ptr)          :: brotli_version
-        integer(kind=c_int)  :: nghttp2_ver_num
-        type(c_ptr)          :: nghttp2_version
-        type(c_ptr)          :: quic_version
-        type(c_ptr)          :: cainfo
-        type(c_ptr)          :: capath
-        integer(kind=c_int)  :: zstd_ver_num
-        type(c_ptr)          :: zstd_version
-        type(c_ptr)          :: hyper_version
-        type(c_ptr)          :: gsasl_version
-        type(c_ptr)          :: feature_names
+        integer(kind=c_int)  :: age             = 0
+        type(c_ptr)          :: version         = c_null_ptr
+        integer(kind=c_int)  :: version_num     = 0
+        type(c_ptr)          :: host            = c_null_ptr
+        integer(kind=c_int)  :: features        = 0
+        type(c_ptr)          :: ssl_version     = c_null_ptr
+        integer(kind=c_long) :: ssl_version_num = 0_c_long
+        type(c_ptr)          :: libz_version    = c_null_ptr
+        type(c_ptr)          :: protocols       = c_null_ptr
+        type(c_ptr)          :: ares            = c_null_ptr
+        integer(kind=c_int)  :: ares_num        = 0
+        type(c_ptr)          :: libidn          = c_null_ptr
+        integer(kind=c_int)  :: iconv_ver_num   = 0
+        type(c_ptr)          :: libssh_version  = c_null_ptr
+        integer(kind=c_int)  :: brotli_ver_num  = 0
+        type(c_ptr)          :: brotli_version  = c_null_ptr
+        integer(kind=c_int)  :: nghttp2_ver_num = 0
+        type(c_ptr)          :: nghttp2_version = c_null_ptr
+        type(c_ptr)          :: quic_version    = c_null_ptr
+        type(c_ptr)          :: cainfo          = c_null_ptr
+        type(c_ptr)          :: capath          = c_null_ptr
+        integer(kind=c_int)  :: zstd_ver_num    = 0
+        type(c_ptr)          :: zstd_version    = c_null_ptr
+        type(c_ptr)          :: hyper_version   = c_null_ptr
+        type(c_ptr)          :: gsasl_version   = c_null_ptr
+        type(c_ptr)          :: feature_names   = c_null_ptr
     end type curl_version_info_data
 
     interface
