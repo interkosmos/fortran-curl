@@ -5,6 +5,9 @@ A collection of ISO C binding interfaces to
 tested with GNU Fortran 13 and cURL 8.2.1. The library is also available on
 [MacPorts](https://ports.macports.org/port/fortran-curl/).
 
+For a user-friendly, high-level HTTP library based on this bindings, see
+[http-client](https://github.com/fortran-lang/http-client).
+
 ## Build Instructions
 
 Install cURL with development headers. On FreeBSD, run:
