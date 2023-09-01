@@ -1,11 +1,11 @@
 name = "fortran-curl"
-version = "0.5.0"
+version = "0.6.0"
 license = "ISC"
 author = "Philipp Engel"
 maintainer = "@interkosmos"
 copyright = "Copyright (c) 2021, Philipp Engel"
 description = "Fortran 2008 ISO C binding interfaces to libcurl"
-keywords = ["curl", "libcurl", "http", "gopher", "smtp", "imap", "dict"]
+keywords = [ "curl", "libcurl", "http", "gopher", "smtp", "imap", "dict" ]
 
 [build]
 link = "curl"
