@@ -677,7 +677,7 @@ module curl
         end function curl_easy_perform
 
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_c_char(curl, option, parameter) bind(c, name='curl_easy_setopt')
+        function curl_easy_setopt_c_char(curl, option, parameter) bind(c, name='curl_easy_setopt_c_char')
             import :: c_char, c_int, c_ptr
             implicit none
             type(c_ptr),            intent(in), value :: curl
@@ -687,7 +687,7 @@ module curl
         end function curl_easy_setopt_c_char
 
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_c_long(curl, option, parameter) bind(c, name='curl_easy_setopt')
+        function curl_easy_setopt_c_long(curl, option, parameter) bind(c, name='curl_easy_setopt_c_long')
             import :: c_int, c_long, c_ptr
             implicit none
             type(c_ptr),          intent(in), value :: curl
@@ -697,7 +697,7 @@ module curl
         end function curl_easy_setopt_c_long
 
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_c_ptr(curl, option, parameter) bind(c, name='curl_easy_setopt')
+        function curl_easy_setopt_c_ptr(curl, option, parameter) bind(c, name='curl_easy_setopt_c_ptr')
             import :: c_int, c_ptr
             implicit none
             type(c_ptr),         intent(in), value :: curl
@@ -707,7 +707,7 @@ module curl
         end function curl_easy_setopt_c_ptr
 
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
-        function curl_easy_setopt_c_funptr(curl, option, parameter) bind(c, name='curl_easy_setopt')
+        function curl_easy_setopt_c_funptr(curl, option, parameter) bind(c, name='curl_easy_setopt_c_funptr')
             import :: c_funptr, c_int, c_ptr
             implicit none
             type(c_ptr),         intent(in), value :: curl
