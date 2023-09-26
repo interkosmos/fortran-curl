@@ -1,6 +1,6 @@
 ! curl.f90
 !
-! Fortran 2008 ISO C binding interfaces to libcurl.
+! Fortran 2008 ISO C binding interfaces to libcurl 8.3.
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
@@ -9,6 +9,8 @@ module curl
     use, intrinsic :: iso_fortran_env, only: i4 => int32, i8 => int64, r4 => real32, r8 => real64
     implicit none
     private
+
+    integer, parameter :: c_unsigned_int = c_int
 
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_LONG          = 0
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_OBJECTPOINT   = 10000
@@ -20,6 +22,7 @@ module curl
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_CBPOINT       = CURLOPTTYPE_OBJECTPOINT
     integer(kind=c_int), parameter, public :: CURLOPTTYPE_VALUES        = CURLOPTTYPE_LONG
 
+    ! CURLoption
     integer(kind=c_int), parameter, public :: CURLOPT_WRITEDATA                  = CURLOPTTYPE_OBJECTPOINT + 1
     integer(kind=c_int), parameter, public :: CURLOPT_URL                        = CURLOPTTYPE_OBJECTPOINT + 2
     integer(kind=c_int), parameter, public :: CURLOPT_PORT                       = CURLOPTTYPE_LONG + 3
@@ -320,6 +323,24 @@ module curl
     integer(kind=c_int), parameter, public :: CURLOPT_QUICK_EXIT                 = CURLOPTTYPE_LONG + 322
     integer(kind=c_int), parameter, public :: CURLOPT_HAPROXY_CLIENT_IP          = CURLOPTTYPE_STRINGPOINT + 323
 
+    ! CURLMoption
+    integer(kind=c_int), parameter, public :: CURLMOPT_SOCKETFUNCTION              = CURLOPTTYPE_FUNCTIONPOINT + 1
+    integer(kind=c_int), parameter, public :: CURLMOPT_SOCKETDATA                  = CURLOPTTYPE_OBJECTPOINT + 2
+    integer(kind=c_int), parameter, public :: CURLMOPT_PIPELINING                  = CURLOPTTYPE_LONG + 3
+    integer(kind=c_int), parameter, public :: CURLMOPT_TIMERFUNCTION               = CURLOPTTYPE_FUNCTIONPOINT + 4
+    integer(kind=c_int), parameter, public :: CURLMOPT_TIMERDATA                   = CURLOPTTYPE_OBJECTPOINT + 5
+    integer(kind=c_int), parameter, public :: CURLMOPT_MAXCONNECTS                 = CURLOPTTYPE_LONG + 6
+    integer(kind=c_int), parameter, public :: CURLMOPT_MAX_HOST_CONNECTIONS        = CURLOPTTYPE_LONG + 7
+    integer(kind=c_int), parameter, public :: CURLMOPT_MAX_PIPELINE_LENGTH         = CURLOPTTYPE_LONG + 8
+    integer(kind=c_int), parameter, public :: CURLMOPT_CONTENT_LENGTH_PENALTY_SIZE = CURLOPTTYPE_OFF_T + 9
+    integer(kind=c_int), parameter, public :: CURLMOPT_CHUNK_LENGTH_PENALTY_SIZE   = CURLOPTTYPE_OFF_T + 10
+    integer(kind=c_int), parameter, public :: CURLMOPT_PIPELINING_SITE_BL          = CURLOPTTYPE_OBJECTPOINT + 11
+    integer(kind=c_int), parameter, public :: CURLMOPT_PIPELINING_SERVER_BL        = CURLOPTTYPE_OBJECTPOINT + 12
+    integer(kind=c_int), parameter, public :: CURLMOPT_MAX_TOTAL_CONNECTIONS       = CURLOPTTYPE_LONG + 13
+    integer(kind=c_int), parameter, public :: CURLMOPT_PUSHFUNCTION                = CURLOPTTYPE_FUNCTIONPOINT + 14
+    integer(kind=c_int), parameter, public :: CURLMOPT_PUSHDATA                    = CURLOPTTYPE_OBJECTPOINT + 15
+    integer(kind=c_int), parameter, public :: CURLMOPT_MAX_CONCURRENT_STREAMS      = CURLOPTTYPE_LONG + 16
+
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_WHATEVER = 0
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_V4       = 1
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_V6       = 2
@@ -482,6 +503,38 @@ module curl
     integer(kind=c_int), parameter, public :: CURLE_UNRECOVERABLE_POLL       = 99
     integer(kind=c_int), parameter, public :: CURLE_LAST                     = 100 ! never use this
 
+    integer(kind=c_int), parameter, public :: CURL_VERSION_IPV6         = shiftl(1, 0)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_KERBEROS4    = shiftl(1, 1)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_SSL          = shiftl(1, 2)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_LIBZ         = shiftl(1, 3)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_NTLM         = shiftl(1, 4)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_GSSNEGOTIATE = shiftl(1, 5)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_DEBUG        = shiftl(1, 6)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_ASYNCHDNS    = shiftl(1, 7)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_SPNEGO       = shiftl(1, 8)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_LARGEFILE    = shiftl(1, 9)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_IDN          = shiftl(1, 10)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_SSPI         = shiftl(1, 11)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_CONV         = shiftl(1, 12)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_CURLDEBUG    = shiftl(1, 13)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_TLSAUTH_SRP  = shiftl(1, 14)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_NTLM_WB      = shiftl(1, 15)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_HTTP2        = shiftl(1, 16)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_GSSAPI       = shiftl(1, 17)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_KERBEROS5    = shiftl(1, 18)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_UNIX_SOCKETS = shiftl(1, 19)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_PSL          = shiftl(1, 20)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_HTTPS_PROXY  = shiftl(1, 21)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_MULTI_SSL    = shiftl(1, 22)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_BROTLI       = shiftl(1, 23)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_ALTSVC       = shiftl(1, 24)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_HTTP3        = shiftl(1, 25)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_ZSTD         = shiftl(1, 26)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_UNICODE      = shiftl(1, 27)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_HSTS         = shiftl(1, 28)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_GSASL        = shiftl(1, 29)
+    integer(kind=c_int), parameter, public :: CURL_VERSION_THREADSAFE   = shiftl(1, 30)
+
     ! CURLversion
     integer(kind=c_int), parameter, public :: CURLVERSION_FIRST    = 0
     integer(kind=c_int), parameter, public :: CURLVERSION_SECOND   = 1
@@ -604,6 +657,44 @@ module curl
     integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_LAST              = 32
     integer(kind=c_int), parameter, public :: CURL_HTTP_VERSION_2                 = CURL_HTTP_VERSION_2_0
 
+    integer(kind=c_int), parameter, public :: CURLPAUSE_RECV      = shiftl(1, 0)
+    integer(kind=c_int), parameter, public :: CURLPAUSE_RECV_CONT = 0
+    integer(kind=c_int), parameter, public :: CURLPAUSE_SEND      = shiftl(1, 2)
+    integer(kind=c_int), parameter, public :: CURLPAUSE_SEND_CONT = 0
+    integer(kind=c_int), parameter, public :: CURLPAUSE_ALL       = ior(CURLPAUSE_RECV, CURLPAUSE_SEND)
+    integer(kind=c_int), parameter, public :: CURLPAUSE_CONT      = ior(CURLPAUSE_RECV_CONT, CURLPAUSE_SEND_CONT)
+
+    ! CURLMcode
+    integer(kind=c_int), parameter, public :: CURLM_CALL_MULTI_PERFORM    = -1
+    integer(kind=c_int), parameter, public :: CURLM_OK                    = 0
+    integer(kind=c_int), parameter, public :: CURLM_BAD_HANDLE            = 1
+    integer(kind=c_int), parameter, public :: CURLM_BAD_EASY_HANDLE       = 2
+    integer(kind=c_int), parameter, public :: CURLM_OUT_OF_MEMORY         = 3
+    integer(kind=c_int), parameter, public :: CURLM_INTERNAL_ERROR        = 4
+    integer(kind=c_int), parameter, public :: CURLM_BAD_SOCKET            = 5
+    integer(kind=c_int), parameter, public :: CURLM_UNKNOWN_OPTION        = 6
+    integer(kind=c_int), parameter, public :: CURLM_ADDED_ALREADY         = 7
+    integer(kind=c_int), parameter, public :: CURLM_RECURSIVE_API_CALL    = 8
+    integer(kind=c_int), parameter, public :: CURLM_WAKEUP_FAILURE        = 9
+    integer(kind=c_int), parameter, public :: CURLM_BAD_FUNCTION_ARGUMENT = 10
+    integer(kind=c_int), parameter, public :: CURLM_ABORTED_BY_CALLBACK   = 11
+    integer(kind=c_int), parameter, public :: CURLM_UNRECOVERABLE_POLL    = 12
+    integer(kind=c_int), parameter, public :: CURLM_LAST                  = 13
+
+    integer(kind=c_int), parameter, public :: CURLM_CALL_MULTI_SOCKET = CURLM_CALL_MULTI_PERFORM
+
+    ! CURLMSG
+    integer(kind=c_int), parameter, public :: CURLMSG_NONE = 0
+    integer(kind=c_int), parameter, public :: CURLMSG_DONE = 1
+    integer(kind=c_int), parameter, public :: CURLMSG_LAST = 2
+
+    ! CURLMsg
+    type, bind(c), public :: curl_msg
+        integer(kind=c_int)      :: msg         = 0          !! CURLMSG
+        type(c_ptr)              :: easy_handle = c_null_ptr !! CURL
+        integer(kind=c_intptr_t) :: result      = 0          !! union of `void *` and `CURLcode`
+    end type curl_msg
+
     ! curl_slist
     type, bind(c), public :: curl_slist
         type(c_ptr) :: data = c_null_ptr
@@ -640,6 +731,52 @@ module curl
         type(c_ptr)          :: feature_names   = c_null_ptr
     end type curl_version_info_data
 
+    public :: c_f_str_ptr
+    public :: curl_easy_cleanup
+    public :: curl_easy_escape
+    public :: curl_easy_getinfo
+    public :: curl_easy_init
+    public :: curl_easy_pause
+    public :: curl_easy_perform
+    public :: curl_easy_setopt
+    public :: curl_easy_setopt_char
+    public :: curl_easy_setopt_funptr
+    public :: curl_easy_setopt_int
+    public :: curl_easy_setopt_long
+    public :: curl_easy_setopt_ptr
+    public :: curl_easy_strerror
+    public :: curl_easy_unescape
+    public :: curl_escape
+    public :: curl_global_cleanup
+    public :: curl_global_init
+    public :: curl_mime_addpart
+    public :: curl_mime_data
+    public :: curl_mime_encoder
+    public :: curl_mime_filedata
+    public :: curl_mime_filename
+    public :: curl_mime_free
+    public :: curl_mime_headers
+    public :: curl_mime_init
+    public :: curl_mime_name
+    public :: curl_mime_subparts
+    public :: curl_mime_type
+    public :: curl_multi_add_handle
+    public :: curl_multi_cleanup
+    public :: curl_multi_info_read
+    public :: curl_multi_init
+    public :: curl_multi_perform
+    public :: curl_multi_poll
+    public :: curl_multi_remove_handle
+    public :: curl_multi_strerror
+    public :: curl_multi_timeout
+    public :: curl_multi_wakeup
+    public :: curl_slist_append
+    public :: curl_slist_free_all
+    public :: curl_unescape
+    public :: curl_version
+    public :: curl_version_info
+    public :: curl_version_now
+
     interface
         ! char *curl_easy_escape(CURL *handle, const char *string, int length)
         function curl_easy_escape_(curl, string, length) bind(c, name='curl_easy_escape')
@@ -667,6 +804,15 @@ module curl
             implicit none
             type(c_ptr) :: curl_easy_init
         end function curl_easy_init
+
+        ! CURLcode curl_easy_pause(CURL *handle, int bitmask)
+        function curl_easy_pause(curl, bitmask) bind(c, name='curl_easy_pause')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr),         intent(in), value :: curl
+            integer(kind=c_int), intent(in), value :: bitmask
+            integer(kind=c_int)                    :: curl_easy_pause
+        end function curl_easy_pause
 
         ! CURLcode curl_easy_perform(CURL *curl)
         function curl_easy_perform(curl) bind(c, name='curl_easy_perform')
@@ -842,6 +988,94 @@ module curl
             integer(kind=c_int)                       :: curl_mime_type_
         end function curl_mime_type_
 
+        ! CURLMcode curl_multi_add_handle(CURLM *multi_handle, CURL *curl_handle)
+        function curl_multi_add_handle(multi_handle, curl_handle) bind(c, name='curl_multi_add_handle')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: multi_handle
+            type(c_ptr), intent(in), value :: curl_handle
+            integer(kind=c_int)            :: curl_multi_add_handle
+        end function curl_multi_add_handle
+
+        ! CURLMcode curl_multi_cleanup(CURLM *multi_handle)
+        function curl_multi_cleanup(multi_handle) bind(c, name='curl_multi_cleanup')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: multi_handle
+            integer(kind=c_int)            :: curl_multi_cleanup
+        end function curl_multi_cleanup
+
+        ! CURLMsg *curl_multi_info_read(CURLM *multi_handle, int *msgs_in_queue)
+        function curl_multi_info_read(multi_handle, msgs_in_queue) bind(c, name='curl_multi_info_read')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr),         intent(in), value :: multi_handle
+            integer(kind=c_int), intent(out)       :: msgs_in_queue
+            type(c_ptr)                            :: curl_multi_info_read
+        end function curl_multi_info_read
+
+        ! CURLM *curl_multi_init(void)
+        function curl_multi_init() bind(c, name='curl_multi_init')
+            import :: c_ptr
+            implicit none
+            type(c_ptr) :: curl_multi_init
+        end function curl_multi_init
+
+        ! CURLMcode curl_multi_perform(CURLM *multi_handle, int *running_handles)
+        function curl_multi_perform(multi_handle, running_handles) bind(c, name='curl_multi_perform')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr),         intent(in), value :: multi_handle
+            integer(kind=c_int), intent(out)       :: running_handles
+            integer(kind=c_int)                    :: curl_multi_perform
+        end function curl_multi_perform
+
+        ! CURLMcode curl_multi_poll(CURLM *multi_handle, struct curl_waitfd extra_fds[], unsigned int extra_nfds, int timeout_ms, int *numfds)
+        function curl_multi_poll(multi_handle, extra_fds, extra_nfds, timeout_ms, numfds) bind(c, name='curl_multi_poll')
+            import :: c_int, c_ptr, c_unsigned_int
+            implicit none
+            type(c_ptr),                  intent(in), value :: multi_handle
+            type(c_ptr),                  intent(in), value :: extra_fds
+            integer(kind=c_unsigned_int), intent(in), value :: extra_nfds
+            integer(kind=c_int),          intent(in), value :: timeout_ms
+            integer(kind=c_int),          intent(inout)     :: numfds
+            integer(kind=c_int)                             :: curl_multi_poll
+        end function curl_multi_poll
+
+        ! CURLMcode curl_multi_remove_handle(CURLM *multi_handle, CURL *curl_handle)
+        function curl_multi_remove_handle(multi_handle, curl_handle) bind(c, name='curl_multi_remove_handle')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: multi_handle
+            type(c_ptr), intent(in), value :: curl_handle
+            integer(kind=c_int)            :: curl_multi_remove_handle
+        end function curl_multi_remove_handle
+
+        ! const char *curl_multi_strerror(CURLMcode code)
+        function curl_multi_strerror_(code) bind(c, name='curl_multi_strerror')
+            import :: c_int, c_ptr
+            implicit none
+            integer(kind=c_int), intent(in), value :: code
+            type(c_ptr)                            :: curl_multi_strerror_
+        end function curl_multi_strerror_
+
+        ! CURLMcode curl_multi_timeout(CURLM *multi_handle, long *milliseconds)
+        function curl_multi_timeout(multi_handle, milliseconds) bind(c, name='curl_multi_timeout')
+            import :: c_int, c_long, c_ptr
+            implicit none
+            type(c_ptr),          intent(in), value :: multi_handle
+            integer(kind=c_long), intent(in)        :: milliseconds
+            integer(kind=c_int)                     :: curl_multi_timeout
+        end function curl_multi_timeout
+
+        ! CURLMcode curl_multi_wakeup(CURLM *multi_handle)
+        function curl_multi_wakeup(multi_handle) bind(c, name='curl_multi_wakeup')
+            import :: c_int, c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: multi_handle
+            integer(kind=c_int)            :: curl_multi_wakeup
+        end function curl_multi_wakeup
+
         ! struct curl_slist *curl_slist_append(struct curl_slist *list, const char *string)
         function curl_slist_append_(list, string) bind(c, name='curl_slist_append')
             import :: c_char, c_ptr
@@ -939,41 +1173,6 @@ module curl
         module procedure :: curl_easy_setopt_long
         module procedure :: curl_easy_setopt_ptr
     end interface
-
-    public :: c_f_str_ptr
-    public :: curl_easy_cleanup
-    public :: curl_easy_escape
-    public :: curl_easy_getinfo
-    public :: curl_easy_init
-    public :: curl_easy_perform
-    public :: curl_easy_setopt
-    public :: curl_easy_setopt_char
-    public :: curl_easy_setopt_funptr
-    public :: curl_easy_setopt_int
-    public :: curl_easy_setopt_long
-    public :: curl_easy_setopt_ptr
-    public :: curl_easy_strerror
-    public :: curl_easy_unescape
-    public :: curl_escape
-    public :: curl_global_cleanup
-    public :: curl_global_init
-    public :: curl_mime_addpart
-    public :: curl_mime_data
-    public :: curl_mime_encoder
-    public :: curl_mime_filedata
-    public :: curl_mime_filename
-    public :: curl_mime_free
-    public :: curl_mime_headers
-    public :: curl_mime_init
-    public :: curl_mime_name
-    public :: curl_mime_subparts
-    public :: curl_mime_type
-    public :: curl_slist_append
-    public :: curl_slist_free_all
-    public :: curl_unescape
-    public :: curl_version
-    public :: curl_version_info
-    public :: curl_version_now
 contains
     ! char *curl_easy_escape(CURL *handle, const char *string, int length)
     function curl_easy_escape(curl, string, length) result(escaped)
@@ -1206,6 +1405,16 @@ contains
 
         rc = curl_mime_type_(part, mimetype // c_null_char)
     end function curl_mime_type
+
+    ! const char *curl_multi_strerror(CURLMcode code)
+    function curl_multi_strerror(code) result(str)
+        integer, intent(in)           :: code
+        character(len=:), allocatable :: str
+        type(c_ptr)                   :: ptr
+
+        ptr = curl_multi_strerror_(code)
+        call c_f_str_ptr(ptr, str)
+    end function curl_multi_strerror
 
     ! char *curl_unescape(const char *string, int length)
     function curl_unescape(string, length) result(unescaped)

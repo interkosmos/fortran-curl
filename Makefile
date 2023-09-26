@@ -20,6 +20,7 @@ GETINFO  = getinfo
 GOPHER   = gopher
 HTTP     = http
 IMAP     = imap
+MULTI    = multi
 POST     = post
 SMTP     = smtp
 VERSION  = version
@@ -27,38 +28,43 @@ VERSION  = version
 .PHONY: all clean examples
 
 all: $(TARGET)
-examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(POST) $(SMTP) $(VERSION)
 
-$(TARGET):
+examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(MULTI) \
+          $(POST) $(SMTP) $(VERSION)
+
+$(TARGET): src/curl_macro.c src/curl.f90
 	$(CC) $(CFLAGS) -c src/curl_macro.c
 	$(FC) $(FFLAGS) -c src/curl.f90
 	$(AR) $(ARFLAGS) $(TARGET) curl.o curl_macro.o
 
-$(DICT): $(TARGET)
+$(DICT): examples/dict/dict.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(DICT) examples/dict/dict.f90 $(TARGET) $(LDLIBS)
 
-$(DOWNLOAD): $(TARGET)
+$(DOWNLOAD): examples/download/download.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(DOWNLOAD) examples/download/download.f90 $(TARGET) $(LDLIBS)
 
-$(GETINFO): $(TARGET)
+$(GETINFO): examples/getinfo/getinfo.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(GETINFO) examples/getinfo/getinfo.f90 $(TARGET) $(LDLIBS)
 
-$(GOPHER): $(TARGET)
+$(GOPHER): examples/gopher/gopher.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(GOPHER) examples/gopher/gopher.f90 $(TARGET) $(LDLIBS)
 
-$(HTTP): $(TARGET)
+$(HTTP): examples/http/http.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(HTTP) examples/http/http.f90 $(TARGET) $(LDLIBS)
 
-$(IMAP): $(TARGET)
+$(IMAP): examples/imap/imap.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(IMAP) examples/imap/imap.f90 $(TARGET) $(LDLIBS)
 
-$(POST): $(TARGET)
+$(MULTI): examples/multi/multi.f90 $(TARGET)
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $(MULTI) examples/multi/multi.f90 $(TARGET) $(LDLIBS)
+
+$(POST): examples/post/post.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(POST) examples/post/post.f90 $(TARGET) $(LDLIBS)
 
-$(SMTP): $(TARGET)
+$(SMTP): examples/smtp/smtp.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(SMTP) examples/smtp/smtp.f90 $(TARGET) $(LDLIBS)
 
-$(VERSION): $(TARGET)
+$(VERSION): examples/version/version.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(VERSION) examples/version/version.f90 $(TARGET) $(LDLIBS)
 
 clean:
@@ -71,6 +77,7 @@ clean:
 	if [ -e $(GOPHER) ]; then rm $(GOPHER); fi
 	if [ -e $(HTTP) ]; then rm $(HTTP); fi
 	if [ -e $(IMAP) ]; then rm $(IMAP); fi
+	if [ -e $(MULTI) ]; then rm $(MULTI); fi
 	if [ -e $(POST) ]; then rm $(POST); fi
 	if [ -e $(SMTP) ]; then rm $(SMTP); fi
 	if [ -e $(VERSION) ]; then rm $(VERSION); fi

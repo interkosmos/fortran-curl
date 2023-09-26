@@ -55,7 +55,6 @@ end module http_callback
 
 program main
     use, intrinsic :: iso_c_binding
-    use, intrinsic :: iso_fortran_env, only: i8 => int64
     use :: curl
     use :: http_callback
     implicit none
