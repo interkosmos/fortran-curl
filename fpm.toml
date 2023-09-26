@@ -47,6 +47,11 @@ source-dir = "examples/imap"
 main = "imap.f90"
 
 [[executable]]
+name = "multi"
+source-dir = "examples/multi"
+main = "multi.f90"
+
+[[executable]]
 name = "smtp"
 source-dir = "examples/smtp"
 main = "smtp.f90"

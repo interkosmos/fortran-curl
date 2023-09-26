@@ -10,7 +10,7 @@ For a user-friendly, high-level HTTP library based on these bindings, see
 
 ## Build Instructions
 
-Install cURL with development headers. On FreeBSD, run:
+Install libcurl with development headers. On FreeBSD, run:
 
 ```
 # pkg install ftp/curl
@@ -22,7 +22,7 @@ On Debian, instead:
 # apt-get install libcurl4 libcurl4-openssl-dev
 ```
 
-Clone the repository and then run `make` to build the interfaces:
+Clone the repository, and then run `make` to build the interfaces:
 
 ```
 $ git clone https://github.com/interkosmos/fortran-curl
@@ -64,6 +64,8 @@ Build an example with:
 ```
 $ make <name>
 ```
+
+Buld all by running `make examples`.
 
 ## Coverage
 
@@ -137,9 +139,9 @@ $ make <name>
 
 ## Fortran Package Manager
 
-This projects supports the Fortran Package Manager
-([fpm](https://github.com/fortran-lang/fpm)). To build the project with *fpm*,
-run:
+This projects supports the
+[Fortran Package Manager](https://github.com/fortran-lang/fpm) (*fpm*). To build
+the project with *fpm*, run:
 
 ```
 $ fpm build --profile=release
@@ -147,7 +149,7 @@ $ fpm build --profile=release
 
 The example applications are available with the ``fpm run --example`` command.
 
-You can use ``fortran-curl`` in your *fpm* projects with:
+You can add *fortran-curl* to your `fpm.toml` with:
 
 ```toml
 [dependencies]
