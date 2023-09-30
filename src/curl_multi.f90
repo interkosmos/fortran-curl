@@ -1,6 +1,6 @@
 ! curl_multi.f90
 !
-! Fortran 2008 ISO C binding interfaces to libcurl.
+! Fortran 2008 ISO C binding interfaces to `multi.h`.
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
@@ -10,8 +10,6 @@ module curl_multi
     use :: curl_util
     implicit none
     private
-
-    integer, parameter :: c_unsigned_int = c_int
 
     ! CURLMoption
     integer(kind=c_int), parameter, public :: CURLMOPT_SOCKETFUNCTION              = CURLOPTTYPE_FUNCTIONPOINT + 1

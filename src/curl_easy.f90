@@ -1,6 +1,6 @@
 ! curl_easy.f90
 !
-! Fortran 2008 ISO C binding interfaces to libcurl.
+! Fortran 2008 ISO C binding interfaces to `curl.h` and `easy.h`.
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
@@ -696,6 +696,7 @@ module curl_easy
     public :: curl_easy_strerror
     public :: curl_easy_unescape
     public :: curl_escape
+    public :: curl_free
     public :: curl_global_cleanup
     public :: curl_global_init
     public :: curl_mime_addpart
@@ -966,6 +967,13 @@ module curl_easy
             implicit none
             type(c_ptr), intent(in), value :: curl
         end subroutine curl_easy_cleanup
+
+        ! void curl_free(void *p)
+        subroutine curl_free(p) bind(c, name='curl_free')
+            import :: c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: p
+        end subroutine curl_free
 
         ! void curl_global_cleanup(void)
         subroutine curl_global_cleanup() bind(c, name='curl_global_cleanup')

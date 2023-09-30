@@ -10,6 +10,8 @@ module curl_util
     implicit none
     private
 
+    integer, parameter, public :: c_unsigned_int = c_int
+
     interface
         ! size_t strlen(const char *str)
         function c_strlen(str) bind(c, name='strlen')

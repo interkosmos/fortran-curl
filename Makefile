@@ -23,23 +23,26 @@ IMAP     = imap
 MULTI    = multi
 POST     = post
 SMTP     = smtp
+URL      = url
 VERSION  = version
 
-SRC = src/curl.f90 src/curl_easy.f90 src/curl_multi.f90 src/curl_util.f90 src/curl_macro.c
-OBJ = curl.o curl_easy.o curl_multi.o curl_util.o curl_macro.o
+SRC = src/curl.f90 src/curl_easy.f90 src/curl_multi.f90 src/curl_urlapi.f90 \
+      src/curl_util.f90 src/curl_macro.c
+OBJ = curl.o curl_easy.o curl_multi.o curl_urlapi.o curl_util.o curl_macro.o
 
 .PHONY: all clean examples
 
 all: $(TARGET)
 
 examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(MULTI) \
-          $(POST) $(SMTP) $(VERSION)
+          $(POST) $(SMTP) $(URL) $(VERSION)
 
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -c src/curl_macro.c
 	$(FC) $(FFLAGS) -c src/curl_util.f90
 	$(FC) $(FFLAGS) -c src/curl_easy.f90
 	$(FC) $(FFLAGS) -c src/curl_multi.f90
+	$(FC) $(FFLAGS) -c src/curl_urlapi.f90
 	$(FC) $(FFLAGS) -c src/curl.f90
 	$(AR) $(ARFLAGS) $(TARGET) $(OBJ)
 
@@ -70,6 +73,9 @@ $(POST): examples/post/post.f90 $(TARGET)
 $(SMTP): examples/smtp/smtp.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(SMTP) examples/smtp/smtp.f90 $(TARGET) $(LDLIBS)
 
+$(URL): examples/url/url.f90 $(TARGET)
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $(URL) examples/url/url.f90 $(TARGET) $(LDLIBS)
+
 $(VERSION): examples/version/version.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(VERSION) examples/version/version.f90 $(TARGET) $(LDLIBS)
 
@@ -86,4 +92,5 @@ clean:
 	if [ -e $(MULTI) ]; then rm $(MULTI); fi
 	if [ -e $(POST) ]; then rm $(POST); fi
 	if [ -e $(SMTP) ]; then rm $(SMTP); fi
+	if [ -e $(URL) ]; then rm $(URL); fi
 	if [ -e $(VERSION) ]; then rm $(VERSION); fi
