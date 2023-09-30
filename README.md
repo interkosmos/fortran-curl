@@ -65,7 +65,7 @@ Build an example with:
 $ make <name>
 ```
 
-Buld all by running `make examples`.
+Build all by running `make examples`.
 
 ## Coverage
 
@@ -139,7 +139,7 @@ Buld all by running `make examples`.
 
 ## Fortran Package Manager
 
-This projects supports the
+This project supports the
 [Fortran Package Manager](https://github.com/fortran-lang/fpm) (*fpm*). To build
 the project with *fpm*, run:
 
@@ -147,7 +147,7 @@ the project with *fpm*, run:
 $ fpm build --profile=release
 ```
 
-The example applications are available with the ``fpm run --example`` command.
+The example programs are available with the ``fpm run --example`` command.
 
 You can add *fortran-curl* to your `fpm.toml` with:
 

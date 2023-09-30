@@ -7,7 +7,7 @@ AR      = ar
 PREFIX  = /usr/local
 DEBUG   = #-ggdb3 -O0 -fcheck=all -fmax-errors=1 -Wall
 
-FFLAGS  = $(DEBUG) -std=f2008
+FFLAGS  = -std=f2008 $(DEBUG)
 CFLAGS  =
 LDFLAGS = -I$(PREFIX)/include/ -L$(PREFIX)/lib/
 LDLIBS  = -lcurl
@@ -25,6 +25,9 @@ POST     = post
 SMTP     = smtp
 VERSION  = version
 
+SRC = src/curl.f90 src/curl_easy.f90 src/curl_multi.f90 src/curl_util.f90 src/curl_macro.c
+OBJ = curl.o curl_easy.o curl_multi.o curl_util.o curl_macro.o
+
 .PHONY: all clean examples
 
 all: $(TARGET)
@@ -32,10 +35,13 @@ all: $(TARGET)
 examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(MULTI) \
           $(POST) $(SMTP) $(VERSION)
 
-$(TARGET): src/curl_macro.c src/curl.f90
+$(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -c src/curl_macro.c
+	$(FC) $(FFLAGS) -c src/curl_util.f90
+	$(FC) $(FFLAGS) -c src/curl_easy.f90
+	$(FC) $(FFLAGS) -c src/curl_multi.f90
 	$(FC) $(FFLAGS) -c src/curl.f90
-	$(AR) $(ARFLAGS) $(TARGET) curl.o curl_macro.o
+	$(AR) $(ARFLAGS) $(TARGET) $(OBJ)
 
 $(DICT): examples/dict/dict.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(DICT) examples/dict/dict.f90 $(TARGET) $(LDLIBS)
