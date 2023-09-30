@@ -165,7 +165,8 @@ contains
     function curl_multi_strerror(code) result(str)
         integer, intent(in)           :: code
         character(len=:), allocatable :: str
-        type(c_ptr)                   :: ptr
+
+        type(c_ptr) :: ptr
 
         ptr = curl_multi_strerror_(code)
         call c_f_str_ptr(ptr, str)

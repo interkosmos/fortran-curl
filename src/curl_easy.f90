@@ -1073,6 +1073,7 @@ contains
         integer,          intent(in)  :: option
         integer(kind=i4), intent(out) :: parameter
         integer                       :: rc
+
         integer(kind=c_long), target  :: i
 
         rc = curl_easy_getinfo_(curl, option, c_loc(i))
@@ -1085,6 +1086,7 @@ contains
         integer,          intent(in)  :: option
         integer(kind=i8), intent(out) :: parameter
         integer                       :: rc
+
         integer(kind=c_long), target  :: i
 
         rc = curl_easy_getinfo_(curl, option, c_loc(i))
@@ -1155,7 +1157,8 @@ contains
     function curl_easy_strerror(code) result(str)
         integer, intent(in)           :: code
         character(len=:), allocatable :: str
-        type(c_ptr)                   :: ptr
+
+        type(c_ptr) :: ptr
 
         ptr = curl_easy_strerror_(code)
         call c_f_str_ptr(ptr, str)
@@ -1278,7 +1281,8 @@ contains
     function curl_slist_append(list, string) result(ptr)
         type(c_ptr),      intent(in) :: list
         character(len=*), intent(in) :: string
-        type(c_ptr)                  :: ptr
+
+        type(c_ptr) :: ptr
 
         ptr = curl_slist_append_(list, string // c_null_char)
     end function curl_slist_append
@@ -1286,7 +1290,8 @@ contains
     ! char *curl_version(void)
     function curl_version()
         character(len=:), allocatable :: curl_version
-        type(c_ptr)                   :: ptr
+
+        type(c_ptr) :: ptr
 
         ptr = curl_version_()
         call c_f_str_ptr(ptr, curl_version)
@@ -1298,7 +1303,8 @@ contains
         !! pointer to Fortran pointer of derived type `curl_version_info_data`.
         integer, intent(in)                   :: age
         type(curl_version_info_data), pointer :: curl_version_info
-        type(c_ptr)                           :: ptr
+
+        type(c_ptr) :: ptr
 
         ptr = curl_version_info_(age)
 
