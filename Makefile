@@ -5,11 +5,13 @@ FC      = gfortran
 CC      = gcc
 AR      = ar
 PREFIX  = /usr/local
-DEBUG   = #-ggdb3 -O0 -fcheck=all -fmax-errors=1 -Wall
 
-FFLAGS  = -std=f2008 $(DEBUG)
-CFLAGS  =
-LDFLAGS = -I$(PREFIX)/include/ -L$(PREFIX)/lib/
+DEBUG   = -g -O0 -Wall -fmax-errors=1
+RELEASE = -O2 -march=native
+
+FFLAGS  = $(RELEASE)
+CFLAGS  = $(RELEASE)
+LDFLAGS = -I$(PREFIX)/include -L$(PREFIX)/lib
 LDLIBS  = -lcurl
 ARFLAGS = rcs
 TARGET  = libfortran-curl.a

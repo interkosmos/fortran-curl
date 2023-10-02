@@ -52,6 +52,11 @@ source-dir = "examples/multi"
 main = "multi.f90"
 
 [[executable]]
+name = "post"
+source-dir = "examples/post"
+main = "post.f90"
+
+[[executable]]
 name = "smtp"
 source-dir = "examples/smtp"
 main = "smtp.f90"
@@ -60,11 +65,6 @@ main = "smtp.f90"
 name = "url"
 source-dir = "examples/url"
 main = "url.f90"
-
-[[executable]]
-name = "post"
-source-dir = "examples/post"
-main = "post.f90"
 
 [[executable]]
 name = "version"
