@@ -43,7 +43,8 @@ module curl_urlapi
     integer(kind=c_int), parameter, public :: CURLUE_BAD_SLASHES        = 28
     integer(kind=c_int), parameter, public :: CURLUE_BAD_USER           = 29
     integer(kind=c_int), parameter, public :: CURLUE_LACKS_IDN          = 30
-    integer(kind=c_int), parameter, public :: CURLUE_LAST               = 31
+    integer(kind=c_int), parameter, public :: CURLUE_TOO_LARGE          = 31
+    integer(kind=c_int), parameter, public :: CURLUE_LAST               = 32
 
     ! CURLUPart
     integer(kind=c_int), parameter, public :: CURLUPART_URL      = 0

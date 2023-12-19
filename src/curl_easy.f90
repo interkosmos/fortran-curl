@@ -321,6 +321,7 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLOPT_CA_CACHE_TIMEOUT           = CURLOPTTYPE_LONG + 321
     integer(kind=c_int), parameter, public :: CURLOPT_QUICK_EXIT                 = CURLOPTTYPE_LONG + 322
     integer(kind=c_int), parameter, public :: CURLOPT_HAPROXY_CLIENT_IP          = CURLOPTTYPE_STRINGPOINT + 323
+    integer(kind=c_int), parameter, public :: CURLOPT_SERVER_RESPONSE_TIMEOUT_MS = CURLOPTTYPE_LONG + 324
 
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_WHATEVER = 0
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_V4       = 1
@@ -482,7 +483,8 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLE_PROXY                    = 97
     integer(kind=c_int), parameter, public :: CURLE_SSL_CLIENTCERT           = 98
     integer(kind=c_int), parameter, public :: CURLE_UNRECOVERABLE_POLL       = 99
-    integer(kind=c_int), parameter, public :: CURLE_LAST                     = 100 ! never use this
+    integer(kind=c_int), parameter, public :: CURLE_TOO_LARGE                = 100
+    integer(kind=c_int), parameter, public :: CURLE_LAST                     = 101 ! never use this
 
     integer(kind=c_int), parameter, public :: CURL_VERSION_IPV6         = shiftl(1, 0)
     integer(kind=c_int), parameter, public :: CURL_VERSION_KERBEROS4    = shiftl(1, 1)
@@ -622,7 +624,9 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLINFO_REFERER                   = CURLINFO_STRING + 60
     integer(kind=c_int), parameter, public :: CURLINFO_CAINFO                    = CURLINFO_STRING + 61
     integer(kind=c_int), parameter, public :: CURLINFO_CAPATH                    = CURLINFO_STRING + 62
-    integer(kind=c_int), parameter, public :: CURLINFO_LASTONE                   = 62
+    integer(kind=c_int), parameter, public :: CURLINFO_XFER_ID                   = CURLINFO_OFF_T + 63
+    integer(kind=c_int), parameter, public :: CURLINFO_CONN_ID                   = CURLINFO_OFF_T + 64
+    integer(kind=c_int), parameter, public :: CURLINFO_LASTONE                   = 64
 
     integer(kind=c_size_t), parameter, public :: CURL_ZERO_TERMINATED   = int(-1, kind=c_size_t)
     integer(kind=c_int),    parameter, public :: CURLMIMEOPT_FORMESCAPE = shiftl(1, 0)

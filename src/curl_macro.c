@@ -1,8 +1,19 @@
 /* curl_macro.c */
 #include <curl/curl.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int curl_version_now(void);
+int curl_easy_setopt_c_int(CURL *, CURLoption option, int);
+int curl_easy_setopt_c_long(CURL *, CURLoption option, long);
+int curl_easy_setopt_c_ptr(CURL *, CURLoption option, void *);
+int curl_easy_setopt_c_char(CURL *, CURLoption option, char *);
+int curl_easy_setopt_c_funptr(CURL *, CURLoption option, void *);
+
 /* Wrapper function that provides access to the constant `CURLVERSION_NOW`. */
-int curl_version_now()
+int curl_version_now(void)
 {
     return CURLVERSION_NOW;
 }
@@ -32,3 +43,7 @@ int curl_easy_setopt_c_funptr(CURL *curl, CURLoption option, void *value)
 {
     return curl_easy_setopt(curl, option, value);
 }
+
+#ifdef __cplusplus
+}
+#endif

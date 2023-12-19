@@ -2,7 +2,7 @@
 
 A collection of ISO C binding interfaces to
 [libcurl](https://curl.haxx.se/libcurl/) for Fortran 2008. Compilation has been
-tested with GNU Fortran 13 and cURL 8.3. The library is also available on
+tested with GNU Fortran 13 and cURL 8.5. The library is also available on
 [MacPorts](https://ports.macports.org/port/fortran-curl/).
 
 See [COVERAGE](COVERAGE.md) for an overview of bound procedures.
@@ -35,7 +35,7 @@ $ make
 You can override the default compiler by passing the `FC` argument, for example:
 
 ```
-$ make FC=ifort
+$ make FC=ifx
 ```
 
 On Linux, you may want to change the prefix to `/usr`:
