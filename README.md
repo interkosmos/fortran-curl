@@ -1,11 +1,9 @@
 # fortran-curl
 
 A collection of ISO C binding interfaces to
-[libcurl](https://curl.haxx.se/libcurl/) for Fortran 2008. Compilation has been
-tested with GNU Fortran 13 and cURL 8.5. The library is also available on
-[MacPorts](https://ports.macports.org/port/fortran-curl/).
-
-See [COVERAGE](COVERAGE.md) for an overview of bound procedures.
+[libcurl](https://curl.haxx.se/libcurl/) 8.5 for Fortran 2008. The library has
+been tested with GNU Fortran 13 and Intel oneAPI 2024. See
+[COVERAGE](COVERAGE.md) for an overview of bound procedures.
 
 For a user-friendly, high-level HTTP library based on these bindings, see
 [http-client](https://github.com/fortran-lang/http-client).
@@ -32,10 +30,11 @@ $ cd fortran-curl/
 $ make
 ```
 
-You can override the default compiler by passing the `FC` argument, for example:
+You can override the default compilers by passing the `CC` and `FC` arguments,
+for example:
 
 ```
-$ make FC=ifx
+$ make CC=icx FC=ifx
 ```
 
 On Linux, you may want to change the prefix to `/usr`:
@@ -56,6 +55,7 @@ Examples are provided in directory `examples/`:
 * **gopher** prints the contents of a remote Gopher map file.
 * **http** makes an HTTP GET request.
 * **imap** examines the `INBOX` of an IMAP mailbox (SSL).
+* **mqtt** posts a message to an MQTT topic.
 * **multi** makes multiple HTTP requests at once.
 * **post** makes an HTTP POST request.
 * **smtp** sends an e-mail via SMTP (SSL).

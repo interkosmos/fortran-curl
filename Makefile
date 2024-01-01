@@ -22,6 +22,7 @@ GETINFO  = getinfo
 GOPHER   = gopher
 HTTP     = http
 IMAP     = imap
+MQTT     = mqtt
 MULTI    = multi
 POST     = post
 SMTP     = smtp
@@ -36,8 +37,8 @@ OBJ = curl.o curl_easy.o curl_multi.o curl_urlapi.o curl_util.o curl_macro.o
 
 all: $(TARGET)
 
-examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(MULTI) \
-          $(POST) $(SMTP) $(URL) $(VERSION)
+examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(MQTT) \
+          $(MULTI) $(POST) $(SMTP) $(URL) $(VERSION)
 
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -c src/curl_macro.c
@@ -66,6 +67,9 @@ $(HTTP): examples/http/http.f90 $(TARGET)
 $(IMAP): examples/imap/imap.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(IMAP) examples/imap/imap.f90 $(TARGET) $(LDLIBS)
 
+$(MQTT): examples/mqtt/mqtt.f90 $(TARGET)
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $(MQTT) examples/mqtt/mqtt.f90 $(TARGET) $(LDLIBS)
+
 $(MULTI): examples/multi/multi.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(MULTI) examples/multi/multi.f90 $(TARGET) $(LDLIBS)
 
@@ -91,6 +95,7 @@ clean:
 	if [ -e $(GOPHER) ]; then rm $(GOPHER); fi
 	if [ -e $(HTTP) ]; then rm $(HTTP); fi
 	if [ -e $(IMAP) ]; then rm $(IMAP); fi
+	if [ -e $(MQTT) ]; then rm $(MQTT); fi
 	if [ -e $(MULTI) ]; then rm $(MULTI); fi
 	if [ -e $(POST) ]; then rm $(POST); fi
 	if [ -e $(SMTP) ]; then rm $(SMTP); fi
