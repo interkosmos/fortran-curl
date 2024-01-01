@@ -9,7 +9,7 @@ program main
     use :: curl
     implicit none
 
-    character(len=*), parameter :: URL = 'mqtt:/localhost:1883/fortran'
+    character(len=*), parameter :: URL = 'mqtt://localhost:1883/fortran'
 
     integer     :: rc
     type(c_ptr) :: curl_ptr
@@ -26,13 +26,13 @@ program main
     payload = 'Hello, from Fortran!'
 
     ! Set curl options.
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,              URL)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT,   10)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,         1)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOPROGRESS,       1)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_POST,             1)
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDS,       c_loc(payload))
-    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDSIZE,    len(payload))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_URL,            URL)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_CONNECTTIMEOUT, 10)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOSIGNAL,       1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_NOPROGRESS,     1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_POST,           1)
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDS,     c_loc(payload))
+    rc = curl_easy_setopt(curl_ptr, CURLOPT_POSTFIELDSIZE,  len(payload))
 
     ! Send request.
     rc = curl_easy_perform(curl_ptr)
