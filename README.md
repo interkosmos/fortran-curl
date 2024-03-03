@@ -22,12 +22,14 @@ On Debian, instead:
 # apt-get install libcurl4 libcurl4-openssl-dev
 ```
 
-Clone the repository, and then run `make` to build the interfaces:
+Clone the repository, then run `make` to build and install the interfaces to
+`/opt`:
 
 ```
 $ git clone --depth 1 https://github.com/interkosmos/fortran-curl
 $ cd fortran-curl/
 $ make
+$ make install PREFIX=/opt
 ```
 
 You can override the default compilers by passing the `CC` and `FC` arguments,
@@ -37,13 +39,13 @@ for example:
 $ make CC=icx FC=ifx
 ```
 
-On Linux, you may want to change the prefix to `/usr`:
+On Linux, you may have to change the prefix to `/usr`:
 
 ```
 $ make PREFIX=/usr
 ```
 
-Link your Fortran application with `libfortran-curl.a -lcurl`.
+Link your Fortran application against `/opt/lib/libfortran-curl.a -lcurl`.
 
 ## Examples
 
@@ -73,11 +75,11 @@ Build all by running `make examples`.
 ## Fortran Package Manager
 
 This project supports the
-[Fortran Package Manager](https://github.com/fortran-lang/fpm) (*fpm*). To build
-the project with *fpm*, run:
+[Fortran Package Manager](https://github.com/fortran-lang/fpm) (FPM). To build
+the project with FPM, run:
 
 ```
-$ fpm build --profile=release
+$ fpm build --profile release
 ```
 
 The example programs are available with the ``fpm run --example`` command.

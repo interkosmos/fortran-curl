@@ -1099,10 +1099,10 @@ contains
 
     ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
     function curl_easy_getinfo_ptr(curl, option, parameter) result(rc)
-        type(c_ptr), intent(in)  :: curl
-        integer,     intent(in)  :: option
-        type(c_ptr), intent(out) :: parameter
-        integer                  :: rc
+        type(c_ptr), intent(in)    :: curl
+        integer,     intent(in)    :: option
+        type(c_ptr), intent(inout) :: parameter
+        integer                    :: rc
 
         rc = curl_easy_getinfo_(curl, option, parameter)
     end function curl_easy_getinfo_ptr

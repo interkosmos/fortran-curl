@@ -14,6 +14,8 @@ CFLAGS  = $(RELEASE)
 LDFLAGS = -I$(PREFIX)/include -L$(PREFIX)/lib
 LDLIBS  = -lcurl
 ARFLAGS = rcs
+INCDIR  = $(PREFIX)/include/libfortran-curl
+LIBDIR  = $(PREFIX)/lib
 TARGET  = libfortran-curl.a
 
 DICT     = dict
@@ -31,6 +33,7 @@ VERSION  = version
 
 SRC = src/curl.f90 src/curl_easy.f90 src/curl_multi.f90 src/curl_urlapi.f90 \
       src/curl_util.f90 src/curl_macro.c
+MOD = curl.mod curl_easy.mod curl_multi.mod curl_urlapi.mod curl_util.mod
 OBJ = curl.o curl_easy.o curl_multi.o curl_urlapi.o curl_util.o curl_macro.o
 
 .PHONY: all clean examples
@@ -84,6 +87,14 @@ $(URL): examples/url/url.f90 $(TARGET)
 
 $(VERSION): examples/version/version.f90 $(TARGET)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(VERSION) examples/version/version.f90 $(TARGET) $(LDLIBS)
+
+install: $(TARGET)
+	@echo "--- Installing $(TARGET) to $(LIBDIR)/ ..."
+	install -d $(LIBDIR)
+	install -m 644 $(TARGET) $(LIBDIR)/
+	@echo "--- Installing module files to $(INCDIR)/ ..."
+	install -d $(INCDIR)
+	install -m 644 $(MOD) $(INCDIR)/
 
 clean:
 	if [ `ls -1 *.mod 2>/dev/null | wc -l` -gt 0 ]; then rm *.mod; fi
