@@ -114,15 +114,15 @@ module curl_multi
             integer(kind=c_int)                    :: curl_multi_perform
         end function curl_multi_perform
 
-        ! CURLMcode curl_multi_poll(CURLM *multi_handle, struct curl_waitfd extra_fds[], unsigned int extra_nfds, int timeout_ms, int *numfds)
-        function curl_multi_poll(multi_handle, extra_fds, extra_nfds, timeout_ms, numfds) bind(c, name='curl_multi_poll')
+        ! CURLMcode curl_multi_poll(CURLM *multi_handle, struct curl_waitfd extra_fds[], unsigned int extra_nfds, int timeout_ms, int *num_fds)
+        function curl_multi_poll(multi_handle, extra_fds, extra_nfds, timeout_ms, num_fds) bind(c, name='curl_multi_poll')
             import :: c_int, c_ptr, c_unsigned_int
             implicit none
             type(c_ptr),                  intent(in), value :: multi_handle
             type(c_ptr),                  intent(in), value :: extra_fds
             integer(kind=c_unsigned_int), intent(in), value :: extra_nfds
             integer(kind=c_int),          intent(in), value :: timeout_ms
-            integer(kind=c_int),          intent(inout)     :: numfds
+            integer(kind=c_int),          intent(inout)     :: num_fds
             integer(kind=c_int)                             :: curl_multi_poll
         end function curl_multi_poll
 

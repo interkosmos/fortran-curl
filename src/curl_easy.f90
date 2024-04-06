@@ -1130,7 +1130,7 @@ contains
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
     function curl_easy_setopt_int(curl, option, parameter) result(rc)
         type(c_ptr),      intent(in) :: curl
-        integer    ,      intent(in) :: option
+        integer,          intent(in) :: option
         integer(kind=i4), intent(in) :: parameter
         integer                      :: rc
 

@@ -5,11 +5,11 @@
 extern "C" {
 #endif
 
-int curl_easy_setopt_c_char(CURL *, CURLoption option, char *);
-int curl_easy_setopt_c_funptr(CURL *, CURLoption option, void *);
-int curl_easy_setopt_c_int(CURL *, CURLoption option, int);
-int curl_easy_setopt_c_long(CURL *, CURLoption option, long);
-int curl_easy_setopt_c_ptr(CURL *, CURLoption option, void *);
+int curl_easy_setopt_c_char(CURL *, CURLoption, char *);
+int curl_easy_setopt_c_funptr(CURL *, CURLoption, void *);
+int curl_easy_setopt_c_int(CURL *, CURLoption, int);
+int curl_easy_setopt_c_long(CURL *, CURLoption, long);
+int curl_easy_setopt_c_ptr(CURL *, CURLoption, void *);
 int curl_version_now(void);
 
 /* Non-variadic wrappers to `curl_easy_setopt()`. */
