@@ -6,7 +6,7 @@
 ! Licence: ISC
 module curl_easy
     use, intrinsic :: iso_c_binding
-    use, intrinsic :: iso_fortran_env, only: i4 => int32, i8 => int64, r4 => real32, r8 => real64
+    use, intrinsic :: iso_fortran_env, only: i4 => int32, i8 => int64
     use :: curl_util
     implicit none
     private
@@ -626,7 +626,9 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLINFO_CAPATH                    = CURLINFO_STRING + 62
     integer(kind=c_int), parameter, public :: CURLINFO_XFER_ID                   = CURLINFO_OFF_T + 63
     integer(kind=c_int), parameter, public :: CURLINFO_CONN_ID                   = CURLINFO_OFF_T + 64
-    integer(kind=c_int), parameter, public :: CURLINFO_LASTONE                   = 64
+    integer(kind=c_int), parameter, public :: CURLINFO_QUEUE_TIME_T              = CURLINFO_OFF_T + 65
+    integer(kind=c_int), parameter, public :: CURLINFO_USED_PROXY                = CURLINFO_LONG + 66
+    integer(kind=c_int), parameter, public :: CURLINFO_LASTONE                   = 66
 
     integer(kind=c_size_t), parameter, public :: CURL_ZERO_TERMINATED   = int(-1, kind=c_size_t)
     integer(kind=c_int),    parameter, public :: CURLMIMEOPT_FORMESCAPE = shiftl(1, 0)

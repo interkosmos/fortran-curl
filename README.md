@@ -1,8 +1,8 @@
 # fortran-curl
 
 A collection of ISO C binding interfaces to
-[libcurl](https://curl.haxx.se/libcurl/) 8.5 for Fortran 2008. The library has
-been tested with GNU Fortran 13 and Intel oneAPI 2024. See
+[libcurl](https://curl.haxx.se/libcurl/) ≥ 8.7 for Fortran 2008. The library
+has been tested with GNU Fortran 13 and Intel oneAPI 2024. See
 [COVERAGE](COVERAGE.md) for an overview of bound procedures.
 
 For a user-friendly, high-level HTTP library based on these bindings, see
