@@ -1,5 +1,5 @@
 name = "fortran-curl"
-version = "0.7.0"
+version = "0.8.0"
 license = "ISC"
 author = "Philipp Engel"
 maintainer = "@interkosmos"

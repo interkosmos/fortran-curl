@@ -322,6 +322,8 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLOPT_QUICK_EXIT                 = CURLOPTTYPE_LONG + 322
     integer(kind=c_int), parameter, public :: CURLOPT_HAPROXY_CLIENT_IP          = CURLOPTTYPE_STRINGPOINT + 323
     integer(kind=c_int), parameter, public :: CURLOPT_SERVER_RESPONSE_TIMEOUT_MS = CURLOPTTYPE_LONG + 324
+    integer(kind=c_int), parameter, public :: CURLOPT_ECH                        = CURLOPTTYPE_STRINGPOINT + 235
+    integer(kind=c_int), parameter, public :: CURLOPT_TCP_KEEPCNT                = CURLOPTTYPE_LONG + 326
 
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_WHATEVER = 0
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_V4       = 1
@@ -484,7 +486,8 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLE_SSL_CLIENTCERT           = 98
     integer(kind=c_int), parameter, public :: CURLE_UNRECOVERABLE_POLL       = 99
     integer(kind=c_int), parameter, public :: CURLE_TOO_LARGE                = 100
-    integer(kind=c_int), parameter, public :: CURLE_LAST                     = 101 ! never use this
+    integer(kind=c_int), parameter, public :: CURLE_ECH_REQUIRED             = 101
+    integer(kind=c_int), parameter, public :: CURLE_LAST                     = 102 ! never use this
 
     integer(kind=c_int), parameter, public :: CURL_VERSION_IPV6         = shiftl(1, 0)
     integer(kind=c_int), parameter, public :: CURL_VERSION_KERBEROS4    = shiftl(1, 1)
@@ -519,18 +522,19 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURL_VERSION_THREADSAFE   = shiftl(1, 30)
 
     ! CURLversion
-    integer(kind=c_int), parameter, public :: CURLVERSION_FIRST    = 0
-    integer(kind=c_int), parameter, public :: CURLVERSION_SECOND   = 1
-    integer(kind=c_int), parameter, public :: CURLVERSION_THIRD    = 2
-    integer(kind=c_int), parameter, public :: CURLVERSION_FOURTH   = 3
-    integer(kind=c_int), parameter, public :: CURLVERSION_FIFTH    = 4
-    integer(kind=c_int), parameter, public :: CURLVERSION_SIXTH    = 5
-    integer(kind=c_int), parameter, public :: CURLVERSION_SEVENTH  = 6
-    integer(kind=c_int), parameter, public :: CURLVERSION_EIGHTH   = 7
-    integer(kind=c_int), parameter, public :: CURLVERSION_NINTH    = 8
-    integer(kind=c_int), parameter, public :: CURLVERSION_TENTH    = 9
-    integer(kind=c_int), parameter, public :: CURLVERSION_ELEVENTH = 10
-    integer(kind=c_int), parameter, public :: CURLVERSION_LAST     = 11
+    integer(kind=c_int), parameter, public :: CURLVERSION_FIRST    = 0  ! 7.10
+    integer(kind=c_int), parameter, public :: CURLVERSION_SECOND   = 1  ! 7.11.1
+    integer(kind=c_int), parameter, public :: CURLVERSION_THIRD    = 2  ! 7.12.0
+    integer(kind=c_int), parameter, public :: CURLVERSION_FOURTH   = 3  ! 7.16.1
+    integer(kind=c_int), parameter, public :: CURLVERSION_FIFTH    = 4  ! 7.57.0
+    integer(kind=c_int), parameter, public :: CURLVERSION_SIXTH    = 5  ! 7.66.0
+    integer(kind=c_int), parameter, public :: CURLVERSION_SEVENTH  = 6  ! 7.70.0
+    integer(kind=c_int), parameter, public :: CURLVERSION_EIGHTH   = 7  ! 7.72.0
+    integer(kind=c_int), parameter, public :: CURLVERSION_NINTH    = 8  ! 7.75.0
+    integer(kind=c_int), parameter, public :: CURLVERSION_TENTH    = 9  ! 7.77.0
+    integer(kind=c_int), parameter, public :: CURLVERSION_ELEVENTH = 10 ! 7.87.0
+    integer(kind=c_int), parameter, public :: CURLVERSION_TWELFTH  = 11 ! 8.8.0
+    integer(kind=c_int), parameter, public :: CURLVERSION_LAST     = 12 ! never use this
 
     ! curl_infotype
     integer(kind=c_int), parameter, public :: CURLINFO_TEXT         = 0
@@ -628,7 +632,8 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLINFO_CONN_ID                   = CURLINFO_OFF_T + 64
     integer(kind=c_int), parameter, public :: CURLINFO_QUEUE_TIME_T              = CURLINFO_OFF_T + 65
     integer(kind=c_int), parameter, public :: CURLINFO_USED_PROXY                = CURLINFO_LONG + 66
-    integer(kind=c_int), parameter, public :: CURLINFO_LASTONE                   = 66
+    integer(kind=c_int), parameter, public :: CURLINFO_POSTTRANSFER_TIME_T       = CURLINFO_OFF_T + 67
+    integer(kind=c_int), parameter, public :: CURLINFO_LASTONE                   = 67
 
     integer(kind=c_size_t), parameter, public :: CURL_ZERO_TERMINATED   = int(-1, kind=c_size_t)
     integer(kind=c_int),    parameter, public :: CURLMIMEOPT_FORMESCAPE = shiftl(1, 0)
@@ -650,6 +655,31 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLPAUSE_SEND_CONT = 0
     integer(kind=c_int), parameter, public :: CURLPAUSE_ALL       = ior(CURLPAUSE_RECV, CURLPAUSE_SEND)
     integer(kind=c_int), parameter, public :: CURLPAUSE_CONT      = ior(CURLPAUSE_RECV_CONT, CURLPAUSE_SEND_CONT)
+
+    ! curl_ftpccc
+    integer(kind=c_int), parameter, public :: CURLFTPSSL_CCC_NONE    = 0 ! do not send CCC
+    integer(kind=c_int), parameter, public :: CURLFTPSSL_CCC_PASSIVE = 1 ! let the server initiate the shutdown
+    integer(kind=c_int), parameter, public :: CURLFTPSSL_CCC_ACTIVE  = 2 ! initiate the shutdown
+    integer(kind=c_int), parameter, public :: CURLFTPSSL_CCC_LAST    = 3 ! never use this
+
+    ! curl_ftpauth
+    integer(kind=c_int), parameter, public :: CURLFTPAUTH_DEFAULT = 0 ! let libcurl decide
+    integer(kind=c_int), parameter, public :: CURLFTPAUTH_SSL     = 1 ! use "AUTH SSL"
+    integer(kind=c_int), parameter, public :: CURLFTPAUTH_TLS     = 2 ! use "AUTH TLS"
+    integer(kind=c_int), parameter, public :: CURLFTPAUTH_LAST    = 3 ! never use this
+
+    ! curl_ftpcreatedir
+    integer(kind=c_int), parameter, public :: CURLFTP_CREATE_DIR_NONE  = 0 ! do not create missing dirs
+    integer(kind=c_int), parameter, public :: CURLFTP_CREATE_DIR       = 1 ! (FTP/SFTP) if CWD fails, try MKD and then CWD again if MKD succeeded, for SFTP this does similar magic
+    integer(kind=c_int), parameter, public :: CURLFTP_CREATE_DIR_RETRY = 2 ! (FTP only) if CWD fails, try MKD and then CWD again even if MKD failed!
+    integer(kind=c_int), parameter, public :: CURLFTP_CREATE_DIR_LAST  = 3 ! never use this
+
+    ! curl_ftpmethod
+    integer(kind=c_int), parameter, public :: CURLFTPMETHOD_DEFAULT   = 0 ! let libcurl pick
+    integer(kind=c_int), parameter, public :: CURLFTPMETHOD_MULTICWD  = 1 ! single CWD operation for each path part
+    integer(kind=c_int), parameter, public :: CURLFTPMETHOD_NOCWD     = 2 ! no CWD at all
+    integer(kind=c_int), parameter, public :: CURLFTPMETHOD_SINGLECWD = 3 ! one CWD to full dir, then work on file
+    integer(kind=c_int), parameter, public :: CURLFTPMETHOD_LAST      = 4 ! never use this
 
     ! curl_slist
     type, bind(c), public :: curl_slist
@@ -685,6 +715,7 @@ module curl_easy
         type(c_ptr)          :: hyper_version   = c_null_ptr
         type(c_ptr)          :: gsasl_version   = c_null_ptr
         type(c_ptr)          :: feature_names   = c_null_ptr
+        type(c_ptr)          :: rtmp_version    = c_null_ptr
     end type curl_version_info_data
 
     public :: curl_easy_cleanup
