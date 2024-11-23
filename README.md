@@ -1,7 +1,7 @@
 # fortran-curl
 
 A collection of ISO C binding interfaces to
-[libcurl](https://curl.haxx.se/libcurl/) ≥ 8.10 for Fortran 2008. The library
+[libcurl](https://curl.haxx.se/libcurl/) ≥ 8.10.0 for Fortran 2008. The library
 has been tested with GNU Fortran 14. See [COVERAGE](COVERAGE.md) for an
 overview of bound procedures.
 
