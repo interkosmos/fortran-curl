@@ -681,6 +681,13 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLFTPMETHOD_SINGLECWD = 3 ! one CWD to full dir, then work on file
     integer(kind=c_int), parameter, public :: CURLFTPMETHOD_LAST      = 4 ! never use this
 
+    ! curl_TimeCond
+    integer(kind=c_int), parameter, public :: CURL_TIMECOND_NONE         = 0
+    integer(kind=c_int), parameter, public :: CURL_TIMECOND_IFMODSINCE   = 1
+    integer(kind=c_int), parameter, public :: CURL_TIMECOND_IFUNMODSINCE = 2
+    integer(kind=c_int), parameter, public :: CURL_TIMECOND_LASTMOD      = 3
+    integer(kind=c_int), parameter, public :: CURL_TIMECOND_LAST         = 4
+
     ! curl_slist
     type, bind(c), public :: curl_slist
         type(c_ptr) :: data = c_null_ptr
