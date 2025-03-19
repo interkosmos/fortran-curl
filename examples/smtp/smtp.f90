@@ -30,9 +30,9 @@ contains
         type(c_ptr),            intent(in), value :: data  !! C pointer to argument passed by caller.
         integer(kind=c_size_t)                    :: n     !! Function return value.
 
-        character(len=:),   pointer :: chunk
-        integer(kind=i8)            :: length, room
-        type(payload_type), pointer :: payload
+        character(len=nmemb), pointer :: chunk
+        integer(kind=i8)              :: length, room
+        type(payload_type),   pointer :: payload
 
         n = int(0, kind=c_size_t)
         room = sz * nmemb

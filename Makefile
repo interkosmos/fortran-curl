@@ -7,11 +7,11 @@ AR      = ar
 PREFIX  = /usr/local
 
 DEBUG   = -g -O0 -Wall -fmax-errors=1
-RELEASE = -O2 -march=native
+RELEASE = -O2
 
-FFLAGS  = $(RELEASE)
-CFLAGS  = $(RELEASE)
-LDFLAGS = -I$(PREFIX)/include -L$(PREFIX)/lib
+FFLAGS  = -I$(PREFIX)/include $(RELEASE)
+CFLAGS  = -I$(PREFIX)/include $(RELEASE)
+LDFLAGS = -L$(PREFIX)/lib
 LDLIBS  = -lcurl
 ARFLAGS = rcs
 INCDIR  = $(PREFIX)/include/libfortran-curl
