@@ -72,7 +72,7 @@ program main
 
     ! Send request.
     if (curl_easy_perform(curl_ptr) /= CURLE_OK) then
-        print '(a)', 'Error: curl_easy_perform() failed'
+        print '("Error: curl_easy_perform() failed")'
     end if
 
     call curl_easy_cleanup(curl_ptr)

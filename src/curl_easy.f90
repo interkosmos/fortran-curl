@@ -325,6 +325,8 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURLOPT_ECH                        = CURLOPTTYPE_STRINGPOINT + 235
     integer(kind=c_int), parameter, public :: CURLOPT_TCP_KEEPCNT                = CURLOPTTYPE_LONG + 326
 
+    integer(kind=c_int), parameter, public :: CURLOPT_SERVER_RESPONSE_TIMEOUT = CURLOPT_FTP_RESPONSE_TIMEOUT
+
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_WHATEVER = 0
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_V4       = 1
     integer(kind=c_int), parameter, public :: CURL_IPRESOLVE_V6       = 2
@@ -1006,36 +1008,36 @@ module curl_easy
         end function curl_version_info_
 
         ! void curl_easy_cleanup(CURL *curl)
-        subroutine curl_easy_cleanup(curl) bind(c, name='curl_easy_cleanup')
+        subroutine curl_easy_cleanup_(curl) bind(c, name='curl_easy_cleanup')
             import :: c_ptr
             implicit none
             type(c_ptr), intent(in), value :: curl
-        end subroutine curl_easy_cleanup
+        end subroutine curl_easy_cleanup_
 
         ! void curl_free(void *p)
-        subroutine curl_free(p) bind(c, name='curl_free')
+        subroutine curl_free_(p) bind(c, name='curl_free')
             import :: c_ptr
             implicit none
             type(c_ptr), intent(in), value :: p
-        end subroutine curl_free
+        end subroutine curl_free_
 
         ! void curl_global_cleanup(void)
         subroutine curl_global_cleanup() bind(c, name='curl_global_cleanup')
         end subroutine curl_global_cleanup
 
         ! void curl_mime_free(curl_mime *mime)
-        subroutine curl_mime_free(mime) bind(c, name='curl_mime_free')
+        subroutine curl_mime_free_(mime) bind(c, name='curl_mime_free')
             import :: c_ptr
             implicit none
             type(c_ptr), intent(in), value :: mime
-        end subroutine curl_mime_free
+        end subroutine curl_mime_free_
 
         ! void curl_slist_free_all(struct curl_slist *list)
-        subroutine curl_slist_free_all(list) bind(c, name='curl_slist_free_all')
+        subroutine curl_slist_free_all_(list) bind(c, name='curl_slist_free_all')
             import :: c_ptr
             implicit none
             type(c_ptr), intent(in), value :: list
-        end subroutine curl_slist_free_all
+        end subroutine curl_slist_free_all_
     end interface
 
     interface
@@ -1359,4 +1361,40 @@ contains
 
         allocate (curl_version_info)
     end function curl_version_info
+
+    ! void curl_easy_cleanup(CURL *curl)
+    subroutine curl_easy_cleanup(curl)
+        type(c_ptr), intent(inout) :: curl
+
+        if (.not. c_associated(curl)) return
+        call curl_easy_cleanup_(curl)
+        curl = c_null_ptr
+    end subroutine curl_easy_cleanup
+
+    ! void curl_free(void *p)
+    subroutine curl_free(p)
+        type(c_ptr), intent(inout) :: p
+
+        if (.not. c_associated(p)) return
+        call curl_free_(p)
+        p = c_null_ptr
+    end subroutine curl_free
+
+    ! void curl_mime_free(curl_mime *mime)
+    subroutine curl_mime_free(mime)
+        type(c_ptr), intent(inout) :: mime
+
+        if (.not. c_associated(mime)) return
+        call curl_mime_free_(mime)
+        mime = c_null_ptr
+    end subroutine curl_mime_free
+
+    ! void curl_slist_free_all(struct curl_slist *list)
+    subroutine curl_slist_free_all(list)
+        type(c_ptr), intent(inout) :: list
+
+        if (.not. c_associated(list)) return
+        call curl_slist_free_all_(list)
+        list = c_null_ptr
+    end subroutine curl_slist_free_all
 end module curl_easy

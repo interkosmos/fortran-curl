@@ -82,12 +82,12 @@ module curl_multi
         end function curl_multi_add_handle
 
         ! CURLMcode curl_multi_cleanup(CURLM *multi_handle)
-        function curl_multi_cleanup(multi_handle) bind(c, name='curl_multi_cleanup')
+        function curl_multi_cleanup_(multi_handle) bind(c, name='curl_multi_cleanup')
             import :: c_int, c_ptr
             implicit none
             type(c_ptr), intent(in), value :: multi_handle
-            integer(kind=c_int)            :: curl_multi_cleanup
-        end function curl_multi_cleanup
+            integer(kind=c_int)            :: curl_multi_cleanup_
+        end function curl_multi_cleanup_
 
         ! CURLMsg *curl_multi_info_read(CURLM *multi_handle, int *msgs_in_queue)
         function curl_multi_info_read(multi_handle, msgs_in_queue) bind(c, name='curl_multi_info_read')
@@ -161,6 +161,15 @@ module curl_multi
         end function curl_multi_wakeup
     end interface
 contains
+    ! CURLMcode curl_multi_cleanup(CURLM *multi_handle)
+    function curl_multi_cleanup(multi_handle)
+        type(c_ptr), intent(inout) :: multi_handle
+        integer                    :: curl_multi_cleanup
+
+        curl_multi_cleanup = curl_multi_cleanup_(multi_handle)
+        if (curl_multi_cleanup == CURLM_OK) multi_handle = c_null_ptr
+    end function curl_multi_cleanup
+
     ! const char *curl_multi_strerror(CURLMcode code)
     function curl_multi_strerror(code) result(str)
         integer, intent(in)           :: code

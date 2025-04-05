@@ -128,11 +128,11 @@ module curl_urlapi
         end function curl_url_strerror_
 
         ! void curl_url_cleanup(CURLU *handle)
-        subroutine curl_url_cleanup(handle) bind(c, name='curl_url_cleanup')
+        subroutine curl_url_cleanup_(handle) bind(c, name='curl_url_cleanup')
             import :: c_ptr
             implicit none
             type(c_ptr), intent(in), value :: handle
-        end subroutine curl_url_cleanup
+        end subroutine curl_url_cleanup_
     end interface
 contains
     ! CURLUcode curl_url_get(const CURLU *handle, CURLUPart what, char **part, unsigned int flags)
@@ -178,4 +178,12 @@ contains
         ptr = curl_url_strerror_(code)
         call c_f_str_ptr(ptr, str)
     end function curl_url_strerror
+
+    ! void curl_url_cleanup(CURLU *handle)
+    subroutine curl_url_cleanup(handle)
+        type(c_ptr), intent(inout) :: handle
+
+        if (.not. c_associated(handle)) return
+        call curl_url_cleanup_(handle)
+    end subroutine curl_url_cleanup
 end module curl_urlapi
