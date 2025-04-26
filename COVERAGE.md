@@ -6,7 +6,9 @@
 | `curl_easy_duphandle`      |                                          |       |
 | `curl_easy_escape`         | `curl_easy_escape`                       | ✓     |
 | `curl_easy_getinfo`        | `curl_easy_getinfo`                      | ✓     |
+| `curl_easy_header`         | `curl_easy_header`                       | ✓     |
 | `curl_easy_init`           | `curl_easy_init`                         | ✓     |
+| `curl_easy_nextheader`     | `curl_easy_nextheader`                   | ✓     |
 | `curl_easy_pause`          | `curl_easy_pause`                        | ✓     |
 | `curl_easy_perform`        | `curl_easy_perform`                      | ✓     |
 | `curl_easy_recv`           |                                          |       |

@@ -758,10 +758,8 @@ module curl_easy
     public :: curl_easy_escape
     public :: curl_easy_getinfo
     public :: curl_easy_header
-    public :: curl_easy_header_
     public :: curl_easy_init
     public :: curl_easy_nextheader
-    public :: curl_easy_nextheader_
     public :: curl_easy_pause
     public :: curl_easy_perform
     public :: curl_easy_setopt
