@@ -99,24 +99,24 @@ module curl_urlapi
 
         ! CURLUcode curl_url_get(const CURLU *handle, CURLUPart what, char **part, unsigned int flags)
         function curl_url_get_(handle, what, part, flags) bind(c, name='curl_url_get')
-            import :: c_int, c_ptr, c_unsigned_int
+            import :: c_int, c_ptr, c_unsigned
             implicit none
-            type(c_ptr),                  intent(in), value :: handle
-            integer(kind=c_int),          intent(in), value :: what
-            type(c_ptr),                  intent(out)       :: part
-            integer(kind=c_unsigned_int), intent(in), value :: flags
-            integer(kind=c_int)                             :: curl_url_get_
+            type(c_ptr),              intent(in), value :: handle
+            integer(kind=c_int),      intent(in), value :: what
+            type(c_ptr),              intent(out)       :: part
+            integer(kind=c_unsigned), intent(in), value :: flags
+            integer(kind=c_int)                         :: curl_url_get_
         end function curl_url_get_
 
         ! CURLUcode curl_url_set(CURLU *handle, CURLUPart what, const char *part, unsigned int flags)
         function curl_url_set_(handle, what, part, flags) bind(c, name='curl_url_set')
-            import :: c_char, c_int, c_ptr, c_unsigned_int
+            import :: c_char, c_int, c_ptr, c_unsigned
             implicit none
-            type(c_ptr),                  intent(in), value :: handle
-            integer(kind=c_int),          intent(in), value :: what
-            character(kind=c_char),       intent(in)        :: part
-            integer(kind=c_unsigned_int), intent(in), value :: flags
-            integer(kind=c_int)                             :: curl_url_set_
+            type(c_ptr),              intent(in), value :: handle
+            integer(kind=c_int),      intent(in), value :: what
+            character(kind=c_char),   intent(in)        :: part
+            integer(kind=c_unsigned), intent(in), value :: flags
+            integer(kind=c_int)                         :: curl_url_set_
         end function curl_url_set_
 
         ! const char *curl_url_strerror(CURLMcode code)

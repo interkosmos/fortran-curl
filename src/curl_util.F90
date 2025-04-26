@@ -10,7 +10,15 @@ module curl_util
     implicit none
     private
 
-    integer, parameter, public :: c_unsigned_int = c_int
+#if defined (__flang__) || (defined (__GFORTRAN__) && __GNUC__ >= 15 && __GNUC_MINOR__ >= 1)
+
+    public :: c_unsigned
+
+#else
+
+    integer, parameter, public :: c_unsigned = c_int
+
+#endif
 
     interface
         ! size_t strlen(const char *str)

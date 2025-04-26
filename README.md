@@ -53,7 +53,7 @@ Examples are provided in directory `examples/`:
 
 * **dict** queries a [DICT](https://en.wikipedia.org/wiki/DICT) server on TCP port 2628.
 * **download** fetches a remote file.
-* **getinfo** prints request-related information to console.
+* **getinfo** prints request-related information and response headers to console.
 * **gopher** prints the contents of a remote Gopher map file.
 * **http** makes an HTTP GET request.
 * **imap** examines the `INBOX` of an IMAP mailbox (SSL).

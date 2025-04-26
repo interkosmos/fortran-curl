@@ -1,6 +1,6 @@
 ! curl_easy.f90
 !
-! Fortran 2008 ISO C binding interfaces to `curl.h` and `easy.h`.
+! Fortran 2008 ISO C binding interfaces to `curl.h`, `easy.h`, and `header.h`.
 !
 ! Author:  Philipp Engel
 ! Licence: ISC
@@ -690,6 +690,33 @@ module curl_easy
     integer(kind=c_int), parameter, public :: CURL_TIMECOND_LASTMOD      = 3
     integer(kind=c_int), parameter, public :: CURL_TIMECOND_LAST         = 4
 
+    ! origin bits
+    integer(kind=c_int), parameter, public :: CURLH_HEADER  = shiftl(1,00) ! plain server header
+    integer(kind=c_int), parameter, public :: CURLH_TRAILER = shiftl(1,01) ! trailers
+    integer(kind=c_int), parameter, public :: CURLH_CONNECT = shiftl(1,02) ! CONNECT headers
+    integer(kind=c_int), parameter, public :: CURLH_1XX     = shiftl(1,03) ! 1xx headers
+    integer(kind=c_int), parameter, public :: CURLH_PSEUDO  = shiftl(1,04) ! pseudo headers
+
+    ! CURLHcode
+    integer(kind=c_int), parameter, public :: CURLHE_OK            = 0
+    integer(kind=c_int), parameter, public :: CURLHE_BADINDEX      = 1 ! header exists but not with this index
+    integer(kind=c_int), parameter, public :: CURLHE_MISSING       = 2 ! no such header exists
+    integer(kind=c_int), parameter, public :: CURLHE_NOHEADERS     = 3 ! no headers at all exist (yet)
+    integer(kind=c_int), parameter, public :: CURLHE_NOREQUEST     = 4 ! no request with this number was used
+    integer(kind=c_int), parameter, public :: CURLHE_OUT_OF_MEMORY = 5 ! out of memory while processing
+    integer(kind=c_int), parameter, public :: CURLHE_BAD_ARGUMENT  = 6 ! a function argument was not okay
+    integer(kind=c_int), parameter, public :: CURLHE_NOT_BUILT_IN  = 7 ! if API was disabled in the build
+
+    ! struct curl_header
+    type, bind(c), public :: curl_header
+        type(c_ptr)              :: name   = c_null_ptr ! char *
+        type(c_ptr)              :: value  = c_null_ptr ! char *
+        integer(kind=c_size_t)   :: amount = 0_c_size_t
+        integer(kind=c_size_t)   :: index  = 0_c_size_t
+        integer(kind=c_unsigned) :: origin = 0_c_unsigned
+        type(c_ptr)              :: anchor = c_null_ptr ! void *
+    end type curl_header
+
     ! curl_slist
     type, bind(c), public :: curl_slist
         type(c_ptr) :: data = c_null_ptr
@@ -730,7 +757,11 @@ module curl_easy
     public :: curl_easy_cleanup
     public :: curl_easy_escape
     public :: curl_easy_getinfo
+    public :: curl_easy_header
+    public :: curl_easy_header_
     public :: curl_easy_init
+    public :: curl_easy_nextheader
+    public :: curl_easy_nextheader_
     public :: curl_easy_pause
     public :: curl_easy_perform
     public :: curl_easy_setopt
@@ -1041,6 +1072,32 @@ module curl_easy
     end interface
 
     interface
+        ! CURLHcode curl_easy_header(CURL *easy, const char *name, size_t index, unsigned int origin, int request, struct curl_header **hout)
+        function curl_easy_header_(easy, name, index, origin, request, hout) bind(c, name='curl_easy_header')
+            import :: c_char, c_int, c_ptr, c_size_t, c_unsigned
+            implicit none
+            type(c_ptr),              intent(in), value :: easy
+            character(kind=c_char),   intent(in)        :: name
+            integer(kind=c_size_t),   intent(in), value :: index
+            integer(kind=c_unsigned), intent(in), value :: origin
+            integer(kind=c_int),      intent(in), value :: request
+            type(c_ptr),              intent(out)       :: hout
+            integer(kind=c_int)                         :: curl_easy_header_
+        end function curl_easy_header_
+
+        ! struct curl_header *curl_easy_nextheader(CURL *easy, unsigned int origin, int request, struct curl_header *prev)
+        function curl_easy_nextheader_(easy, origin, request, prev) bind(c, name='curl_easy_nextheader')
+            import :: c_int, c_ptr, c_unsigned, curl_header
+            implicit none
+            type(c_ptr),              intent(in), value :: easy
+            integer(kind=c_unsigned), intent(in), value :: origin
+            integer(kind=c_int),      intent(in), value :: request
+            type(curl_header),        intent(in)        :: prev
+            type(c_ptr)                                 :: curl_easy_nextheader_
+        end function curl_easy_nextheader_
+    end interface
+
+    interface
         ! int curl_version_now()
         function curl_version_now() bind(c, name='curl_version_now')
             !! Interface to wrapper function `curl_version_now()` for C constant
@@ -1148,6 +1205,36 @@ contains
 
         rc = curl_easy_getinfo_(curl, option, parameter)
     end function curl_easy_getinfo_ptr
+
+    ! CURLHcode curl_easy_header(CURL *easy, const char *name, size_t index, unsigned int origin, int request, struct curl_header **hout)
+    function curl_easy_header(easy, name, index, origin, request, hout) result(rc)
+        type(c_ptr),                intent(in)  :: easy
+        character(len=*),           intent(in)  :: name
+        integer(kind=i8),           intent(in)  :: index
+        integer,                    intent(in)  :: origin
+        integer,                    intent(in)  :: request
+        type(curl_header), pointer, intent(out) :: hout
+        integer                                 :: rc
+
+        type(c_ptr) :: ptr
+
+        rc = curl_easy_header_(easy, name // c_null_char, int(index, kind=c_size_t), origin, request, ptr)
+        call c_f_pointer(ptr, hout)
+    end function curl_easy_header
+
+    ! struct curl_header *curl_easy_nextheader(CURL *easy, unsigned int origin, int request, struct curl_header *prev)
+    function curl_easy_nextheader(easy, origin, request, prev) result(next)
+        type(c_ptr),                intent(in) :: easy
+        integer,                    intent(in) :: origin
+        integer,                    intent(in) :: request
+        type(curl_header), pointer, intent(in) :: prev
+        type(curl_header), pointer             :: next
+
+        type(c_ptr) :: ptr
+
+        ptr = curl_easy_nextheader_(easy, origin, request, prev)
+        call c_f_pointer(ptr, next)
+    end function curl_easy_nextheader
 
     ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
     function curl_easy_setopt_char(curl, option, parameter) result(rc)
