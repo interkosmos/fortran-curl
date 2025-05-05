@@ -762,6 +762,9 @@ module curl_easy
     public :: curl_easy_nextheader
     public :: curl_easy_pause
     public :: curl_easy_perform
+    public :: curl_easy_recv
+    public :: curl_easy_reset
+    public :: curl_easy_send
     public :: curl_easy_setopt
     public :: curl_easy_setopt_char
     public :: curl_easy_setopt_funptr
@@ -836,6 +839,28 @@ module curl_easy
             type(c_ptr), intent(in), value :: curl
             integer(kind=c_int)            :: curl_easy_perform
         end function curl_easy_perform
+
+        ! CURLcode curl_easy_recv(CURL *curl, void *buffer, size_t buflen, size_t *n)
+        function curl_easy_recv(curl, buffer, buflen, n) bind(c, name='curl_easy_recv')
+            import :: c_ptr, c_size_t, c_int
+            implicit none
+            type(c_ptr),            intent(in), value :: curl
+            type(c_ptr),            intent(in), value :: buffer
+            integer(kind=c_size_t), intent(in), value :: buflen
+            type(c_ptr),            intent(in), value :: n
+            integer(kind=c_int)                       :: curl_easy_recv
+        end function curl_easy_recv
+
+        ! CURLcode curl_easy_send(CURL *curl, const void *buffer, size_t buflen, size_t *n)
+        function curl_easy_send(curl, buffer, buflen, n) bind(c, name='curl_easy_send')
+            import :: c_ptr, c_size_t, c_int
+            implicit none
+            type(c_ptr),            intent(in), value :: curl
+            type(c_ptr),            intent(in), value :: buffer
+            integer(kind=c_size_t), intent(in), value :: buflen
+            type(c_ptr),            intent(in), value :: n
+            integer(kind=c_int)                       :: curl_easy_send
+        end function curl_easy_send
 
         ! CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...)
         function curl_easy_setopt_c_char(curl, option, parameter) bind(c, name='curl_easy_setopt_c_char')
@@ -1035,6 +1060,13 @@ module curl_easy
             integer(kind=c_int), intent(in), value :: age
             type(c_ptr)                            :: curl_version_info_
         end function curl_version_info_
+
+        ! void curl_easy_reset(CURL *handle)
+        subroutine curl_easy_reset(handle) bind(c, name='curl_easy_reset')
+            import :: c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: handle
+        end subroutine curl_easy_reset
 
         ! void curl_easy_cleanup(CURL *curl)
         subroutine curl_easy_cleanup_(curl) bind(c, name='curl_easy_cleanup')
