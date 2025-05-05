@@ -11,9 +11,9 @@
 | `curl_easy_nextheader`     | `curl_easy_nextheader`                   | ✓     |
 | `curl_easy_pause`          | `curl_easy_pause`                        | ✓     |
 | `curl_easy_perform`        | `curl_easy_perform`                      | ✓     |
-| `curl_easy_recv`           |                                          |       |
-| `curl_easy_reset`          |                                          |       |
-| `curl_easy_send`           |                                          |       |
+| `curl_easy_recv`           | `curl_easy_recv`                         | ✓     |
+| `curl_easy_reset`          | `curl_easy_reset`                        | ✓     |
+| `curl_easy_send`           | `curl_easy_send`                         | ✓     |
 | `curl_easy_setopt`         | `curl_easy_setopt`, `curl_easy_setopt_*` | ✓     |
 | `curl_easy_strerror`       | `curl_easy_strerror`                     | ✓     |
 | `curl_easy_unescape`       | `curl_easy_unescape`                     | ✓     |
