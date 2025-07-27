@@ -815,6 +815,16 @@ module curl_easy
             type(c_ptr),         intent(in), value :: parameter
             integer(kind=c_int)                    :: curl_easy_getinfo_
         end function curl_easy_getinfo_
+        
+        ! C wrapper for curl_easy_getinfo_long (fixes macOS ARM64 issues)
+        function curl_easy_getinfo_long_wrapper(curl, option, parameter) bind(c, name='curl_easy_getinfo_long_wrapper')
+            import :: c_int, c_long, c_ptr
+            implicit none
+            type(c_ptr),         intent(in), value :: curl
+            integer(kind=c_int), intent(in), value :: option
+            integer(kind=c_long), intent(out)      :: parameter
+            integer(kind=c_int)                    :: curl_easy_getinfo_long_wrapper
+        end function curl_easy_getinfo_long_wrapper
 
         ! CURL *curl_easy_init(void)
         function curl_easy_init() bind(c, name='curl_easy_init')
@@ -1207,9 +1217,10 @@ contains
         integer(kind=i4), intent(out) :: parameter
         integer                       :: rc
 
-        integer(kind=c_long), target  :: i
+        integer(kind=c_long) :: i
 
-        rc = curl_easy_getinfo_(curl, option, c_loc(i))
+        ! Use C wrapper for better platform compatibility
+        rc = curl_easy_getinfo_long_wrapper(curl, option, i)
         parameter = int(i)
     end function curl_easy_getinfo_int
 
@@ -1220,9 +1231,10 @@ contains
         integer(kind=i8), intent(out) :: parameter
         integer                       :: rc
 
-        integer(kind=c_long), target  :: i
+        integer(kind=c_long) :: i
 
-        rc = curl_easy_getinfo_(curl, option, c_loc(i))
+        ! Use C wrapper for better platform compatibility
+        rc = curl_easy_getinfo_long_wrapper(curl, option, i)
         parameter = int(i, kind=i8)
     end function curl_easy_getinfo_long
 
