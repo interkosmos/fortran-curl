@@ -162,12 +162,12 @@ module curl_multi
     end interface
 contains
     ! CURLMcode curl_multi_cleanup(CURLM *multi_handle)
-    function curl_multi_cleanup(multi_handle)
+    function curl_multi_cleanup(multi_handle) result(rc)
         type(c_ptr), intent(inout) :: multi_handle
-        integer                    :: curl_multi_cleanup
+        integer                    :: rc
 
-        curl_multi_cleanup = curl_multi_cleanup_(multi_handle)
-        if (curl_multi_cleanup == CURLM_OK) multi_handle = c_null_ptr
+        rc = curl_multi_cleanup_(multi_handle)
+        if (rc == CURLM_OK) multi_handle = c_null_ptr
     end function curl_multi_cleanup
 
     ! const char *curl_multi_strerror(CURLMcode code)

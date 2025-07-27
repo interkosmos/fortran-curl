@@ -185,5 +185,6 @@ contains
 
         if (.not. c_associated(handle)) return
         call curl_url_cleanup_(handle)
+        handle = c_null_ptr
     end subroutine curl_url_cleanup
 end module curl_urlapi

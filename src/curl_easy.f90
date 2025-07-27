@@ -806,7 +806,7 @@ module curl_easy
             type(c_ptr)                               :: curl_easy_escape_
         end function curl_easy_escape_
 
-        ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, ...)
+        ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, void *parameter)
         function curl_easy_getinfo_(curl, option, parameter) bind(c, name='curl_easy_getinfo')
             import :: c_int, c_ptr
             implicit none
@@ -815,16 +815,16 @@ module curl_easy
             type(c_ptr),         intent(in), value :: parameter
             integer(kind=c_int)                    :: curl_easy_getinfo_
         end function curl_easy_getinfo_
-        
-        ! C wrapper for curl_easy_getinfo_long (fixes macOS ARM64 issues)
-        function curl_easy_getinfo_long_wrapper(curl, option, parameter) bind(c, name='curl_easy_getinfo_long_wrapper')
+
+        ! CURLcode curl_easy_getinfo(CURL *curl, CURLoption option, long *parameter)
+        function curl_easy_getinfo_c_long(curl, option, parameter) bind(c, name='curl_easy_getinfo_c_long')
             import :: c_int, c_long, c_ptr
             implicit none
-            type(c_ptr),         intent(in), value :: curl
-            integer(kind=c_int), intent(in), value :: option
-            integer(kind=c_long), intent(out)      :: parameter
-            integer(kind=c_int)                    :: curl_easy_getinfo_long_wrapper
-        end function curl_easy_getinfo_long_wrapper
+            type(c_ptr),          intent(in), value :: curl
+            integer(kind=c_int),  intent(in), value :: option
+            integer(kind=c_long), intent(out)       :: parameter
+            integer(kind=c_int)                     :: curl_easy_getinfo_c_long
+        end function curl_easy_getinfo_c_long
 
         ! CURL *curl_easy_init(void)
         function curl_easy_init() bind(c, name='curl_easy_init')
@@ -1155,7 +1155,7 @@ module curl_easy
         module procedure :: curl_easy_getinfo_int
         module procedure :: curl_easy_getinfo_long
         module procedure :: curl_easy_getinfo_ptr
-    end interface
+    end interface curl_easy_getinfo
 
     interface curl_easy_setopt
         !! Fortran 2008 generic interface `curl_easy_setopt()`.
@@ -1164,7 +1164,7 @@ module curl_easy
         module procedure :: curl_easy_setopt_int
         module procedure :: curl_easy_setopt_long
         module procedure :: curl_easy_setopt_ptr
-    end interface
+    end interface curl_easy_setopt
 contains
     ! char *curl_easy_escape(CURL *handle, const char *string, int length)
     function curl_easy_escape(curl, string, length) result(escaped)
@@ -1219,8 +1219,8 @@ contains
 
         integer(kind=c_long) :: i
 
-        ! Use C wrapper for better platform compatibility
-        rc = curl_easy_getinfo_long_wrapper(curl, option, i)
+        ! Use C wrapper for better platform compatibility.
+        rc = curl_easy_getinfo_c_long(curl, option, i)
         parameter = int(i)
     end function curl_easy_getinfo_int
 
@@ -1233,8 +1233,8 @@ contains
 
         integer(kind=c_long) :: i
 
-        ! Use C wrapper for better platform compatibility
-        rc = curl_easy_getinfo_long_wrapper(curl, option, i)
+        ! Use C wrapper for better platform compatibility.
+        rc = curl_easy_getinfo_c_long(curl, option, i)
         parameter = int(i, kind=i8)
     end function curl_easy_getinfo_long
 
@@ -1463,13 +1463,13 @@ contains
     end function curl_slist_append
 
     ! char *curl_version(void)
-    function curl_version()
-        character(len=:), allocatable :: curl_version
+    function curl_version() result(str)
+        character(len=:), allocatable :: str
 
         type(c_ptr) :: ptr
 
         ptr = curl_version_()
-        call c_f_str_ptr(ptr, curl_version)
+        call c_f_str_ptr(ptr, str)
     end function curl_version
 
     ! curl_version_info_data *curl_version_info(CURLversion age)

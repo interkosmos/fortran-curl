@@ -32,9 +32,9 @@ URL      = url
 VERSION  = version
 
 SRC = src/curl.f90 src/curl_easy.f90 src/curl_multi.f90 src/curl_urlapi.f90 \
-      src/curl_util.F90 src/curl_macro.c src/curl_getinfo.c
+      src/curl_util.F90 src/curl_macro.c
 MOD = curl.mod curl_easy.mod curl_multi.mod curl_urlapi.mod curl_util.mod
-OBJ = curl.o curl_easy.o curl_multi.o curl_urlapi.o curl_util.o curl_macro.o curl_getinfo.o
+OBJ = curl.o curl_easy.o curl_multi.o curl_urlapi.o curl_util.o curl_macro.o
 
 .PHONY: all clean examples
 
@@ -45,7 +45,6 @@ examples: $(DICT) $(DOWNLOAD) $(GETINFO) $(GOPHER) $(HTTP) $(IMAP) $(MQTT) \
 
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -c src/curl_macro.c
-	$(CC) $(CFLAGS) -c src/curl_getinfo.c
 	$(FC) $(FFLAGS) -c src/curl_util.F90
 	$(FC) $(FFLAGS) -c src/curl_easy.f90
 	$(FC) $(FFLAGS) -c src/curl_multi.f90
