@@ -842,7 +842,7 @@ module curl_easy
 
         ! CURLcode curl_easy_recv(CURL *curl, void *buffer, size_t buflen, size_t *n)
         function curl_easy_recv(curl, buffer, buflen, n) bind(c, name='curl_easy_recv')
-            import :: c_ptr, c_size_t, c_int
+            import :: c_int, c_ptr, c_size_t
             implicit none
             type(c_ptr),            intent(in), value :: curl
             type(c_ptr),            intent(in), value :: buffer
@@ -853,7 +853,7 @@ module curl_easy
 
         ! CURLcode curl_easy_send(CURL *curl, const void *buffer, size_t buflen, size_t *n)
         function curl_easy_send(curl, buffer, buflen, n) bind(c, name='curl_easy_send')
-            import :: c_ptr, c_size_t, c_int
+            import :: c_int, c_ptr, c_size_t
             implicit none
             type(c_ptr),            intent(in), value :: curl
             type(c_ptr),            intent(in), value :: buffer
@@ -1061,13 +1061,6 @@ module curl_easy
             type(c_ptr)                            :: curl_version_info_
         end function curl_version_info_
 
-        ! void curl_easy_reset(CURL *handle)
-        subroutine curl_easy_reset(handle) bind(c, name='curl_easy_reset')
-            import :: c_ptr
-            implicit none
-            type(c_ptr), intent(in), value :: handle
-        end subroutine curl_easy_reset
-
         ! void curl_easy_cleanup(CURL *curl)
         subroutine curl_easy_cleanup_(curl) bind(c, name='curl_easy_cleanup')
             import :: c_ptr
@@ -1092,6 +1085,13 @@ module curl_easy
             implicit none
             type(c_ptr), intent(in), value :: mime
         end subroutine curl_mime_free_
+
+        ! void curl_easy_reset(CURL *handle)
+        subroutine curl_easy_reset(handle) bind(c, name='curl_easy_reset')
+            import :: c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: handle
+        end subroutine curl_easy_reset
 
         ! void curl_slist_free_all(struct curl_slist *list)
         subroutine curl_slist_free_all_(list) bind(c, name='curl_slist_free_all')
