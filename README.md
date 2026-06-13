@@ -94,6 +94,17 @@ You can add *fortran-curl* to your `fpm.toml` with:
 fortran-curl = { git = "https://github.com/interkosmos/fortran-curl" }
 ```
 
+## Source-Code Documentation
+
+Use [FORD](https://github.com/Fortran-FOSS-Programmers/ford) to generate the
+source-code documentation:
+
+```
+$ ford ford.md
+```
+
+The output files are written to `doc/`.
+
 ## Contribute
 
 For smaller changes:

@@ -1,13 +1,11 @@
-# C extensions
-*.so
-
-# Distribution / packaging
-env/
 build/
 dist/
+doc/
+dump/
+env/
 var/
-
-# Other stuff
-*.swp
+*.a
 *.mod
 *.o
+*.so
+*.swp
