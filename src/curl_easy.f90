@@ -5,6 +5,7 @@
 ! Author:  Philipp Engel
 ! Licence: ISC
 module curl_easy
+    use, intrinsic :: iso_fortran_env, only: i4 => int32, i8 => int64
     use :: curl_util
     implicit none
     private

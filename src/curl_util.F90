@@ -38,9 +38,6 @@ module curl_util
     public :: c_null_char
     public :: c_null_ptr
 
-    public :: i4
-    public :: i8
-
     public :: c_f_str_ptr
     public :: f_c_str
 contains
