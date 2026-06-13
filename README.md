@@ -1,5 +1,9 @@
 # fortran-curl
 
+![Language](https://img.shields.io/badge/-Fortran-734f96?logo=fortran&logoColor=white)
+![License](https://img.shields.io/github/license/interkosmos/fortran-sqlite3)
+![CI](https://github.com/interkosmos/fortran-curl/actions/workflows/ci.yml/badge.svg)
+
 A collection of ISO C binding interfaces to
 [libcurl](https://curl.haxx.se/libcurl/) ≥ 8.20.0 for Fortran 2008. The library
 has been tested with GCC 15 and LLVM 21. See [COVERAGE](COVERAGE.md) for an
