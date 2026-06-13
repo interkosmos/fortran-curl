@@ -9,5 +9,4 @@ module curl
     use :: curl_multi
     use :: curl_urlapi
     use :: curl_util
-    implicit none
 end module curl

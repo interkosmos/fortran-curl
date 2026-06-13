@@ -1,8 +1,8 @@
 # fortran-curl
 
 A collection of ISO C binding interfaces to
-[libcurl](https://curl.haxx.se/libcurl/) ≥ 8.10.0 for Fortran 2008. The library
-has been tested with GCC 14 and LLVM 20. See [COVERAGE](COVERAGE.md) for an
+[libcurl](https://curl.haxx.se/libcurl/) ≥ 8.20.0 for Fortran 2008. The library
+has been tested with GCC 15 and LLVM 21. See [COVERAGE](COVERAGE.md) for an
 overview of bound procedures.
 
 For a user-friendly, high-level HTTP library based on these bindings, see
@@ -74,9 +74,8 @@ Build all by running `make examples`.
 
 ## Fortran Package Manager
 
-This project supports the
-[Fortran Package Manager](https://github.com/fortran-lang/fpm) (FPM). To build
-the project with FPM, run:
+This project supports the [Fortran Package Manager](https://github.com/fortran-lang/fpm)
+(FPM). To build the project with FPM, run:
 
 ```
 $ fpm build --profile release
@@ -88,7 +87,7 @@ You can add *fortran-curl* to your `fpm.toml` with:
 
 ```toml
 [dependencies]
-fortran-curl = { git = "https://github.com/interkosmos/fortran-curl.git" }
+fortran-curl = { git = "https://github.com/interkosmos/fortran-curl" }
 ```
 
 ## Contribute

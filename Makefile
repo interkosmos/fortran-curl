@@ -9,9 +9,10 @@ PREFIX  = /usr/local
 
 DEBUG   = -g -O0 -Wall -fmax-errors=1
 RELEASE = -O2
+FLAGS   = $(RELEASE)
 
-FFLAGS  = -I$(PREFIX)/include $(RELEASE)
-CFLAGS  = -I$(PREFIX)/include $(RELEASE)
+FFLAGS  = -I$(PREFIX)/include $(FLAGS)
+CFLAGS  = -I$(PREFIX)/include $(FLAGS)
 LDFLAGS = -L$(PREFIX)/lib
 LDLIBS  = -lcurl
 ARFLAGS = rcs
